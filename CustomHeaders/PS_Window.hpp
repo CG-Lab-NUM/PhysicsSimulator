@@ -4,7 +4,7 @@
 #include <GLFW/glfw3.h>
 #include <string>
 
-namespace ps_window {
+namespace ps {
 	class PS_Window {
 	public:
 		PS_Window(int w, int h, std::string name);
@@ -16,6 +16,7 @@ namespace ps_window {
 		bool shouldClose() {
 			return glfwWindowShouldClose(window);
 		}
+		void createWindowSurface(VkInstance instance, VkSurfaceKHR *surface);
 
 	private:
 		void initWindow();

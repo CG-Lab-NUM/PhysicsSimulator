@@ -21,7 +21,13 @@
     <ClCompile Include="Rendering\PS_Window.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="Rendering\TestApp.cpp">
+    <ClCompile Include="Rendering\PS_Test.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Rendering\PS_Pipeline.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Rendering\PS_Device.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
@@ -29,7 +35,13 @@
     <ClInclude Include="CustomHeaders\PS_Window.hpp">
       <Filter>Source Files</Filter>
     </ClInclude>
-    <ClInclude Include="CustomHeaders\TestApp.hpp">
+    <ClInclude Include="CustomHeaders\PS_Test.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="CustomHeaders\PS_Pipeline.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="CustomHeaders\PS_Device.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

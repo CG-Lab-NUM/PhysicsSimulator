@@ -1,12 +1,12 @@
 #define GLFW_INCLUDE_VULKAN
-#include "TestApp.hpp"
+#include "PS_Test.hpp"
 
 #include <cstdlib>
 #include <iostream>
 #include <stdexcept>
 
 int main() {
-    ps_window::TestApp app{};
+    ps::PS_Test app{};
     try {
         app.run();
     }
