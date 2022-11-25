@@ -9,8 +9,6 @@
 #include <fstream>
 
 namespace ps {
-
-    // local callback functions
     static VKAPI_ATTR VkBool32 VKAPI_CALL debugCallback(
         VkDebugUtilsMessageSeverityFlagBitsEXT messageSeverity,
         VkDebugUtilsMessageTypeFlagsEXT messageType,
@@ -85,21 +83,20 @@ namespace ps {
         createInfo.pApplicationInfo = &appInfo;
 
         uint32_t glfwExtensionCount = 0;
-        const char** glfwExtensions;
-        // instanceExtensions.push_back("VK_KHR_portability_enumeration");
-        glfwExtensions = glfwGetRequiredInstanceExtensions(&glfwExtensionCount);
+        std::vector<const char*> glfwExtensions;
+        glfwExtensions = getRequiredExtensions();
+        glfwExtensions.emplace_back(VK_KHR_PORTABILITY_ENUMERATION_EXTENSION_NAME);
 
-        createInfo.enabledExtensionCount = glfwExtensionCount;
-        createInfo.ppEnabledExtensionNames = glfwExtensions;
-
+        createInfo.enabledExtensionCount = (uint32_t)glfwExtensions.size();
+        createInfo.ppEnabledExtensionNames = glfwExtensions.data();
+        LogExtensions(glfwExtensions);
         createInfo.enabledLayerCount = 0;
 
+        LogResult(vkCreateInstance(&createInfo, nullptr, &instance));
         if (vkCreateInstance(&createInfo, nullptr, &instance) != VK_SUCCESS) {
             throw std::runtime_error("failed to create instance!");
         }
     }
-
-
 
     void PS_Device::pickPhysicalDevice() {
         uint32_t deviceCount = 0;
