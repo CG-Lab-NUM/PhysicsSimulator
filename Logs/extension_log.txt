@@ -1,1 +1,0 @@
-VK_KHR_surfaceVK_KHR_win32_surfaceVK_EXT_debug_utilsVK_KHR_portability_enumeration
