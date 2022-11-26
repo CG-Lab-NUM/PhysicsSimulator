@@ -524,7 +524,7 @@ namespace ps {
     }
 
     void PS_Device::LogResult(const VkResult result) {
-        std::ofstream log("err_log.txt");
+        std::ofstream log("Logs/err_log.txt");
         if (log.is_open()) {
             log << string_VkResult(result);
             log.close();
@@ -533,7 +533,7 @@ namespace ps {
 
 
     void PS_Device::LogExtensions(std::vector<const char*> extensions) {
-        std::ofstream log("extension_log.txt");
+        std::ofstream log("Logs/extension_log.txt");
         if (log.is_open()) {
             for (auto i = extensions.begin(); i != extensions.end(); i++) {
                 log << *i;

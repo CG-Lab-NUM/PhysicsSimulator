@@ -29,12 +29,9 @@ namespace ps {
 		return buffer;
 	}
 
-	void PS_Pipeline::createGraphicsPipeline(const std::string& vertFilePath, const std::string& fragFilePath, const PipelineConfigInfo& config) {
-		PipelineConfigInfo configInfo{};
-
+	void PS_Pipeline::createGraphicsPipeline(const std::string& vertFilePath, const std::string& fragFilePath, const PipelineConfigInfo& configInfo) {
 		assert(configInfo.pipelineLayout != VK_NULL_HANDLE && "Can't create graphics pipeline: no pipelineLayout provided");
 		assert(configInfo.renderPass != VK_NULL_HANDLE && "Can't create graphics pipeline: no renderPass provided");
-
 
 		auto vertCode = readFile(vertFilePath);
 		auto fragCode = readFile(fragFilePath);
@@ -94,6 +91,7 @@ namespace ps {
 		pipelineInfo.basePipelineHandle = VK_NULL_HANDLE;
 
 		VkResult result = vkCreateGraphicsPipelines(psDevice.device(), VK_NULL_HANDLE, 1, &pipelineInfo, nullptr, &graphicsPipeline);
+		std::cout << result << std::endl;
 		if(result != VK_SUCCESS) {
 			psDevice.LogResult(result);
 			throw std::runtime_error("failed to create graphics pipeline");
