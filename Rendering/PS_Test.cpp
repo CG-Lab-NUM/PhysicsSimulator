@@ -49,8 +49,8 @@ namespace ps {
 
 		psPipeline = std::make_unique<PS_Pipeline>(
 			psDevice,
-			"Shader/shader.vert.spv",
-			"Shader/shader.frag.spv",
+			"Shaders/shader.vert.spv",
+			"Shaders/shader.frag.spv",
 			pipelineConfig
 		);
 	}
