@@ -16,8 +16,15 @@ namespace ps {
 	void PS_Window::initWindow() {
 		glfwInit();
 		glfwWindowHint(GLFW_CLIENT_API, GLFW_NO_API);
+		glfwWindowHint(GLFW_RESIZABLE, GLFW_FALSE);
 
 		window = glfwCreateWindow(WIDTH, HEIGHT, NAME.c_str(), nullptr, nullptr);
+		glfwSetFramebufferSizeCallback(window, framebufferResizeCallback);
+	}
+
+
+	void PS_Window::framebufferResizeCallback(GLFWwindow* window, int width, int height) {
+
 	}
 
 	void PS_Window::createSurface(VkInstance instance, VkDevice device) {
@@ -33,4 +40,5 @@ namespace ps {
 			std::cout << "Window Surface created...\n";
 		}
 	}
+
 }

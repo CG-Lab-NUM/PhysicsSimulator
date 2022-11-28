@@ -36,5 +36,7 @@ namespace ps {
 		std::string NAME;
 		GLFWwindow* window;
 		VkSurfaceKHR surface;
+
+		static void framebufferResizeCallback(GLFWwindow* window, int width, int height);
 	};
 }

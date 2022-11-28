@@ -28,12 +28,18 @@ namespace ps {
 		psDevice.createImageViews();
 		psPipeline.createRenderPass(psDevice.getDevice(), psDevice.getSwapChainImageFormat());
 		psPipeline.createGraphicsPipeline(psDevice.getDevice());
+		psDevice.createFramebuffers(psPipeline.getRenderPass());
+		psDevice.createCommandPool();
+		psDevice.createCommandBuffer();
+		psDevice.createSyncObjects();
 	}
-
+	
 	void PS_App::mainLoop() {
 		while (!glfwWindowShouldClose(psWindow.getWindow())) {
 			glfwPollEvents();
+			psDevice.drawFrame(psPipeline.getRenderPass(), psPipeline.getPipeline(), psWindow.getWindow());
 		}
+		vkDeviceWaitIdle(psDevice.getDevice());
 	}
 
 	void PS_App::cleanup() {

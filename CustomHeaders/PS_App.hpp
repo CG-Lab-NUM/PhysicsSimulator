@@ -18,6 +18,9 @@ namespace ps {
 		PS_App& operator = (const PS_App&) = delete;
 
 		void run();
+		void setResized(bool b) {
+			psDevice.setFrameBufferResized(b);
+		}
 
 	private:
 		void initVulkan();

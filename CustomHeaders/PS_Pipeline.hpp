@@ -8,6 +8,7 @@ namespace ps {
 
 		}
 		~PS_Pipeline() {
+			vkDestroyPipeline(device, graphicsPipeline, nullptr);
 			vkDestroyPipelineLayout(device, pipelineLayout, nullptr);
 			vkDestroyRenderPass(device, renderPass, nullptr);
 		}
@@ -17,6 +18,16 @@ namespace ps {
 		void createGraphicsPipeline(VkDevice device);
 		void createRenderPass(VkDevice device, VkFormat swapChainImageFormat);
 		static std::vector<char> readFile(const std::string& path);
+
+		//
+		// Getters
+		//
+		VkRenderPass getRenderPass() {
+			return renderPass;
+		}
+		VkPipeline getPipeline() {
+			return graphicsPipeline;
+		}
 
 	private:
 		VkShaderModule createShaderModule(const std::vector<char>& code, VkDevice device);
