@@ -1,8 +1,10 @@
 #pragma once
 #define GLFW_INCLUDE_VULKAN
 #include <GLFW/glfw3.h>
+
 #include "PS_Window.hpp"
 #include "PS_Device.hpp"
+#include "PS_Pipeline.hpp"
 
 namespace ps {
 	class PS_App {
@@ -16,6 +18,9 @@ namespace ps {
 		PS_App& operator = (const PS_App&) = delete;
 
 		void run();
+		void setResized(bool b) {
+			psDevice.setFrameBufferResized(b);
+		}
 
 	private:
 		void initVulkan();
@@ -24,5 +29,6 @@ namespace ps {
 
 		PS_Window psWindow{ WIDTH, HEIGHT, "Hello Vulkan" };
 		PS_Device psDevice{};
+		PS_Pipeline psPipeline{};
 	};
 }

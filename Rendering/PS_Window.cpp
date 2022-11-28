@@ -16,7 +16,29 @@ namespace ps {
 	void PS_Window::initWindow() {
 		glfwInit();
 		glfwWindowHint(GLFW_CLIENT_API, GLFW_NO_API);
+		glfwWindowHint(GLFW_RESIZABLE, GLFW_FALSE);
 
 		window = glfwCreateWindow(WIDTH, HEIGHT, NAME.c_str(), nullptr, nullptr);
+		glfwSetFramebufferSizeCallback(window, framebufferResizeCallback);
 	}
+
+
+	void PS_Window::framebufferResizeCallback(GLFWwindow* window, int width, int height) {
+
+	}
+
+	void PS_Window::createSurface(VkInstance instance, VkDevice device) {
+		VkWin32SurfaceCreateInfoKHR createInfo{};
+		createInfo.sType = VK_STRUCTURE_TYPE_WIN32_SURFACE_CREATE_INFO_KHR;
+		createInfo.hwnd = glfwGetWin32Window(window);
+		createInfo.hinstance = GetModuleHandle(nullptr);
+		
+		if (vkCreateWin32SurfaceKHR(instance, &createInfo, nullptr, &surface) != VK_SUCCESS) {
+			throw std::runtime_error("failed to create window surface!");
+		}
+		else {
+			std::cout << "Window Surface created...\n";
+		}
+	}
+
 }

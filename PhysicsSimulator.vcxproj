@@ -139,12 +139,14 @@
     <ClCompile Include="Rendering\PS_App.cpp" />
     <ClCompile Include="Rendering\PS_Device.cpp" />
     <ClCompile Include="Rendering\PS_Logger.cpp" />
+    <ClCompile Include="Rendering\PS_Pipeline.cpp" />
     <ClCompile Include="Rendering\PS_Window.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="CustomHeaders\PS_App.hpp" />
     <ClInclude Include="CustomHeaders\PS_Device.hpp" />
     <ClInclude Include="CustomHeaders\PS_Logger.hpp" />
+    <ClInclude Include="CustomHeaders\PS_Pipeline.hpp" />
     <ClInclude Include="CustomHeaders\PS_Window.hpp" />
   </ItemGroup>
   <ItemGroup>
