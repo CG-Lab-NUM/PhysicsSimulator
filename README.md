@@ -6,7 +6,7 @@
 3. Clone the repository. Must set up credentials first. [Link](https://www.baeldung.com/ops/git-configure-credentials)
 
 ```
-git clone https://github.com/khosbilegt/PhysicsSimulator.git
+https://github.com/CG-Lab-NUM/PhysicsSimulator.git
 ```
 
 
