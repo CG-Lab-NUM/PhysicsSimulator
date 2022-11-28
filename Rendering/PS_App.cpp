@@ -10,7 +10,6 @@ namespace ps {
 		cleanup();
 	}
 
-
 	void PS_App::run() {
 		initVulkan();
 		mainLoop();
@@ -30,6 +29,7 @@ namespace ps {
 		psPipeline.createGraphicsPipeline(psDevice.getDevice());
 		psDevice.createFramebuffers(psPipeline.getRenderPass());
 		psDevice.createCommandPool();
+		psPipeline.createVertexBuffer(psDevice.getPhysicalDevice());
 		psDevice.createCommandBuffer();
 		psDevice.createSyncObjects();
 	}
@@ -37,7 +37,7 @@ namespace ps {
 	void PS_App::mainLoop() {
 		while (!glfwWindowShouldClose(psWindow.getWindow())) {
 			glfwPollEvents();
-			psDevice.drawFrame(psPipeline.getRenderPass(), psPipeline.getPipeline(), psWindow.getWindow());
+			psDevice.drawFrame(psPipeline.getRenderPass(), psPipeline.getPipeline(), psWindow.getWindow(), psPipeline.getVertexBuffer(), psPipeline.getVertices());
 		}
 		vkDeviceWaitIdle(psDevice.getDevice());
 	}

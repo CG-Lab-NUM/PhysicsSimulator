@@ -14,36 +14,12 @@ namespace ps {
 		const bool enableValidationLayers = true;
 	#endif
 
-	class PS_Device {
-	public:
+		class PS_Device {
+		public:
 		PS_Device() {
 
 		}
-		~PS_Device() {
-			for (size_t i = 0; i < swapChainFramebuffers.size(); i++) {
-				vkDestroyFramebuffer(device, swapChainFramebuffers[i], nullptr);
-			}
-
-			for (size_t i = 0; i < swapChainImageViews.size(); i++) {
-				vkDestroyImageView(device, swapChainImageViews[i], nullptr);
-			}
-			vkDestroySwapchainKHR(device, swapChain, nullptr);
-			for (size_t i = 0; i < MAX_FRAMES_IN_FLIGHT; i++) {
-				vkDestroySemaphore(device, renderFinishedSemaphores[i], nullptr);
-				vkDestroySemaphore(device, imageAvailableSemaphores[i], nullptr);
-				vkDestroyFence(device, inFlightFences[i], nullptr);
-			}
-			vkDestroyCommandPool(device, commandPool, nullptr);
-			vkDestroyDevice(device, nullptr);
-
-			if (enableValidationLayers) {
-				DestroyDebugUtilsMessengerEXT(instance, debugMessenger, nullptr);
-			}
-			if (surface != VK_NULL_HANDLE) {
-				vkDestroySurfaceKHR(instance, surface, nullptr); // ?
-			}
-			vkDestroyInstance(instance, nullptr);
-		}
+		~PS_Device();
 		VkInstance instance;
 		VkDebugUtilsMessengerEXT debugMessenger;
 		std::vector<VkImageView> swapChainImageViews;
@@ -85,9 +61,9 @@ namespace ps {
 		void createFramebuffers(VkRenderPass renderPass);
 		void createCommandPool();
 		void createCommandBuffer();
-		void recordCommandBuffer(VkCommandBuffer commandBuffer, uint32_t imageIndex, VkRenderPass renderPass, VkPipeline graphicsPipeline);
+		void recordCommandBuffer(VkCommandBuffer commandBuffer, uint32_t imageIndex, VkRenderPass renderPass, VkPipeline graphicsPipeline, const std::vector<PS_Window::Vertex> vertices);
 		void createSyncObjects();
-		void drawFrame(VkRenderPass renderPass, VkPipeline graphicsPipeline, GLFWwindow* window);
+		void drawFrame(VkRenderPass renderPass, VkPipeline graphicsPipeline, GLFWwindow* window, VkBuffer vertexBuffer, const std::vector<PS_Window::Vertex> vertices);
 		void recreateSwapChain(VkSurfaceKHR surface, GLFWwindow* window, VkRenderPass renderPass);
 
 		//
@@ -135,6 +111,8 @@ namespace ps {
 		std::vector<VkCommandBuffer> commandBuffers;
 		const int MAX_FRAMES_IN_FLIGHT = 2;
 		bool framebufferResized = false;
+
+		VkBuffer vertexBuffer;
 
 		//
 		// Swap Chain
