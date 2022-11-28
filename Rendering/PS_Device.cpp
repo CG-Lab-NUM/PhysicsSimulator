@@ -11,6 +11,32 @@ const std::vector<const char*> deviceExtensions = {
 
 
 namespace ps {
+    PS_Device::~PS_Device() {
+        for (size_t i = 0; i < swapChainFramebuffers.size(); i++) {
+            vkDestroyFramebuffer(device, swapChainFramebuffers[i], nullptr);
+        }
+
+        for (size_t i = 0; i < swapChainImageViews.size(); i++) {
+            vkDestroyImageView(device, swapChainImageViews[i], nullptr);
+        }
+        vkDestroySwapchainKHR(device, swapChain, nullptr);
+        for (size_t i = 0; i < MAX_FRAMES_IN_FLIGHT; i++) {
+            vkDestroySemaphore(device, renderFinishedSemaphores[i], nullptr);
+            vkDestroySemaphore(device, imageAvailableSemaphores[i], nullptr);
+            vkDestroyFence(device, inFlightFences[i], nullptr);
+        }
+        vkDestroyCommandPool(device, commandPool, nullptr);
+        vkDestroyDevice(device, nullptr);
+
+        if (enableValidationLayers) {
+            DestroyDebugUtilsMessengerEXT(instance, debugMessenger, nullptr);
+        }
+        if (surface != VK_NULL_HANDLE) {
+            vkDestroySurfaceKHR(instance, surface, nullptr); // ?
+        }
+        vkDestroyInstance(instance, nullptr);
+    }
+
 	void PS_Device::createInstance() {
         if (enableValidationLayers && !checkValidationLayerSupport()) {
             throw std::runtime_error("validation layers requested, but not available!");
@@ -509,6 +535,10 @@ namespace ps {
         allocInfo.level = VK_COMMAND_BUFFER_LEVEL_PRIMARY;
         allocInfo.commandBufferCount = (uint32_t)commandBuffers.size();
 
+        if (vkAllocateCommandBuffers(device, &allocInfo, commandBuffers.data()) != VK_SUCCESS) {
+            throw std::runtime_error("failed to allocate command buffers!");
+        }
+
         VkResult result = vkAllocateCommandBuffers(device, &allocInfo, commandBuffers.data());
         if (result != VK_SUCCESS) {
             psLogger.LogResult(result);
@@ -519,7 +549,7 @@ namespace ps {
         }
     }
 
-    void PS_Device::recordCommandBuffer(VkCommandBuffer commandBuffer, uint32_t imageIndex, VkRenderPass renderPass, VkPipeline graphicsPipeline) {
+    void PS_Device::recordCommandBuffer(VkCommandBuffer commandBuffer, uint32_t imageIndex, VkRenderPass renderPass, VkPipeline graphicsPipeline, const std::vector<PS_Window::Vertex> vertices) {
         VkCommandBufferBeginInfo beginInfo{};
         beginInfo.sType = VK_STRUCTURE_TYPE_COMMAND_BUFFER_BEGIN_INFO;
 
@@ -558,7 +588,12 @@ namespace ps {
             scissor.extent = swapChainExtent;
             vkCmdSetScissor(commandBuffer, 0, 1, &scissor);
 
-            vkCmdDraw(commandBuffer, 3, 1, 0, 0);
+            VkBuffer vertexBuffers[] = { vertexBuffer };
+            VkDeviceSize offsets[] = { 0 };
+            vkCmdBindVertexBuffers(commandBuffer, 0, 1, vertexBuffers, offsets);
+
+            vkCmdDraw(commandBuffer, static_cast<uint32_t>(vertices.size()), 1, 0, 0);
+
 
         vkCmdEndRenderPass(commandBuffer);
         result = vkEndCommandBuffer(commandBuffer);
@@ -590,7 +625,8 @@ namespace ps {
         std::cout << "Created synchronization objects for frames...\n";
     }
 
-    void PS_Device::drawFrame(VkRenderPass renderPass, VkPipeline graphicsPipeline, GLFWwindow *window) {
+    void PS_Device::drawFrame(VkRenderPass renderPass, VkPipeline graphicsPipeline, GLFWwindow *window, VkBuffer vertexBuffer, const std::vector<PS_Window::Vertex> vertices) {
+        this->vertexBuffer = vertexBuffer;
         vkWaitForFences(device, 1, &inFlightFences[currentFrame], VK_TRUE, UINT64_MAX);
 
         uint32_t imageIndex;
@@ -608,7 +644,7 @@ namespace ps {
         vkResetFences(device, 1, &inFlightFences[currentFrame]);
 
         vkResetCommandBuffer(commandBuffers[currentFrame], /*VkCommandBufferResetFlagBits*/ 0);
-        recordCommandBuffer(commandBuffers[currentFrame], imageIndex, renderPass, graphicsPipeline);
+        recordCommandBuffer(commandBuffers[currentFrame], imageIndex, renderPass, graphicsPipeline, vertices);
 
         VkSubmitInfo submitInfo{};
         submitInfo.sType = VK_STRUCTURE_TYPE_SUBMIT_INFO;
