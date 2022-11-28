@@ -31,7 +31,7 @@ namespace ps {
 
 	private:
 		VkShaderModule createShaderModule(const std::vector<char>& code, VkDevice device);
-		VkDevice device;
+		VkDevice device{};
 		VkRenderPass renderPass{};
 		VkPipelineLayout pipelineLayout{};
 		VkPipeline graphicsPipeline{};
