@@ -11,6 +11,7 @@ namespace ps {
 	public:
 		VkInstance instance;
 		VkDebugUtilsMessengerEXT debugMessenger;
+		std::vector<VkImageView> swapChainImageViews;
 
 		struct QueueFamilyIndices {
 			std::optional<uint32_t> graphicsFamily;
@@ -45,6 +46,7 @@ namespace ps {
 			std::vector<VkPresentModeKHR> presentModes;
 		};
 		void createSwapChain(VkSurfaceKHR surface, GLFWwindow* window);
+		void createImageViews();
 
 		//
 		// Getters
@@ -57,6 +59,9 @@ namespace ps {
 		}
 		VkPhysicalDevice getPhysicalDevice() {
 			return physicalDevice;
+		}
+		VkFormat getSwapChainImageFormat() {
+			return swapChainImageFormat;
 		}
 
 		// 

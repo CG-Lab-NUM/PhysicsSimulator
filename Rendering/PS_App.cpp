@@ -25,6 +25,9 @@ namespace ps {
 		psDevice.pickPhysicalDevice(psWindow.getSurface());
 		psDevice.createLogicalDevice();
 		psDevice.createSwapChain(psWindow.getSurface(), psWindow.getWindow());
+		psDevice.createImageViews();
+		psPipeline.createRenderPass(psDevice.getDevice(), psDevice.getSwapChainImageFormat());
+		psPipeline.createGraphicsPipeline(psDevice.getDevice());
 	}
 
 	void PS_App::mainLoop() {
@@ -34,6 +37,8 @@ namespace ps {
 	}
 
 	void PS_App::cleanup() {
-
+		for (auto imageView : psDevice.swapChainImageViews) {
+			vkDestroyImageView(psDevice.getDevice(), imageView, nullptr);
+		}
 	}
 }
