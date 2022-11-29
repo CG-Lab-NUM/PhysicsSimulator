@@ -26,11 +26,13 @@ namespace ps {
 		psDevice.createSwapChain(&psWindow);
 		psDevice.createImageViews();
 		psPipeline.createRenderPass(psDevice.getDevice(), psDevice.getSwapChainImageFormat());
+		psPipeline.createDescriptorSetLayout(&psDevice);
 		psPipeline.createGraphicsPipeline(&psDevice);
 		psDevice.createFramebuffers(psPipeline.getRenderPass());
 		psDevice.createCommandPool();
 		psPipeline.createVertexBuffer(psDevice.getPhysicalDevice());
 		psPipeline.createIndexBuffer(&psDevice);
+		psPipeline.createUniformBuffers(&psDevice);
 		psPipeline.createCommandBuffer();
 		psDevice.createSyncObjects();
 	}
@@ -47,5 +49,7 @@ namespace ps {
 		for (auto imageView : psDevice.swapChainImageViews) {
 			vkDestroyImageView(psDevice.getDevice(), imageView, nullptr);
 		}
+		psDevice.cleanDevice();
+		psPipeline.cleanPipeline();
 	}
 }

@@ -7,6 +7,8 @@
 
 #include <iostream>
 #include <glm/glm.hpp>
+#include <glm/gtc/matrix_transform.hpp>
+#include <chrono>
 #include <vector>
 #include <array>
 #include "PS_Logger.hpp"
@@ -51,6 +53,12 @@ namespace ps {
 
 				return attributeDescriptions;
 			}
+		};
+
+		struct UniformBufferObject {
+			glm::mat4 model;
+			glm::mat4 view;
+			glm::mat4 proj;
 		};
 
 		//

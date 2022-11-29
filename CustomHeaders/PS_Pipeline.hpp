@@ -10,11 +10,7 @@ namespace ps {
 
 		}
 		~PS_Pipeline() {
-			vkDestroyPipeline(device, graphicsPipeline, nullptr);
-			vkDestroyPipelineLayout(device, pipelineLayout, nullptr);
-			vkDestroyRenderPass(device, renderPass, nullptr);
-			vkDestroyBuffer(device, vertexBuffer, nullptr);
-			vkFreeMemory(device, vertexBufferMemory, nullptr);
+			
 		}
 		PS_Pipeline(const PS_Pipeline&) = delete;
 		PS_Pipeline& operator = (const PS_Pipeline&) = delete;
@@ -27,9 +23,20 @@ namespace ps {
 		void createBuffer(VkDeviceSize size, VkBufferUsageFlags usage, VkMemoryPropertyFlags properties, VkBuffer& buffer, VkDeviceMemory& bufferMemory, VkPhysicalDevice physicalDevice);
 		void copyBuffer(VkBuffer srcBuffer, VkBuffer dstBuffer, VkDeviceSize size);
 		void drawFrame(PS_Window* psWindow, PS_Device* psDevice);
+		void createUniformBuffers(PS_Device *psDevice);
+		void cleanPipeline() {
+			vkDestroyPipeline(device, graphicsPipeline, nullptr);
+			vkDestroyPipelineLayout(device, pipelineLayout, nullptr);
+			vkDestroyRenderPass(device, renderPass, nullptr);
+			vkDestroyBuffer(device, vertexBuffer, nullptr);
+			vkFreeMemory(device, vertexBufferMemory, nullptr);
+		}
+
+		void updateUniformBuffer(uint32_t currentImage, PS_Device* psDevice);
 
 		void createCommandBuffer();
 		void recordCommandBuffer(VkCommandBuffer commandBuffer, uint32_t imageIndex, VkRenderPass renderPass, VkPipeline graphicsPipeline, const std::vector<PS_Window::Vertex> vertices);
+		void createDescriptorSetLayout(PS_Device* psDevice);
 
 		//
 		// Shader
@@ -43,7 +50,8 @@ namespace ps {
 		const std::vector<uint16_t> indices = {
 			0, 1, 2, 2, 3, 0
 		};
-		
+
+
 		//
 		// Getters
 		//
@@ -66,6 +74,7 @@ namespace ps {
 
 		VkDevice device{};
 		VkRenderPass renderPass{};
+		VkDescriptorSetLayout descriptorSetLayout;
 		VkPipelineLayout pipelineLayout{};
 		VkPipeline graphicsPipeline{};
 		VkBuffer vertexBuffer{};
@@ -75,6 +84,10 @@ namespace ps {
 		PS_Device *psDevice;
 		PS_Colors psColors{};
 		PS_Logger psLogger{};
+
+		std::vector<VkBuffer> uniformBuffers;
+		std::vector<VkDeviceMemory> uniformBuffersMemory;
+		std::vector<void*> uniformBuffersMapped;
 
 		VkCommandBuffer commandBuffer;
 		std::vector<VkCommandBuffer> commandBuffers;

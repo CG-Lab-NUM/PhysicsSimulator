@@ -2,7 +2,7 @@
 #include <fstream>
 
 namespace ps {
-	void PS_Pipeline::createGraphicsPipeline(PS_Device *psDevice) {
+    void PS_Pipeline::createGraphicsPipeline(PS_Device* psDevice) {
         this->psDevice = psDevice;
         this->device = psDevice->getDevice();
         auto vertShaderCode = readFile("Shaders/vert.spv");
@@ -124,9 +124,9 @@ namespace ps {
 
         vkDestroyShaderModule(device, fragShaderModule, nullptr);
         vkDestroyShaderModule(device, vertShaderModule, nullptr);
-	}
-	
-	std::vector<char> PS_Pipeline::readFile(const std::string& path) {
+    }
+
+    std::vector<char> PS_Pipeline::readFile(const std::string& path) {
         std::ifstream file(path, std::ios::ate | std::ios::binary);
 
         if (!file.is_open()) {
@@ -145,7 +145,7 @@ namespace ps {
         file.close();
 
         return buffer;
-	}
+    }
 
     VkShaderModule PS_Pipeline::createShaderModule(const std::vector<char>& code, VkDevice device) {
         VkShaderModuleCreateInfo createInfo{};
@@ -304,7 +304,7 @@ namespace ps {
         vkFreeCommandBuffers(device, psDevice->getCommandPool(), 1, &commandBuffer);
     }
 
-    void PS_Pipeline::drawFrame(PS_Window* psWindow, PS_Device *psDevice) {
+    void PS_Pipeline::drawFrame(PS_Window* psWindow, PS_Device* psDevice) {
         vkWaitForFences(device, 1, &psDevice->inFlightFences[psDevice->currentFrame], VK_TRUE, UINT64_MAX);
 
         uint32_t imageIndex;
@@ -323,6 +323,8 @@ namespace ps {
 
         vkResetCommandBuffer(commandBuffers[psDevice->currentFrame], /*VkCommandBufferResetFlagBits*/ 0);
         recordCommandBuffer(commandBuffers[psDevice->currentFrame], imageIndex, renderPass, graphicsPipeline, vertices);
+
+        updateUniformBuffer(psDevice->currentFrame, psDevice);
 
         VkSubmitInfo submitInfo{};
         submitInfo.sType = VK_STRUCTURE_TYPE_SUBMIT_INFO;
@@ -351,7 +353,7 @@ namespace ps {
         presentInfo.waitSemaphoreCount = 1;
         presentInfo.pWaitSemaphores = signalSemaphores;
 
-        VkSwapchainKHR swapChains[] = { psDevice->getSwapChain()};
+        VkSwapchainKHR swapChains[] = { psDevice->getSwapChain() };
         presentInfo.swapchainCount = 1;
         presentInfo.pSwapchains = swapChains;
 
@@ -418,26 +420,26 @@ namespace ps {
 
         vkCmdBindPipeline(commandBuffer, VK_PIPELINE_BIND_POINT_GRAPHICS, graphicsPipeline);
 
-            VkViewport viewport{};
-            viewport.x = 0.0f;
-            viewport.y = 0.0f;
-            viewport.width = (float)psDevice->swapChainExtent.width;
-            viewport.height = (float)psDevice->swapChainExtent.height;
-            viewport.minDepth = 0.0f;
-            viewport.maxDepth = 1.0f;
-            vkCmdSetViewport(commandBuffer, 0, 1, &viewport);
+        VkViewport viewport{};
+        viewport.x = 0.0f;
+        viewport.y = 0.0f;
+        viewport.width = (float)psDevice->swapChainExtent.width;
+        viewport.height = (float)psDevice->swapChainExtent.height;
+        viewport.minDepth = 0.0f;
+        viewport.maxDepth = 1.0f;
+        vkCmdSetViewport(commandBuffer, 0, 1, &viewport);
 
-            VkRect2D scissor{};
-            scissor.offset = { 0, 0 };
-            scissor.extent = psDevice->swapChainExtent;
-            vkCmdSetScissor(commandBuffer, 0, 1, &scissor);
+        VkRect2D scissor{};
+        scissor.offset = { 0, 0 };
+        scissor.extent = psDevice->swapChainExtent;
+        vkCmdSetScissor(commandBuffer, 0, 1, &scissor);
 
-            VkBuffer vertexBuffers[] = { vertexBuffer };
-            VkDeviceSize offsets[] = { 0 };
-            vkCmdBindVertexBuffers(commandBuffer, 0, 1, vertexBuffers, offsets);
-            vkCmdBindIndexBuffer(commandBuffer, indexBuffer, 0, VK_INDEX_TYPE_UINT16);
+        VkBuffer vertexBuffers[] = { vertexBuffer };
+        VkDeviceSize offsets[] = { 0 };
+        vkCmdBindVertexBuffers(commandBuffer, 0, 1, vertexBuffers, offsets);
+        vkCmdBindIndexBuffer(commandBuffer, indexBuffer, 0, VK_INDEX_TYPE_UINT16);
 
-            vkCmdDrawIndexed(commandBuffer, static_cast<uint32_t>(indices.size()), 1, 0, 0, 0);
+        vkCmdDrawIndexed(commandBuffer, static_cast<uint32_t>(indices.size()), 1, 0, 0, 0);
 
         vkCmdEndRenderPass(commandBuffer);
         result = vkEndCommandBuffer(commandBuffer);
@@ -447,7 +449,7 @@ namespace ps {
         }
     }
 
-    void PS_Pipeline::createIndexBuffer(PS_Device *psDevice) {
+    void PS_Pipeline::createIndexBuffer(PS_Device* psDevice) {
         VkDeviceSize bufferSize = sizeof(indices[0]) * indices.size();
 
         VkBuffer stagingBuffer;
@@ -465,5 +467,58 @@ namespace ps {
 
         vkDestroyBuffer(psDevice->getDevice(), stagingBuffer, nullptr);
         vkFreeMemory(psDevice->getDevice(), stagingBufferMemory, nullptr);
+    }
+
+    void PS_Pipeline::createDescriptorSetLayout(PS_Device *psDevice) {
+        VkDescriptorSetLayoutBinding uboLayoutBinding{};
+        uboLayoutBinding.binding = 0;
+        uboLayoutBinding.descriptorCount = 1;
+        uboLayoutBinding.descriptorType = VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER;
+        uboLayoutBinding.pImmutableSamplers = nullptr;
+        uboLayoutBinding.stageFlags = VK_SHADER_STAGE_VERTEX_BIT;
+
+        VkDescriptorSetLayoutCreateInfo layoutInfo{};
+        layoutInfo.sType = VK_STRUCTURE_TYPE_DESCRIPTOR_SET_LAYOUT_CREATE_INFO;
+        layoutInfo.bindingCount = 1;
+        layoutInfo.pBindings = &uboLayoutBinding;
+
+        if (descriptorSetLayout == VK_NULL_HANDLE) {
+            std::cout << "Null Layout";
+        }
+        VkResult result = vkCreateDescriptorSetLayout(psDevice->getDevice(), &layoutInfo, nullptr, &descriptorSetLayout);
+        if (result != VK_SUCCESS) {
+            psLogger.LogResult(result);
+            throw std::runtime_error("failed to create descriptor set layout!");
+        }
+        else {
+            std::cout << "Created descriptor set layout...\n";
+        }
+    }
+    void PS_Pipeline::updateUniformBuffer(uint32_t currentImage, PS_Device *psDevice) {
+        static auto startTime = std::chrono::high_resolution_clock::now();
+        auto currentTime = std::chrono::high_resolution_clock::now();
+        float time = std::chrono::duration<float, std::chrono::seconds::period>(currentTime - startTime).count();
+
+        PS_Window::UniformBufferObject ubo{};
+        ubo.model = glm::rotate(glm::mat4(1.0f), time * glm::radians(90.0f), glm::vec3(0.0f, 0.0f, 1.0f));
+        ubo.view = glm::lookAt(glm::vec3(2.0f, 2.0f, 2.0f), glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(0.0f, 0.0f, 1.0f));
+        ubo.proj = glm::perspective(glm::radians(45.0f), psDevice->swapChainExtent.width / (float)psDevice->swapChainExtent.height, 0.1f, 10.0f);
+        ubo.proj[1][1] *= -1;
+
+        memcpy(uniformBuffersMapped[currentImage], &ubo, sizeof(ubo));
+    }
+
+    void PS_Pipeline::createUniformBuffers(PS_Device *psDevice) {
+        VkDeviceSize bufferSize = sizeof(PS_Window::UniformBufferObject);
+
+        uniformBuffers.resize(psDevice->MAX_FRAMES_IN_FLIGHT);
+        uniformBuffersMemory.resize(psDevice->MAX_FRAMES_IN_FLIGHT);
+        uniformBuffersMapped.resize(psDevice->MAX_FRAMES_IN_FLIGHT);
+
+        for (size_t i = 0; i < psDevice->MAX_FRAMES_IN_FLIGHT; i++) {
+            createBuffer(bufferSize, VK_BUFFER_USAGE_UNIFORM_BUFFER_BIT, VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT | VK_MEMORY_PROPERTY_HOST_COHERENT_BIT, uniformBuffers[i], uniformBuffersMemory[i], psDevice->getPhysicalDevice());
+
+            vkMapMemory(device, uniformBuffersMemory[i], 0, bufferSize, 0, &uniformBuffersMapped[i]);
+        }
     }
 }

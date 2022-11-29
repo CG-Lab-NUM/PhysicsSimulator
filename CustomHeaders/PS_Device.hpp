@@ -36,6 +36,7 @@ namespace ps {
 		void createInstance();
 		void pickPhysicalDevice(VkSurfaceKHR surface);
 		void createLogicalDevice();
+		void cleanDevice();
 
 		bool checkValidationLayerSupport();
 		static VKAPI_ATTR VkBool32 VKAPI_CALL debugCallback(VkDebugUtilsMessageSeverityFlagBitsEXT messageSeverity, VkDebugUtilsMessageTypeFlagsEXT messageType, const VkDebugUtilsMessengerCallbackDataEXT* pCallbackData, void* pUserData);
