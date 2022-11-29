@@ -36,6 +36,9 @@
     <ClCompile Include="Rendering\PS_Colors.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="Rendering\PS_Texture.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="CustomHeaders\PS_App.hpp">
@@ -54,6 +57,9 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="CustomHeaders\PS_Colors.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="CustomHeaders\PS_Texture.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
