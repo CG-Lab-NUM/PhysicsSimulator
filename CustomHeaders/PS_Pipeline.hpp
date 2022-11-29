@@ -1,6 +1,9 @@
+#pragma once
 #include "PS_Window.hpp"
 #include "PS_Colors.hpp"
 #include "PS_Device.hpp"
+
+
 #include <vector>
 
 namespace ps {
