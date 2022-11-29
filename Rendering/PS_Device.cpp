@@ -12,10 +12,6 @@ const std::vector<const char*> deviceExtensions = {
 
 namespace ps {
     PS_Device::~PS_Device() {
-        
-    }
-
-    void PS_Device::cleanDevice() {
         for (size_t i = 0; i < swapChainFramebuffers.size(); i++) {
             vkDestroyFramebuffer(device, swapChainFramebuffers[i], nullptr);
         }

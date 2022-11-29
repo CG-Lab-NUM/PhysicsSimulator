@@ -33,6 +33,8 @@ namespace ps {
 		psPipeline.createVertexBuffer(psDevice.getPhysicalDevice());
 		psPipeline.createIndexBuffer(&psDevice);
 		psPipeline.createUniformBuffers(&psDevice);
+		psPipeline.createDescriptorPool(&psDevice);
+		psPipeline.createDescriptorSets(&psDevice);
 		psPipeline.createCommandBuffer();
 		psDevice.createSyncObjects();
 	}
@@ -44,12 +46,7 @@ namespace ps {
 		}
 		vkDeviceWaitIdle(psDevice.getDevice());
 	}
-
 	void PS_App::cleanup() {
-		for (auto imageView : psDevice.swapChainImageViews) {
-			vkDestroyImageView(psDevice.getDevice(), imageView, nullptr);
-		}
-		psDevice.cleanDevice();
-		psPipeline.cleanPipeline();
+
 	}
 }

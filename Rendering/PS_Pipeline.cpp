@@ -4,12 +4,11 @@
 namespace ps {
     void PS_Pipeline::createGraphicsPipeline(PS_Device* psDevice) {
         this->psDevice = psDevice;
-        this->device = psDevice->getDevice();
         auto vertShaderCode = readFile("Shaders/vert.spv");
         auto fragShaderCode = readFile("Shaders/frag.spv");
 
-        VkShaderModule vertShaderModule = createShaderModule(vertShaderCode, device);
-        VkShaderModule fragShaderModule = createShaderModule(fragShaderCode, device);
+        VkShaderModule vertShaderModule = createShaderModule(vertShaderCode, psDevice->getDevice());
+        VkShaderModule fragShaderModule = createShaderModule(fragShaderCode, psDevice->getDevice());
 
         VkPipelineShaderStageCreateInfo vertShaderStageInfo{};
         vertShaderStageInfo.sType = VK_STRUCTURE_TYPE_PIPELINE_SHADER_STAGE_CREATE_INFO;
@@ -53,7 +52,7 @@ namespace ps {
         rasterizer.polygonMode = VK_POLYGON_MODE_FILL;
         rasterizer.lineWidth = 1.0f;
         rasterizer.cullMode = VK_CULL_MODE_BACK_BIT;
-        rasterizer.frontFace = VK_FRONT_FACE_CLOCKWISE;
+        rasterizer.frontFace = VK_FRONT_FACE_COUNTER_CLOCKWISE;
         rasterizer.depthBiasEnable = VK_FALSE;
 
         VkPipelineMultisampleStateCreateInfo multisampling{};
@@ -87,10 +86,10 @@ namespace ps {
 
         VkPipelineLayoutCreateInfo pipelineLayoutInfo{};
         pipelineLayoutInfo.sType = VK_STRUCTURE_TYPE_PIPELINE_LAYOUT_CREATE_INFO;
-        pipelineLayoutInfo.setLayoutCount = 0;
-        pipelineLayoutInfo.pushConstantRangeCount = 0;
+        pipelineLayoutInfo.setLayoutCount = 1;
+        pipelineLayoutInfo.pSetLayouts = &descriptorSetLayout;
 
-        if (vkCreatePipelineLayout(device, &pipelineLayoutInfo, nullptr, &pipelineLayout) != VK_SUCCESS) {
+        if (vkCreatePipelineLayout(psDevice->getDevice(), &pipelineLayoutInfo, nullptr, &pipelineLayout) != VK_SUCCESS) {
             throw std::runtime_error("failed to create pipeline layout!");
         }
         else {
@@ -113,7 +112,7 @@ namespace ps {
         pipelineInfo.subpass = 0;
         pipelineInfo.basePipelineHandle = VK_NULL_HANDLE;
 
-        VkResult result = vkCreateGraphicsPipelines(device, VK_NULL_HANDLE, 1, &pipelineInfo, nullptr, &graphicsPipeline);
+        VkResult result = vkCreateGraphicsPipelines(psDevice->getDevice(), VK_NULL_HANDLE, 1, &pipelineInfo, nullptr, &graphicsPipeline);
         if (result != VK_SUCCESS) {
             std::cout << result;
             throw std::runtime_error("failed to create graphics pipeline!");
@@ -122,8 +121,8 @@ namespace ps {
             std::cout << "Graphics Pipeline created...\n";
         }
 
-        vkDestroyShaderModule(device, fragShaderModule, nullptr);
-        vkDestroyShaderModule(device, vertShaderModule, nullptr);
+        vkDestroyShaderModule(psDevice->getDevice(), fragShaderModule, nullptr);
+        vkDestroyShaderModule(psDevice->getDevice(), vertShaderModule, nullptr);
     }
 
     std::vector<char> PS_Pipeline::readFile(const std::string& path) {
@@ -219,16 +218,16 @@ namespace ps {
         createBuffer(bufferSize, VK_BUFFER_USAGE_TRANSFER_SRC_BIT, VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT | VK_MEMORY_PROPERTY_HOST_COHERENT_BIT, stagingBuffer, stagingBufferMemory, physicalDevice);
 
         void* data;
-        vkMapMemory(device, stagingBufferMemory, 0, bufferSize, 0, &data);
+        vkMapMemory(psDevice->getDevice(), stagingBufferMemory, 0, bufferSize, 0, &data);
         memcpy(data, vertices.data(), (size_t)bufferSize);
-        vkUnmapMemory(device, stagingBufferMemory);
+        vkUnmapMemory(psDevice->getDevice(), stagingBufferMemory);
 
         createBuffer(bufferSize, VK_BUFFER_USAGE_TRANSFER_DST_BIT | VK_BUFFER_USAGE_VERTEX_BUFFER_BIT, VK_MEMORY_PROPERTY_DEVICE_LOCAL_BIT, vertexBuffer, vertexBufferMemory, physicalDevice);
 
         copyBuffer(stagingBuffer, vertexBuffer, bufferSize);
 
-        vkDestroyBuffer(device, stagingBuffer, nullptr);
-        vkFreeMemory(device, stagingBufferMemory, nullptr);
+        vkDestroyBuffer(psDevice->getDevice(), stagingBuffer, nullptr);
+        vkFreeMemory(psDevice->getDevice(), stagingBufferMemory, nullptr);
     }
 
     uint32_t PS_Pipeline::findMemoryType(uint32_t typeFilter, VkMemoryPropertyFlags properties, VkPhysicalDevice physicalDevice) {
@@ -252,23 +251,23 @@ namespace ps {
         bufferInfo.usage = usage;
         bufferInfo.sharingMode = VK_SHARING_MODE_EXCLUSIVE;
 
-        if (vkCreateBuffer(device, &bufferInfo, nullptr, &buffer) != VK_SUCCESS) {
+        if (vkCreateBuffer(psDevice->getDevice(), &bufferInfo, nullptr, &buffer) != VK_SUCCESS) {
             throw std::runtime_error("failed to create buffer!");
         }
 
         VkMemoryRequirements memRequirements;
-        vkGetBufferMemoryRequirements(device, buffer, &memRequirements);
+        vkGetBufferMemoryRequirements(psDevice->getDevice(), buffer, &memRequirements);
 
         VkMemoryAllocateInfo allocInfo{};
         allocInfo.sType = VK_STRUCTURE_TYPE_MEMORY_ALLOCATE_INFO;
         allocInfo.allocationSize = memRequirements.size;
         allocInfo.memoryTypeIndex = findMemoryType(memRequirements.memoryTypeBits, properties, physicalDevice);
 
-        if (vkAllocateMemory(device, &allocInfo, nullptr, &bufferMemory) != VK_SUCCESS) {
+        if (vkAllocateMemory(psDevice->getDevice(), &allocInfo, nullptr, &bufferMemory) != VK_SUCCESS) {
             throw std::runtime_error("failed to allocate buffer memory!");
         }
 
-        vkBindBufferMemory(device, buffer, bufferMemory, 0);
+        vkBindBufferMemory(psDevice->getDevice(), buffer, bufferMemory, 0);
     }
 
     void PS_Pipeline::copyBuffer(VkBuffer srcBuffer, VkBuffer dstBuffer, VkDeviceSize size) {
@@ -279,7 +278,7 @@ namespace ps {
         allocInfo.commandBufferCount = 1;
 
         VkCommandBuffer commandBuffer;
-        vkAllocateCommandBuffers(device, &allocInfo, &commandBuffer);
+        vkAllocateCommandBuffers(psDevice->getDevice(), &allocInfo, &commandBuffer);
 
         VkCommandBufferBeginInfo beginInfo{};
         beginInfo.sType = VK_STRUCTURE_TYPE_COMMAND_BUFFER_BEGIN_INFO;
@@ -301,15 +300,15 @@ namespace ps {
         vkQueueSubmit(psDevice->getGraphicsQueue(), 1, &submitInfo, VK_NULL_HANDLE);
         vkQueueWaitIdle(psDevice->getGraphicsQueue());
 
-        vkFreeCommandBuffers(device, psDevice->getCommandPool(), 1, &commandBuffer);
+        vkFreeCommandBuffers(psDevice->getDevice(), psDevice->getCommandPool(), 1, &commandBuffer);
     }
 
     void PS_Pipeline::drawFrame(PS_Window* psWindow, PS_Device* psDevice) {
-        vkWaitForFences(device, 1, &psDevice->inFlightFences[psDevice->currentFrame], VK_TRUE, UINT64_MAX);
+        vkWaitForFences(psDevice->getDevice(), 1, &psDevice->inFlightFences[psDevice->currentFrame], VK_TRUE, UINT64_MAX);
 
         uint32_t imageIndex;
 
-        VkResult result = vkAcquireNextImageKHR(device, psDevice->getSwapChain(), UINT64_MAX, psDevice->imageAvailableSemaphores[psDevice->currentFrame], VK_NULL_HANDLE, &imageIndex);
+        VkResult result = vkAcquireNextImageKHR(psDevice->getDevice(), psDevice->getSwapChain(), UINT64_MAX, psDevice->imageAvailableSemaphores[psDevice->currentFrame], VK_NULL_HANDLE, &imageIndex);
 
         if (result == VK_ERROR_OUT_OF_DATE_KHR) {
             psDevice->recreateSwapChain(psWindow, renderPass);
@@ -319,7 +318,7 @@ namespace ps {
             throw std::runtime_error("failed to acquire swap chain image!");
         }
 
-        vkResetFences(device, 1, &psDevice->inFlightFences[psDevice->currentFrame]);
+        vkResetFences(psDevice->getDevice(), 1, &psDevice->inFlightFences[psDevice->currentFrame]);
 
         vkResetCommandBuffer(commandBuffers[psDevice->currentFrame], /*VkCommandBufferResetFlagBits*/ 0);
         recordCommandBuffer(commandBuffers[psDevice->currentFrame], imageIndex, renderPass, graphicsPipeline, vertices);
@@ -381,11 +380,7 @@ namespace ps {
         allocInfo.level = VK_COMMAND_BUFFER_LEVEL_PRIMARY;
         allocInfo.commandBufferCount = (uint32_t)commandBuffers.size();
 
-        if (vkAllocateCommandBuffers(device, &allocInfo, commandBuffers.data()) != VK_SUCCESS) {
-            throw std::runtime_error("failed to allocate command buffers!");
-        }
-
-        VkResult result = vkAllocateCommandBuffers(device, &allocInfo, commandBuffers.data());
+        VkResult result = vkAllocateCommandBuffers(psDevice->getDevice(), &allocInfo, commandBuffers.data());
         if (result != VK_SUCCESS) {
             psLogger.LogResult(result);
             throw std::runtime_error("failed to allocate command buffers!");
@@ -437,11 +432,15 @@ namespace ps {
         VkBuffer vertexBuffers[] = { vertexBuffer };
         VkDeviceSize offsets[] = { 0 };
         vkCmdBindVertexBuffers(commandBuffer, 0, 1, vertexBuffers, offsets);
+
         vkCmdBindIndexBuffer(commandBuffer, indexBuffer, 0, VK_INDEX_TYPE_UINT16);
+
+        vkCmdBindDescriptorSets(commandBuffer, VK_PIPELINE_BIND_POINT_GRAPHICS, pipelineLayout, 0, 1, &descriptorSets[psDevice->currentFrame], 0, nullptr);
 
         vkCmdDrawIndexed(commandBuffer, static_cast<uint32_t>(indices.size()), 1, 0, 0, 0);
 
         vkCmdEndRenderPass(commandBuffer);
+
         result = vkEndCommandBuffer(commandBuffer);
         if (result != VK_SUCCESS) {
             psLogger.LogResult(result);
@@ -482,9 +481,6 @@ namespace ps {
         layoutInfo.bindingCount = 1;
         layoutInfo.pBindings = &uboLayoutBinding;
 
-        if (descriptorSetLayout == VK_NULL_HANDLE) {
-            std::cout << "Null Layout";
-        }
         VkResult result = vkCreateDescriptorSetLayout(psDevice->getDevice(), &layoutInfo, nullptr, &descriptorSetLayout);
         if (result != VK_SUCCESS) {
             psLogger.LogResult(result);
@@ -518,7 +514,55 @@ namespace ps {
         for (size_t i = 0; i < psDevice->MAX_FRAMES_IN_FLIGHT; i++) {
             createBuffer(bufferSize, VK_BUFFER_USAGE_UNIFORM_BUFFER_BIT, VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT | VK_MEMORY_PROPERTY_HOST_COHERENT_BIT, uniformBuffers[i], uniformBuffersMemory[i], psDevice->getPhysicalDevice());
 
-            vkMapMemory(device, uniformBuffersMemory[i], 0, bufferSize, 0, &uniformBuffersMapped[i]);
+            vkMapMemory(psDevice->getDevice(), uniformBuffersMemory[i], 0, bufferSize, 0, &uniformBuffersMapped[i]);
+        }
+    }
+
+    void PS_Pipeline::createDescriptorPool(PS_Device *psDevice) {
+        VkDescriptorPoolSize poolSize{};
+        poolSize.type = VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER;
+        poolSize.descriptorCount = static_cast<uint32_t>(psDevice->MAX_FRAMES_IN_FLIGHT);
+
+        VkDescriptorPoolCreateInfo poolInfo{};
+        poolInfo.sType = VK_STRUCTURE_TYPE_DESCRIPTOR_POOL_CREATE_INFO;
+        poolInfo.poolSizeCount = 1;
+        poolInfo.pPoolSizes = &poolSize;
+        poolInfo.maxSets = static_cast<uint32_t>(psDevice->MAX_FRAMES_IN_FLIGHT);
+
+        if (vkCreateDescriptorPool(psDevice->getDevice(), &poolInfo, nullptr, &descriptorPool) != VK_SUCCESS) {
+            throw std::runtime_error("failed to create descriptor pool!");
+        }
+    }
+
+    void PS_Pipeline::createDescriptorSets(PS_Device* psDevice) {
+        std::vector<VkDescriptorSetLayout> layouts(psDevice->MAX_FRAMES_IN_FLIGHT, descriptorSetLayout);
+        VkDescriptorSetAllocateInfo allocInfo{};
+        allocInfo.sType = VK_STRUCTURE_TYPE_DESCRIPTOR_SET_ALLOCATE_INFO;
+        allocInfo.descriptorPool = descriptorPool;
+        allocInfo.descriptorSetCount = static_cast<uint32_t>(psDevice->MAX_FRAMES_IN_FLIGHT);
+        allocInfo.pSetLayouts = layouts.data();
+
+        descriptorSets.resize(psDevice->MAX_FRAMES_IN_FLIGHT);
+        if (vkAllocateDescriptorSets(psDevice->getDevice(), &allocInfo, descriptorSets.data()) != VK_SUCCESS) {
+            throw std::runtime_error("failed to allocate descriptor sets!");
+        }
+
+        for (size_t i = 0; i < psDevice->MAX_FRAMES_IN_FLIGHT; i++) {
+            VkDescriptorBufferInfo bufferInfo{};
+            bufferInfo.buffer = uniformBuffers[i];
+            bufferInfo.offset = 0;
+            bufferInfo.range = sizeof(PS_Window::UniformBufferObject);
+
+            VkWriteDescriptorSet descriptorWrite{};
+            descriptorWrite.sType = VK_STRUCTURE_TYPE_WRITE_DESCRIPTOR_SET;
+            descriptorWrite.dstSet = descriptorSets[i];
+            descriptorWrite.dstBinding = 0;
+            descriptorWrite.dstArrayElement = 0;
+            descriptorWrite.descriptorType = VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER;
+            descriptorWrite.descriptorCount = 1;
+            descriptorWrite.pBufferInfo = &bufferInfo;
+
+            vkUpdateDescriptorSets(psDevice->getDevice(), 1, &descriptorWrite, 0, nullptr);
         }
     }
 }
