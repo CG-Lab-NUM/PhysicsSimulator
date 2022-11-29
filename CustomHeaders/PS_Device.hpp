@@ -48,6 +48,7 @@ namespace ps {
 		bool isDeviceSuitable(VkPhysicalDevice device, VkSurfaceKHR surface);
 		QueueFamilyIndices findQueueFamilies(VkPhysicalDevice device);
 		bool checkDeviceExtensionSupport(VkPhysicalDevice device);
+		VkImageView createImageView(VkImage image, VkFormat format);
 		
 		//
 		// Swap Chain

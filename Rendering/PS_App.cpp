@@ -30,6 +30,9 @@ namespace ps {
 		psPipeline.createGraphicsPipeline(&psDevice);
 		psDevice.createFramebuffers(psPipeline.getRenderPass());
 		psDevice.createCommandPool();
+		psPipeline.createTextureImage();
+		psPipeline.createTextureImageView();
+		psPipeline.createTextureSampler();
 		psPipeline.createVertexBuffer(psDevice.getPhysicalDevice());
 		psPipeline.createIndexBuffer(&psDevice);
 		psPipeline.createUniformBuffers(&psDevice);

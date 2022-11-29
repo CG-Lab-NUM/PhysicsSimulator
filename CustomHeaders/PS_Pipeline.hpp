@@ -2,8 +2,6 @@
 #include "PS_Window.hpp"
 #include "PS_Colors.hpp"
 #include "PS_Device.hpp"
-
-
 #include <vector>
 
 namespace ps {
@@ -18,6 +16,9 @@ namespace ps {
 			vkDestroyPipelineLayout(psDevice->getDevice(), pipelineLayout, nullptr);
 			vkDestroyBuffer(psDevice->getDevice(), vertexBuffer, nullptr);
 			vkFreeMemory(psDevice->getDevice(), vertexBufferMemory, nullptr);
+			vkDestroyImageView(psDevice->getDevice(), textureImageView, nullptr);
+			vkDestroySampler(psDevice->getDevice(), textureSampler, nullptr);
+
 		}
 		PS_Pipeline(const PS_Pipeline&) = delete;
 		PS_Pipeline& operator = (const PS_Pipeline&) = delete;
@@ -39,6 +40,15 @@ namespace ps {
 		void createDescriptorSetLayout(PS_Device* psDevice);
 		void createDescriptorPool(PS_Device* psDevice);
 		void createDescriptorSets(PS_Device* psDevice);
+
+		void createImage(uint32_t width, uint32_t height, VkFormat format, VkImageTiling tiling, VkImageUsageFlags usage, VkMemoryPropertyFlags properties, VkImage& image, VkDeviceMemory& imageMemory);
+		void createTextureImage();
+		void copyBufferToImage(VkBuffer buffer, VkImage image, uint32_t width, uint32_t height);
+		void transitionImageLayout(VkImage image, VkFormat format, VkImageLayout oldLayout, VkImageLayout newLayout);
+		VkCommandBuffer beginSingleTimeCommands();
+		void endSingleTimeCommands(VkCommandBuffer commandBuffer);
+		void createTextureImageView();
+		void createTextureSampler();
 
 		//
 		// Shader
@@ -96,5 +106,13 @@ namespace ps {
 		VkCommandBuffer commandBuffer;
 		std::vector<VkCommandBuffer> commandBuffers;
 		bool framebufferResized = false;
+
+
+		VkImage textureImage;
+		VkDeviceMemory textureImageMemory;
+		VkImageView textureImageView;
+		VkSampler textureSampler;
+
+
 	};
 }
