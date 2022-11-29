@@ -19,7 +19,7 @@ namespace ps {
 
 		void run();
 		void setResized(bool b) {
-			psDevice.setFrameBufferResized(b);
+			//psDevice.setFrameBufferResized(b);
 		}
 
 	private:
@@ -29,6 +29,6 @@ namespace ps {
 
 		PS_Window psWindow{ WIDTH, HEIGHT, "Hello Vulkan" };
 		PS_Device psDevice{};
-		PS_Pipeline psPipeline{};
+		PS_Pipeline psPipeline{ &psDevice };
 	};
 }

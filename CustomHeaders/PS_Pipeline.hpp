@@ -6,15 +6,15 @@
 namespace ps {
 	class PS_Pipeline {
 	public:
-		PS_Pipeline() {
-
+		PS_Pipeline(PS_Device *psDevice) {
+			this->psDevice = psDevice;
 		}
 		~PS_Pipeline() {
-			vkDestroyPipeline(device, graphicsPipeline, nullptr);
-			vkDestroyPipelineLayout(device, pipelineLayout, nullptr);
-			vkDestroyRenderPass(device, renderPass, nullptr);
-			vkDestroyBuffer(device, vertexBuffer, nullptr);
-			vkFreeMemory(device, vertexBufferMemory, nullptr);
+			vkDestroyPipeline(psDevice->getDevice(), graphicsPipeline, nullptr);
+			vkDestroyRenderPass(psDevice->getDevice(), renderPass, nullptr);
+			vkDestroyPipelineLayout(psDevice->getDevice(), pipelineLayout, nullptr);
+			vkDestroyBuffer(psDevice->getDevice(), vertexBuffer, nullptr);
+			vkFreeMemory(psDevice->getDevice(), vertexBufferMemory, nullptr);
 		}
 		PS_Pipeline(const PS_Pipeline&) = delete;
 		PS_Pipeline& operator = (const PS_Pipeline&) = delete;
@@ -23,18 +23,34 @@ namespace ps {
 		void createRenderPass(VkDevice device, VkFormat swapChainImageFormat);
 		static std::vector<char> readFile(const std::string& path);
 		void createVertexBuffer(VkPhysicalDevice physicalDevice);
+		void createIndexBuffer(PS_Device* psDevice);
 		void createBuffer(VkDeviceSize size, VkBufferUsageFlags usage, VkMemoryPropertyFlags properties, VkBuffer& buffer, VkDeviceMemory& bufferMemory, VkPhysicalDevice physicalDevice);
 		void copyBuffer(VkBuffer srcBuffer, VkBuffer dstBuffer, VkDeviceSize size);
+		void drawFrame(PS_Window* psWindow, PS_Device* psDevice);
+		void createUniformBuffers(PS_Device *psDevice);
+
+		void updateUniformBuffer(uint32_t currentImage, PS_Device* psDevice);
+
+		void createCommandBuffer();
+		void recordCommandBuffer(VkCommandBuffer commandBuffer, uint32_t imageIndex, VkRenderPass renderPass, VkPipeline graphicsPipeline, const std::vector<PS_Window::Vertex> vertices);
+		void createDescriptorSetLayout(PS_Device* psDevice);
+		void createDescriptorPool(PS_Device* psDevice);
+		void createDescriptorSets(PS_Device* psDevice);
 
 		//
 		// Shader
 		//
 		const std::vector<PS_Window::Vertex> vertices = {
-			{{0.0f, -0.5f}, psColors.makeColor("RED")},
-			{{0.5f, 0.0f}, psColors.makeColor("RED")},
-			{{0.0f, 0.5f}, psColors.makeColor("GREEN")}
+			{{-0.5f, -0.5f}, {1.0f, 0.0f, 0.0f}},
+			{{0.5f, -0.5f}, {0.0f, 1.0f, 0.0f}},
+			{{0.5f, 0.5f}, {0.0f, 0.0f, 1.0f}},
+			{{-0.5f, 0.5f}, {1.0f, 1.0f, 1.0f}}
 		};
-		
+		const std::vector<uint16_t> indices = {
+			0, 1, 2, 2, 3, 0
+		};
+
+
 		//
 		// Getters
 		//
@@ -55,13 +71,27 @@ namespace ps {
 		VkShaderModule createShaderModule(const std::vector<char>& code, VkDevice device);
 		uint32_t findMemoryType(uint32_t typeFilter, VkMemoryPropertyFlags properties, VkPhysicalDevice physicalDevice);
 
-		VkDevice device{};
 		VkRenderPass renderPass{};
+		VkDescriptorSetLayout descriptorSetLayout;
 		VkPipelineLayout pipelineLayout{};
 		VkPipeline graphicsPipeline{};
 		VkBuffer vertexBuffer{};
 		VkDeviceMemory vertexBufferMemory{};
+		VkBuffer indexBuffer{};
+		VkDeviceMemory indexBufferMemory{};
 		PS_Device *psDevice;
 		PS_Colors psColors{};
+		PS_Logger psLogger{};
+
+		std::vector<VkBuffer> uniformBuffers;
+		std::vector<VkDeviceMemory> uniformBuffersMemory;
+		std::vector<void*> uniformBuffersMapped;
+
+		VkDescriptorPool descriptorPool;
+		std::vector<VkDescriptorSet> descriptorSets;
+
+		VkCommandBuffer commandBuffer;
+		std::vector<VkCommandBuffer> commandBuffers;
+		bool framebufferResized = false;
 	};
 }
