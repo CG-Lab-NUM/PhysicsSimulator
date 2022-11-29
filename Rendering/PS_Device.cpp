@@ -287,6 +287,7 @@ namespace ps {
         }
 
         VkPhysicalDeviceFeatures deviceFeatures{};
+        deviceFeatures.samplerAnisotropy = VK_TRUE;
 
         VkDeviceCreateInfo createInfo{};
         createInfo.sType = VK_STRUCTURE_TYPE_DEVICE_CREATE_INFO;
@@ -466,7 +467,7 @@ namespace ps {
         std::cout << "Image Views created...\n";
     }
 
-    VkImageView  PS_Device::createImageView(VkImage image, VkFormat format) {
+    VkImageView PS_Device::createImageView(VkImage image, VkFormat format) {
         VkImageViewCreateInfo viewInfo{};
         viewInfo.sType = VK_STRUCTURE_TYPE_IMAGE_VIEW_CREATE_INFO;
         viewInfo.image = image;
