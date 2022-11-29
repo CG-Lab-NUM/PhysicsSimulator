@@ -303,4 +303,147 @@ namespace ps {
 
         vkFreeCommandBuffers(device, psDevice->getCommandPool(), 1, &commandBuffer);
     }
+
+    void PS_Pipeline::drawFrame(PS_Window* psWindow, PS_Device *psDevice) {
+        vkWaitForFences(device, 1, &psDevice->inFlightFences[psDevice->currentFrame], VK_TRUE, UINT64_MAX);
+
+        uint32_t imageIndex;
+
+        VkResult result = vkAcquireNextImageKHR(device, psDevice->getSwapChain(), UINT64_MAX, psDevice->imageAvailableSemaphores[psDevice->currentFrame], VK_NULL_HANDLE, &imageIndex);
+
+        if (result == VK_ERROR_OUT_OF_DATE_KHR) {
+            psDevice->recreateSwapChain(psWindow, renderPass);
+            return;
+        }
+        else if (result != VK_SUCCESS && result != VK_SUBOPTIMAL_KHR) {
+            throw std::runtime_error("failed to acquire swap chain image!");
+        }
+
+        vkResetFences(device, 1, &psDevice->inFlightFences[psDevice->currentFrame]);
+
+        vkResetCommandBuffer(commandBuffers[psDevice->currentFrame], /*VkCommandBufferResetFlagBits*/ 0);
+        recordCommandBuffer(commandBuffers[psDevice->currentFrame], imageIndex, renderPass, graphicsPipeline, vertices);
+
+        VkSubmitInfo submitInfo{};
+        submitInfo.sType = VK_STRUCTURE_TYPE_SUBMIT_INFO;
+
+        VkSemaphore waitSemaphores[] = { psDevice->imageAvailableSemaphores[psDevice->currentFrame] };
+        VkPipelineStageFlags waitStages[] = { VK_PIPELINE_STAGE_COLOR_ATTACHMENT_OUTPUT_BIT };
+        submitInfo.waitSemaphoreCount = 1;
+        submitInfo.pWaitSemaphores = waitSemaphores;
+        submitInfo.pWaitDstStageMask = waitStages;
+
+        submitInfo.commandBufferCount = 1;
+        submitInfo.pCommandBuffers = &commandBuffers[psDevice->currentFrame];
+
+        VkSemaphore signalSemaphores[] = { psDevice->renderFinishedSemaphores[psDevice->currentFrame] };
+        submitInfo.signalSemaphoreCount = 1;
+        submitInfo.pSignalSemaphores = signalSemaphores;
+
+        result = vkQueueSubmit(psDevice->graphicsQueue, 1, &submitInfo, psDevice->inFlightFences[psDevice->currentFrame]);
+        if (result != VK_SUCCESS) {
+            throw std::runtime_error("failed to submit draw command buffer!");
+        }
+
+        VkPresentInfoKHR presentInfo{};
+        presentInfo.sType = VK_STRUCTURE_TYPE_PRESENT_INFO_KHR;
+
+        presentInfo.waitSemaphoreCount = 1;
+        presentInfo.pWaitSemaphores = signalSemaphores;
+
+        VkSwapchainKHR swapChains[] = { psDevice->getSwapChain()};
+        presentInfo.swapchainCount = 1;
+        presentInfo.pSwapchains = swapChains;
+
+        presentInfo.pImageIndices = &imageIndex;
+
+        result = vkQueuePresentKHR(psDevice->getPresentQueue(), &presentInfo);
+
+        if (result == VK_ERROR_OUT_OF_DATE_KHR || result == VK_SUBOPTIMAL_KHR || framebufferResized) {
+            framebufferResized = false;
+            psDevice->recreateSwapChain(psWindow, renderPass);
+        }
+        else if (result != VK_SUCCESS) {
+            throw std::runtime_error("failed to present swap chain image!");
+        }
+
+        psDevice->currentFrame = (psDevice->currentFrame + 1) % psDevice->MAX_FRAMES_IN_FLIGHT;
+    }
+
+    void PS_Pipeline::createCommandBuffer() {
+        commandBuffers.resize(psDevice->MAX_FRAMES_IN_FLIGHT);
+
+        VkCommandBufferAllocateInfo allocInfo{};
+        allocInfo.sType = VK_STRUCTURE_TYPE_COMMAND_BUFFER_ALLOCATE_INFO;
+        allocInfo.commandPool = psDevice->getCommandPool();
+        allocInfo.level = VK_COMMAND_BUFFER_LEVEL_PRIMARY;
+        allocInfo.commandBufferCount = (uint32_t)commandBuffers.size();
+
+        if (vkAllocateCommandBuffers(device, &allocInfo, commandBuffers.data()) != VK_SUCCESS) {
+            throw std::runtime_error("failed to allocate command buffers!");
+        }
+
+        VkResult result = vkAllocateCommandBuffers(device, &allocInfo, commandBuffers.data());
+        if (result != VK_SUCCESS) {
+            psLogger.LogResult(result);
+            throw std::runtime_error("failed to allocate command buffers!");
+        }
+        else {
+            std::cout << "Created Command Buffers...\n";
+        }
+    }
+
+    void PS_Pipeline::recordCommandBuffer(VkCommandBuffer commandBuffer, uint32_t imageIndex, VkRenderPass renderPass, VkPipeline graphicsPipeline, const std::vector<PS_Window::Vertex> vertices) {
+        VkCommandBufferBeginInfo beginInfo{};
+        beginInfo.sType = VK_STRUCTURE_TYPE_COMMAND_BUFFER_BEGIN_INFO;
+
+        VkResult result = vkBeginCommandBuffer(commandBuffer, &beginInfo);
+        if (result != VK_SUCCESS) {
+            psLogger.LogResult(result);
+            throw std::runtime_error("failed to begin recording command buffer!");
+        }
+
+        VkRenderPassBeginInfo renderPassInfo{};
+        renderPassInfo.sType = VK_STRUCTURE_TYPE_RENDER_PASS_BEGIN_INFO;
+        renderPassInfo.renderPass = renderPass;
+        renderPassInfo.framebuffer = psDevice->swapChainFramebuffers[imageIndex];
+        renderPassInfo.renderArea.offset = { 0, 0 };
+        renderPassInfo.renderArea.extent = psDevice->swapChainExtent;
+
+        VkClearValue clearColor = { {{0.0f, 0.0f, 0.0f, 1.0f}} };
+        renderPassInfo.clearValueCount = 1;
+        renderPassInfo.pClearValues = &clearColor;
+
+        vkCmdBeginRenderPass(commandBuffer, &renderPassInfo, VK_SUBPASS_CONTENTS_INLINE);
+
+        vkCmdBindPipeline(commandBuffer, VK_PIPELINE_BIND_POINT_GRAPHICS, graphicsPipeline);
+
+        VkViewport viewport{};
+        viewport.x = 0.0f;
+        viewport.y = 0.0f;
+        viewport.width = (float)psDevice->swapChainExtent.width;
+        viewport.height = (float)psDevice->swapChainExtent.height;
+        viewport.minDepth = 0.0f;
+        viewport.maxDepth = 1.0f;
+        vkCmdSetViewport(commandBuffer, 0, 1, &viewport);
+
+        VkRect2D scissor{};
+        scissor.offset = { 0, 0 };
+        scissor.extent = psDevice->swapChainExtent;
+        vkCmdSetScissor(commandBuffer, 0, 1, &scissor);
+
+        VkBuffer vertexBuffers[] = { vertexBuffer };
+        VkDeviceSize offsets[] = { 0 };
+        vkCmdBindVertexBuffers(commandBuffer, 0, 1, vertexBuffers, offsets);
+
+        vkCmdDraw(commandBuffer, static_cast<uint32_t>(vertices.size()), 1, 0, 0);
+
+
+        vkCmdEndRenderPass(commandBuffer);
+        result = vkEndCommandBuffer(commandBuffer);
+        if (result != VK_SUCCESS) {
+            psLogger.LogResult(result);
+            throw std::runtime_error("failed to record command buffer!");
+        }
+    }
 }

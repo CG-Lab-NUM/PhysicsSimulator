@@ -30,14 +30,14 @@ namespace ps {
 		psDevice.createFramebuffers(psPipeline.getRenderPass());
 		psDevice.createCommandPool();
 		psPipeline.createVertexBuffer(psDevice.getPhysicalDevice());
-		psDevice.createCommandBuffer();
+		psPipeline.createCommandBuffer();
 		psDevice.createSyncObjects();
 	}
 	
 	void PS_App::mainLoop() {
 		while (!glfwWindowShouldClose(psWindow.getWindow())) {
 			glfwPollEvents();
-			psDevice.drawFrame(psPipeline.getRenderPass(), psPipeline.getPipeline(), &psWindow, psPipeline.getVertexBuffer(), psPipeline.getVertices());
+			psPipeline.drawFrame(&psWindow, &psDevice);
 		}
 		vkDeviceWaitIdle(psDevice.getDevice());
 	}

@@ -60,14 +60,30 @@ namespace ps {
 		void createImageViews();
 		void createFramebuffers(VkRenderPass renderPass);
 		void createCommandPool();
-		void createCommandBuffer();
-		void recordCommandBuffer(VkCommandBuffer commandBuffer, uint32_t imageIndex, VkRenderPass renderPass, VkPipeline graphicsPipeline, const std::vector<PS_Window::Vertex> vertices);
 		void createSyncObjects();
-		void drawFrame(VkRenderPass renderPass, VkPipeline graphicsPipeline, PS_Window* psWindow, VkBuffer vertexBuffer, const std::vector<PS_Window::Vertex> vertices);
 		void recreateSwapChain(PS_Window* psWindow, VkRenderPass renderPass);
 
+		std::vector<VkImage> swapChainImages;
+		std::vector<VkFramebuffer> swapChainFramebuffers;
+		VkFormat swapChainImageFormat;
+		VkExtent2D swapChainExtent;
 		//
-		// Getters
+		// Graphics
+		//
+
+		VkQueue graphicsQueue;
+		VkQueue presentQueue;
+		//
+		// Semaphores
+		//
+		std::vector<VkSemaphore> imageAvailableSemaphores;
+		std::vector<VkSemaphore> renderFinishedSemaphores;
+		std::vector<VkFence> inFlightFences;
+		uint32_t currentFrame = 0;
+		const int MAX_FRAMES_IN_FLIGHT = 2;
+
+		//
+		// Getters & Setters
 		//
 		VkInstance getInstance() {
 			return instance;
@@ -84,40 +100,28 @@ namespace ps {
 		VkQueue getGraphicsQueue() {
 			return graphicsQueue;
 		}
+		VkQueue getPresentQueue() {
+			return presentQueue;
+		}
 		VkCommandPool getCommandPool() {
 			return commandPool;
 		}
-		// 
-		// Setters
-		//
+		VkSwapchainKHR getSwapChain() {
+			return swapChain;
+		}
 		void setSurface(VkSurfaceKHR surface) {
 			this->surface = surface;
-		}
-		void setFrameBufferResized(boolean b) {
-			framebufferResized = b;
 		}
 
 	private:
 		PS_Logger psLogger{};
 
-		VkQueue graphicsQueue;
-		VkQueue presentQueue;
 		VkDevice device;
 		VkSurfaceKHR surface;
 		VkPhysicalDevice physicalDevice = VK_NULL_HANDLE;
 
 		VkSwapchainKHR swapChain;
-		std::vector<VkImage> swapChainImages;
-		std::vector<VkFramebuffer> swapChainFramebuffers;
-		VkFormat swapChainImageFormat;
-		VkExtent2D swapChainExtent;
 		VkCommandPool commandPool;
-		VkCommandBuffer commandBuffer;
-		std::vector<VkCommandBuffer> commandBuffers;
-		const int MAX_FRAMES_IN_FLIGHT = 2;
-		bool framebufferResized = false;
-
-		VkBuffer vertexBuffer;
 
 		//
 		// Swap Chain
@@ -126,13 +130,5 @@ namespace ps {
 		VkSurfaceFormatKHR chooseSwapSurfaceFormat(const std::vector<VkSurfaceFormatKHR>& availableFormats);
 		VkPresentModeKHR chooseSwapPresentMode(const std::vector<VkPresentModeKHR>& availablePresentModes);
 		VkExtent2D chooseSwapExtent(const VkSurfaceCapabilitiesKHR& capabilities, GLFWwindow* window);
-
-		//
-		// Semaphores
-		//
-		std::vector<VkSemaphore> imageAvailableSemaphores;
-		std::vector<VkSemaphore> renderFinishedSemaphores;
-		std::vector<VkFence> inFlightFences;
-		uint32_t currentFrame = 0;
 	};
 }

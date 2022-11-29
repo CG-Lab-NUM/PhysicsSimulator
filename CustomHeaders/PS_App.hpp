@@ -19,7 +19,7 @@ namespace ps {
 
 		void run();
 		void setResized(bool b) {
-			psDevice.setFrameBufferResized(b);
+			//psDevice.setFrameBufferResized(b);
 		}
 
 	private:

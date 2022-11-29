@@ -25,6 +25,10 @@ namespace ps {
 		void createVertexBuffer(VkPhysicalDevice physicalDevice);
 		void createBuffer(VkDeviceSize size, VkBufferUsageFlags usage, VkMemoryPropertyFlags properties, VkBuffer& buffer, VkDeviceMemory& bufferMemory, VkPhysicalDevice physicalDevice);
 		void copyBuffer(VkBuffer srcBuffer, VkBuffer dstBuffer, VkDeviceSize size);
+		void drawFrame(PS_Window* psWindow, PS_Device* psDevice);
+
+		void createCommandBuffer();
+		void recordCommandBuffer(VkCommandBuffer commandBuffer, uint32_t imageIndex, VkRenderPass renderPass, VkPipeline graphicsPipeline, const std::vector<PS_Window::Vertex> vertices);
 
 		//
 		// Shader
@@ -33,6 +37,9 @@ namespace ps {
 			{{0.0f, -0.5f}, psColors.makeColor("RED")},
 			{{0.5f, 0.0f}, psColors.makeColor("RED")},
 			{{0.0f, 0.5f}, psColors.makeColor("GREEN")}
+		};
+		const std::vector<uint16_t> indices = {
+			0, 1, 2, 2, 3, 0
 		};
 		
 		//
@@ -63,5 +70,10 @@ namespace ps {
 		VkDeviceMemory vertexBufferMemory{};
 		PS_Device *psDevice;
 		PS_Colors psColors{};
+		PS_Logger psLogger{};
+
+		VkCommandBuffer commandBuffer;
+		std::vector<VkCommandBuffer> commandBuffers;
+		bool framebufferResized = false;
 	};
 }
