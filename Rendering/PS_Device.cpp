@@ -318,12 +318,12 @@ namespace ps {
     //
     // Swap Chain
     //
-    void PS_Device::createSwapChain(VkSurfaceKHR surface, GLFWwindow* window) {
-        SwapChainSupportDetails swapChainSupport = querySwapChainSupport(physicalDevice, surface);
+    void PS_Device::createSwapChain(PS_Window *psWindow) {
+        SwapChainSupportDetails swapChainSupport = querySwapChainSupport(physicalDevice, psWindow->getSurface());
 
         VkSurfaceFormatKHR surfaceFormat = chooseSwapSurfaceFormat(swapChainSupport.formats);
         VkPresentModeKHR presentMode = chooseSwapPresentMode(swapChainSupport.presentModes);
-        VkExtent2D extent = chooseSwapExtent(swapChainSupport.capabilities, window);
+        VkExtent2D extent = chooseSwapExtent(swapChainSupport.capabilities, psWindow->getWindow());
 
         uint32_t imageCount = swapChainSupport.capabilities.minImageCount + 1;
         if (swapChainSupport.capabilities.maxImageCount > 0 && imageCount > swapChainSupport.capabilities.maxImageCount) {
@@ -625,7 +625,7 @@ namespace ps {
         std::cout << "Created synchronization objects for frames...\n";
     }
 
-    void PS_Device::drawFrame(VkRenderPass renderPass, VkPipeline graphicsPipeline, GLFWwindow *window, VkBuffer vertexBuffer, const std::vector<PS_Window::Vertex> vertices) {
+    void PS_Device::drawFrame(VkRenderPass renderPass, VkPipeline graphicsPipeline, PS_Window *psWindow, VkBuffer vertexBuffer, const std::vector<PS_Window::Vertex> vertices) {
         this->vertexBuffer = vertexBuffer;
         vkWaitForFences(device, 1, &inFlightFences[currentFrame], VK_TRUE, UINT64_MAX);
 
@@ -634,7 +634,7 @@ namespace ps {
         VkResult result = vkAcquireNextImageKHR(device, swapChain, UINT64_MAX, imageAvailableSemaphores[currentFrame], VK_NULL_HANDLE, &imageIndex);
 
         if (result == VK_ERROR_OUT_OF_DATE_KHR) {
-            recreateSwapChain(surface, window, renderPass);
+            recreateSwapChain(psWindow, renderPass);
             return;
         }
         else if (result != VK_SUCCESS && result != VK_SUBOPTIMAL_KHR) {
@@ -683,7 +683,7 @@ namespace ps {
 
         if (result == VK_ERROR_OUT_OF_DATE_KHR || result == VK_SUBOPTIMAL_KHR || framebufferResized) {
             framebufferResized = false;
-            recreateSwapChain(surface, window, renderPass);
+            recreateSwapChain(psWindow, renderPass);
         }
         else if (result != VK_SUCCESS) {
             throw std::runtime_error("failed to present swap chain image!");
@@ -692,11 +692,11 @@ namespace ps {
         currentFrame = (currentFrame + 1) % MAX_FRAMES_IN_FLIGHT;
     }
 
-    void PS_Device::recreateSwapChain(VkSurfaceKHR surface, GLFWwindow* window, VkRenderPass renderPass) {
+    void PS_Device::recreateSwapChain(PS_Window *psWindow, VkRenderPass renderPass) {
         int width = 0, height = 0;
-        glfwGetFramebufferSize(window, &width, &height);
+        glfwGetFramebufferSize(psWindow->getWindow(), &width, &height);
         while (width == 0 || height == 0) {
-            glfwGetFramebufferSize(window, &width, &height);
+            glfwGetFramebufferSize(psWindow->getWindow(), &width, &height);
             glfwWaitEvents();
         }
 
@@ -713,7 +713,7 @@ namespace ps {
 
         vkDestroySwapchainKHR(device, swapChain, nullptr);
 
-        createSwapChain(surface, window);
+        createSwapChain(psWindow);
         createImageViews();
         createFramebuffers(renderPass);
     }

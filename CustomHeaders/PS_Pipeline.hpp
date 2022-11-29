@@ -1,5 +1,6 @@
 #include "PS_Window.hpp"
 #include "PS_Colors.hpp"
+#include "PS_Device.hpp"
 #include <vector>
 
 namespace ps {
@@ -18,10 +19,12 @@ namespace ps {
 		PS_Pipeline(const PS_Pipeline&) = delete;
 		PS_Pipeline& operator = (const PS_Pipeline&) = delete;
 
-		void createGraphicsPipeline(VkDevice device);
+		void createGraphicsPipeline(PS_Device* psDevice);
 		void createRenderPass(VkDevice device, VkFormat swapChainImageFormat);
 		static std::vector<char> readFile(const std::string& path);
 		void createVertexBuffer(VkPhysicalDevice physicalDevice);
+		void createBuffer(VkDeviceSize size, VkBufferUsageFlags usage, VkMemoryPropertyFlags properties, VkBuffer& buffer, VkDeviceMemory& bufferMemory, VkPhysicalDevice physicalDevice);
+		void copyBuffer(VkBuffer srcBuffer, VkBuffer dstBuffer, VkDeviceSize size);
 
 		//
 		// Shader
@@ -58,7 +61,7 @@ namespace ps {
 		VkPipeline graphicsPipeline{};
 		VkBuffer vertexBuffer{};
 		VkDeviceMemory vertexBufferMemory{};
-
+		PS_Device *psDevice;
 		PS_Colors psColors{};
 	};
 }

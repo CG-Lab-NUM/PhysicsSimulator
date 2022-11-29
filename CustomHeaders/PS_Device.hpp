@@ -56,15 +56,15 @@ namespace ps {
 			std::vector<VkSurfaceFormatKHR> formats;
 			std::vector<VkPresentModeKHR> presentModes;
 		};
-		void createSwapChain(VkSurfaceKHR surface, GLFWwindow* window);
+		void createSwapChain(PS_Window *psWindow);
 		void createImageViews();
 		void createFramebuffers(VkRenderPass renderPass);
 		void createCommandPool();
 		void createCommandBuffer();
 		void recordCommandBuffer(VkCommandBuffer commandBuffer, uint32_t imageIndex, VkRenderPass renderPass, VkPipeline graphicsPipeline, const std::vector<PS_Window::Vertex> vertices);
 		void createSyncObjects();
-		void drawFrame(VkRenderPass renderPass, VkPipeline graphicsPipeline, GLFWwindow* window, VkBuffer vertexBuffer, const std::vector<PS_Window::Vertex> vertices);
-		void recreateSwapChain(VkSurfaceKHR surface, GLFWwindow* window, VkRenderPass renderPass);
+		void drawFrame(VkRenderPass renderPass, VkPipeline graphicsPipeline, PS_Window* psWindow, VkBuffer vertexBuffer, const std::vector<PS_Window::Vertex> vertices);
+		void recreateSwapChain(PS_Window* psWindow, VkRenderPass renderPass);
 
 		//
 		// Getters
@@ -81,7 +81,12 @@ namespace ps {
 		VkFormat getSwapChainImageFormat() {
 			return swapChainImageFormat;
 		}
-
+		VkQueue getGraphicsQueue() {
+			return graphicsQueue;
+		}
+		VkCommandPool getCommandPool() {
+			return commandPool;
+		}
 		// 
 		// Setters
 		//

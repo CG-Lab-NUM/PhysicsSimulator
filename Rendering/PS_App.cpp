@@ -23,10 +23,10 @@ namespace ps {
 		psDevice.setSurface(psWindow.getSurface());
 		psDevice.pickPhysicalDevice(psWindow.getSurface());
 		psDevice.createLogicalDevice();
-		psDevice.createSwapChain(psWindow.getSurface(), psWindow.getWindow());
+		psDevice.createSwapChain(&psWindow);
 		psDevice.createImageViews();
 		psPipeline.createRenderPass(psDevice.getDevice(), psDevice.getSwapChainImageFormat());
-		psPipeline.createGraphicsPipeline(psDevice.getDevice());
+		psPipeline.createGraphicsPipeline(&psDevice);
 		psDevice.createFramebuffers(psPipeline.getRenderPass());
 		psDevice.createCommandPool();
 		psPipeline.createVertexBuffer(psDevice.getPhysicalDevice());
@@ -37,7 +37,7 @@ namespace ps {
 	void PS_App::mainLoop() {
 		while (!glfwWindowShouldClose(psWindow.getWindow())) {
 			glfwPollEvents();
-			psDevice.drawFrame(psPipeline.getRenderPass(), psPipeline.getPipeline(), psWindow.getWindow(), psPipeline.getVertexBuffer(), psPipeline.getVertices());
+			psDevice.drawFrame(psPipeline.getRenderPass(), psPipeline.getPipeline(), &psWindow, psPipeline.getVertexBuffer(), psPipeline.getVertices());
 		}
 		vkDeviceWaitIdle(psDevice.getDevice());
 	}
