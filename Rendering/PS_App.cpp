@@ -30,6 +30,7 @@ namespace ps {
 		psDevice.createFramebuffers(psPipeline.getRenderPass());
 		psDevice.createCommandPool();
 		psPipeline.createVertexBuffer(psDevice.getPhysicalDevice());
+		psPipeline.createIndexBuffer(&psDevice);
 		psPipeline.createCommandBuffer();
 		psDevice.createSyncObjects();
 	}

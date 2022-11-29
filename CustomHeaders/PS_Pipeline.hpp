@@ -23,6 +23,7 @@ namespace ps {
 		void createRenderPass(VkDevice device, VkFormat swapChainImageFormat);
 		static std::vector<char> readFile(const std::string& path);
 		void createVertexBuffer(VkPhysicalDevice physicalDevice);
+		void createIndexBuffer(PS_Device* psDevice);
 		void createBuffer(VkDeviceSize size, VkBufferUsageFlags usage, VkMemoryPropertyFlags properties, VkBuffer& buffer, VkDeviceMemory& bufferMemory, VkPhysicalDevice physicalDevice);
 		void copyBuffer(VkBuffer srcBuffer, VkBuffer dstBuffer, VkDeviceSize size);
 		void drawFrame(PS_Window* psWindow, PS_Device* psDevice);
@@ -34,9 +35,10 @@ namespace ps {
 		// Shader
 		//
 		const std::vector<PS_Window::Vertex> vertices = {
-			{{0.0f, -0.5f}, psColors.makeColor("RED")},
-			{{0.5f, 0.0f}, psColors.makeColor("RED")},
-			{{0.0f, 0.5f}, psColors.makeColor("GREEN")}
+			{{-0.5f, -0.5f}, {1.0f, 0.0f, 0.0f}},
+			{{0.5f, -0.5f}, {0.0f, 1.0f, 0.0f}},
+			{{0.5f, 0.5f}, {0.0f, 0.0f, 1.0f}},
+			{{-0.5f, 0.5f}, {1.0f, 1.0f, 1.0f}}
 		};
 		const std::vector<uint16_t> indices = {
 			0, 1, 2, 2, 3, 0
@@ -68,6 +70,8 @@ namespace ps {
 		VkPipeline graphicsPipeline{};
 		VkBuffer vertexBuffer{};
 		VkDeviceMemory vertexBufferMemory{};
+		VkBuffer indexBuffer{};
+		VkDeviceMemory indexBufferMemory{};
 		PS_Device *psDevice;
 		PS_Colors psColors{};
 		PS_Logger psLogger{};
