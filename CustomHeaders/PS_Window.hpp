@@ -6,6 +6,8 @@
 #include <GLFW/glfw3native.h>
 
 #include <iostream>
+#define GLM_FORCE_RADIANS
+#define GLM_FORCE_DEPTH_ZERO_TO_ONE
 #include <glm/glm.hpp>
 #include <glm/gtc/matrix_transform.hpp>
 #include <chrono>
@@ -26,7 +28,7 @@ namespace ps {
 		void createSurface(VkInstance instance, VkDevice device);
 
 		struct Vertex {
-			glm::vec2 pos;
+			glm::vec3 pos;
 			glm::vec3 color;
 			glm::vec2 texCoord;
 
@@ -44,7 +46,7 @@ namespace ps {
 
 				attributeDescriptions[0].binding = 0;
 				attributeDescriptions[0].location = 0;
-				attributeDescriptions[0].format = VK_FORMAT_R32G32_SFLOAT;
+				attributeDescriptions[0].format = VK_FORMAT_R32G32B32_SFLOAT;
 				attributeDescriptions[0].offset = offsetof(Vertex, pos);
 
 				attributeDescriptions[1].binding = 0;

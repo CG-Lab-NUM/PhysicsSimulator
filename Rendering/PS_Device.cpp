@@ -461,24 +461,24 @@ namespace ps {
         swapChainImageViews.resize(swapChainImages.size());
 
         for (size_t i = 0; i < swapChainImages.size(); i++) {
-            swapChainImageViews[i] = createImageView(swapChainImages[i], swapChainImageFormat);
+            swapChainImageViews[i] = createImageView(swapChainImages[i], swapChainImageFormat, VK_IMAGE_ASPECT_COLOR_BIT);
         }
 
         std::cout << "Image Views created...\n";
     }
 
-    VkImageView PS_Device::createImageView(VkImage image, VkFormat format) {
+    VkImageView PS_Device::createImageView(VkImage image, VkFormat format, VkImageAspectFlags aspectFlags) {
         VkImageViewCreateInfo viewInfo{};
         viewInfo.sType = VK_STRUCTURE_TYPE_IMAGE_VIEW_CREATE_INFO;
         viewInfo.image = image;
         viewInfo.viewType = VK_IMAGE_VIEW_TYPE_2D;
         viewInfo.format = format;
-        viewInfo.subresourceRange.aspectMask = VK_IMAGE_ASPECT_COLOR_BIT;
+        viewInfo.subresourceRange.aspectMask = aspectFlags;
         viewInfo.subresourceRange.baseMipLevel = 0;
         viewInfo.subresourceRange.levelCount = 1;
         viewInfo.subresourceRange.baseArrayLayer = 0;
         viewInfo.subresourceRange.layerCount = 1;
-
+        
         VkImageView imageView;
         VkResult result = vkCreateImageView(device, &viewInfo, nullptr, &imageView);
         if (result != VK_SUCCESS) {
@@ -490,19 +490,20 @@ namespace ps {
     //
     // Frame Buffers
     //
-    void PS_Device::createFramebuffers(VkRenderPass renderPass) {
+    void PS_Device::createFramebuffers(VkRenderPass renderPass, VkImageView depthImageView) {
         swapChainFramebuffers.resize(swapChainImageViews.size());
 
         for (size_t i = 0; i < swapChainImageViews.size(); i++) {
-            VkImageView attachments[] = {
-                swapChainImageViews[i]
+            std::array<VkImageView, 2> attachments = {
+                swapChainImageViews[i],
+                depthImageView
             };
 
             VkFramebufferCreateInfo framebufferInfo{};
             framebufferInfo.sType = VK_STRUCTURE_TYPE_FRAMEBUFFER_CREATE_INFO;
             framebufferInfo.renderPass = renderPass;
-            framebufferInfo.attachmentCount = 1;
-            framebufferInfo.pAttachments = attachments;
+            framebufferInfo.attachmentCount = static_cast<uint32_t>(attachments.size());
+            framebufferInfo.pAttachments = attachments.data();
             framebufferInfo.width = swapChainExtent.width;
             framebufferInfo.height = swapChainExtent.height;
             framebufferInfo.layers = 1;
@@ -556,7 +557,7 @@ namespace ps {
         std::cout << "Created synchronization objects for frames...\n";
     }
 
-    void PS_Device::recreateSwapChain(PS_Window *psWindow, VkRenderPass renderPass) {
+    void PS_Device::recreateSwapChain(PS_Window *psWindow, VkRenderPass renderPass, VkImageView depthImageView) {
         int width = 0, height = 0;
         glfwGetFramebufferSize(psWindow->getWindow(), &width, &height);
         while (width == 0 || height == 0) {
@@ -579,6 +580,6 @@ namespace ps {
 
         createSwapChain(psWindow);
         createImageViews();
-        createFramebuffers(renderPass);
+        createFramebuffers(renderPass, depthImageView);
     }
 }

@@ -28,8 +28,9 @@ namespace ps {
 		psPipeline.createRenderPass(psDevice.getDevice(), psDevice.getSwapChainImageFormat());
 		psPipeline.createDescriptorSetLayout(&psDevice);
 		psPipeline.createGraphicsPipeline(&psDevice);
-		psDevice.createFramebuffers(psPipeline.getRenderPass());
 		psDevice.createCommandPool();
+		psPipeline.createDepthResources();
+		psDevice.createFramebuffers(psPipeline.getRenderPass(), psPipeline.getDepthImageView());
 		psPipeline.createTextureImage();
 		psPipeline.createTextureImageView();
 		psPipeline.createTextureSampler();
