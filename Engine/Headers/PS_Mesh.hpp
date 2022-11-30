@@ -6,6 +6,7 @@ namespace ps {
 	public:
 		PS_Mesh() {
 			loadObjects();
+			loadMaterials();		
 		}
 
 		~PS_Mesh() {
@@ -14,11 +15,11 @@ namespace ps {
 		PS_Mesh(const PS_Mesh&) = delete;
 		PS_Mesh& operator = (const PS_Mesh&) = delete;
 
-		const std::string TEXTURE_PATH;
 		std::vector<std::string> meshPaths;
-		int meshCount = 0;
+		std::vector<std::string> materialPaths;
 
 	private:
 		void loadObjects();
+		void loadMaterials();
 	};
 }

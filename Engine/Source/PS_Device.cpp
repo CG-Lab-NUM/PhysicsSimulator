@@ -485,6 +485,9 @@ namespace ps {
         if (result != VK_SUCCESS) {
             throw std::runtime_error("failed to create texture image view!");
         }
+        else {
+            std::cout << "Created texture image view...\n";
+        }
         return imageView;
     }
 
