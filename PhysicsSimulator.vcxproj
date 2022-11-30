@@ -135,6 +135,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="Engine\Source\PS_Mesh.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="Engine\Source\PS_App.cpp" />
     <ClCompile Include="Engine\Source\PS_Colors.cpp" />
