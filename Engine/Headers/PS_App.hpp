@@ -5,7 +5,7 @@
 #include "PS_Window.hpp"
 #include "PS_Device.hpp"
 #include "PS_Pipeline.hpp"
-#include "PS_Mesh.hpp"
+#include "PS_Loader.hpp"
 
 namespace ps {
 	class PS_App {
@@ -31,8 +31,7 @@ namespace ps {
 		PS_Window psWindow{ WIDTH, HEIGHT, "Hello Vulkan" };
 		PS_Device psDevice{};
 		PS_Pipeline psPipeline{ &psDevice };
-		//PS_Mesh psMesh{};
 
-		PS_Mesh psMesh{};
+		PS_Loader psLoader{};
 	};
 }

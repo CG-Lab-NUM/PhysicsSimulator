@@ -135,7 +135,8 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClCompile Include="Engine\Source\PS_Mesh.cpp" />
+    <ClCompile Include="Engine\Source\PS_Loader.cpp" />
+    <ClCompile Include="Game\Source\PS_GameObject.cpp" />
     <ClCompile Include="Game\Source\PS_Game_Generic.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="Engine\Source\PS_App.cpp" />
@@ -151,10 +152,11 @@
     <ClInclude Include="Engine\Headers\PS_Device.hpp" />
     <ClInclude Include="Engine\Headers\PS_Generic.hpp" />
     <ClInclude Include="Engine\Headers\PS_Logger.hpp" />
-    <ClInclude Include="Engine\Headers\PS_Mesh.hpp" />
+    <ClInclude Include="Engine\Headers\PS_Loader.hpp" />
     <ClInclude Include="Engine\Headers\PS_Pipeline.hpp" />
     <ClInclude Include="Engine\Headers\PS_Structs.hpp" />
     <ClInclude Include="Engine\Headers\PS_Window.hpp" />
+    <ClInclude Include="Game\Headers\PS_GameObject.hpp" />
     <ClInclude Include="Game\Headers\PS_Game_Generic.hpp" />
   </ItemGroup>
   <ItemGroup>

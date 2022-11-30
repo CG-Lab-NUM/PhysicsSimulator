@@ -36,10 +36,13 @@
     <ClCompile Include="Engine\Source\PS_Colors.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="Engine\Source\PS_Mesh.cpp">
+    <ClCompile Include="Engine\Source\PS_Loader.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="Game\Source\PS_Game_Generic.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Game\Source\PS_GameObject.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
@@ -68,10 +71,13 @@
     <ClInclude Include="Engine\Headers\PS_Generic.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="Engine\Headers\PS_Mesh.hpp">
+    <ClInclude Include="Engine\Headers\PS_Loader.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="Game\Headers\PS_Game_Generic.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Game\Headers\PS_GameObject.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

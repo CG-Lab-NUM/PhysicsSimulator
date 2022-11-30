@@ -5,6 +5,8 @@
 #define GLM_ENABLE_EXPERIMENTAL
 #include <glm/gtx/hash.hpp>
 
+#include <string>
+
 namespace ps {
 	class PS_Game_Generic {
 	public:

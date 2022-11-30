@@ -31,11 +31,16 @@ namespace ps {
 		psDevice.createCommandPool();
 		psPipeline.createColorResources();
 		psPipeline.createDepthResources();
+		PS_GameObject viking{ "D:\\VulkanProjects\\PhysicsSimulator\\Meshes\\VikingRoom.obj", "D:\\VulkanProjects\\PhysicsSimulator\\Textures\\Basic\\VikingRoom.png" };
+		PS_GameObject sword{ "D:\\VulkanProjects\\PhysicsSimulator\\Meshes\\StingSword.obj", "D:\\VulkanProjects\\PhysicsSimulator\\Textures\\StingSword\\StingSword_BasicColor.png" };
 		psDevice.createFramebuffers(psPipeline.getRenderPass(), psPipeline.getDepthImageView(), psPipeline.getColorImageView());
-		psPipeline.createTextureImage();
+		psPipeline.createTextureImage(&viking);
 		psPipeline.createTextureImageView();
 		psPipeline.createTextureSampler();
-		psPipeline.LoadModel();
+		psPipeline.loadModel(&viking);
+		//psPipeline.loadModel(&sword);
+		//psPipeline.loadModel(psLoader.meshPaths[1], psLoader.materialPaths[0]);
+		//psPipeline.loadModel(psLoader.meshPaths[0], psLoader.materialPaths[0]);
 		psPipeline.createVertexBuffer(psDevice.getPhysicalDevice());
 		psPipeline.createIndexBuffer(&psDevice);
 		psPipeline.createUniformBuffers(&psDevice);
