@@ -47,7 +47,7 @@ namespace ps {
 		bool isDeviceSuitable(VkPhysicalDevice device, VkSurfaceKHR surface);
 		QueueFamilyIndices findQueueFamilies(VkPhysicalDevice device);
 		bool checkDeviceExtensionSupport(VkPhysicalDevice device);
-		VkImageView createImageView(VkImage image, VkFormat format, VkImageAspectFlags aspectFlags);
+		VkImageView createImageView(VkImage image, VkFormat format, VkImageAspectFlags aspectFlags, uint32_t mipLevels);
 
 		//
 		// Swap Chain
@@ -58,11 +58,11 @@ namespace ps {
 			std::vector<VkPresentModeKHR> presentModes;
 		};
 		void createSwapChain(PS_Window *psWindow);
-		void createImageViews();
+		void createImageViews(uint32_t mipLevels);
 		void createFramebuffers(VkRenderPass renderPass, VkImageView depthImageView);
 		void createCommandPool();
 		void createSyncObjects();
-		void recreateSwapChain(PS_Window* psWindow, VkRenderPass renderPass, VkImageView depthImageView);
+		void recreateSwapChain(PS_Window* psWindow, VkRenderPass renderPass, VkImageView depthImageView, uint32_t mipLevels);
 
 
 		std::vector<VkImage> swapChainImages;

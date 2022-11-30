@@ -24,7 +24,7 @@ namespace ps {
 		psDevice.pickPhysicalDevice(psWindow.getSurface());
 		psDevice.createLogicalDevice();
 		psDevice.createSwapChain(&psWindow);
-		psDevice.createImageViews();
+		psDevice.createImageViews(psPipeline.getMipLevels());
 		psPipeline.createRenderPass(psDevice.getDevice(), psDevice.getSwapChainImageFormat());
 		psPipeline.createDescriptorSetLayout(&psDevice);
 		psPipeline.createGraphicsPipeline(&psDevice);
