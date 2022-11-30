@@ -40,11 +40,10 @@ namespace ps {
 		void createDescriptorSetLayout(PS_Device* psDevice);
 		void createDescriptorPool(PS_Device* psDevice);
 		void createDescriptorSets(PS_Device* psDevice);
-
-		void createImage(uint32_t width, uint32_t height, VkFormat format, VkImageTiling tiling, VkImageUsageFlags usage, VkMemoryPropertyFlags properties, VkImage& image, VkDeviceMemory& imageMemory);
+		void createImage(uint32_t width, uint32_t height, uint32_t mipLevels, VkSampleCountFlagBits numSamples, VkFormat format, VkImageTiling tiling, VkImageUsageFlags usage, VkMemoryPropertyFlags properties, VkImage& image, VkDeviceMemory& imageMemory);
 		void createTextureImage();
 		void copyBufferToImage(VkBuffer buffer, VkImage image, uint32_t width, uint32_t height);
-		void transitionImageLayout(VkImage image, VkFormat format, VkImageLayout oldLayout, VkImageLayout newLayout);
+		void transitionImageLayout(VkImage image, VkFormat format, VkImageLayout oldLayout, VkImageLayout newLayout, uint32_t mipLevels);
 		VkCommandBuffer beginSingleTimeCommands();
 		void endSingleTimeCommands(VkCommandBuffer commandBuffer);
 		void createTextureImageView();
@@ -58,6 +57,9 @@ namespace ps {
 		}
 
 		void LoadModel();
+		void generateMipmaps(VkImage image, VkFormat imageFormat, int32_t texWidth, int32_t texHeight, uint32_t mipLevels);
+
+		void createColorResources();
 
 		template <class T>
 		inline void hash_combine(std::size_t& s, const T& v)
@@ -117,6 +119,12 @@ namespace ps {
 		VkImageView getDepthImageView() {
 			return depthImageView;
 		}
+		VkImageView getColorImageView() {
+			return colorImageView;
+		}
+		uint32_t getMipLevels() {
+			return mipLevels;
+		}
 
 	private:
 		VkShaderModule createShaderModule(const std::vector<char>& code, VkDevice device);
@@ -145,10 +153,15 @@ namespace ps {
 		std::vector<VkCommandBuffer> commandBuffers;
 		bool framebufferResized = false;
 
+		VkImage colorImage;
+		VkDeviceMemory colorImageMemory;
+		VkImageView colorImageView;
+
 		VkImage depthImage;
 		VkDeviceMemory depthImageMemory;
 		VkImageView depthImageView;
 
+		uint32_t mipLevels;
 		VkImage textureImage;
 		VkDeviceMemory textureImageMemory;
 		VkImageView textureImageView;

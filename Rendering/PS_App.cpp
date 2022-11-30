@@ -24,13 +24,14 @@ namespace ps {
 		psDevice.pickPhysicalDevice(psWindow.getSurface());
 		psDevice.createLogicalDevice();
 		psDevice.createSwapChain(&psWindow);
-		psDevice.createImageViews();
+		psDevice.createImageViews(psPipeline.getMipLevels());
 		psPipeline.createRenderPass(psDevice.getDevice(), psDevice.getSwapChainImageFormat());
 		psPipeline.createDescriptorSetLayout(&psDevice);
 		psPipeline.createGraphicsPipeline(&psDevice);
 		psDevice.createCommandPool();
+		psPipeline.createColorResources();
 		psPipeline.createDepthResources();
-		psDevice.createFramebuffers(psPipeline.getRenderPass(), psPipeline.getDepthImageView());
+		psDevice.createFramebuffers(psPipeline.getRenderPass(), psPipeline.getDepthImageView(), psPipeline.getColorImageView());
 		psPipeline.createTextureImage();
 		psPipeline.createTextureImageView();
 		psPipeline.createTextureSampler();

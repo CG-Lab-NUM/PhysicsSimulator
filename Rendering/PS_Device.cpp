@@ -288,6 +288,7 @@ namespace ps {
 
         VkPhysicalDeviceFeatures deviceFeatures{};
         deviceFeatures.samplerAnisotropy = VK_TRUE;
+        deviceFeatures.sampleRateShading = VK_TRUE;
 
         VkDeviceCreateInfo createInfo{};
         createInfo.sType = VK_STRUCTURE_TYPE_DEVICE_CREATE_INFO;
@@ -457,17 +458,17 @@ namespace ps {
         }
     }
 
-    void PS_Device::createImageViews() {
+    void PS_Device::createImageViews(uint32_t mipLevels) {
         swapChainImageViews.resize(swapChainImages.size());
 
         for (size_t i = 0; i < swapChainImages.size(); i++) {
-            swapChainImageViews[i] = createImageView(swapChainImages[i], swapChainImageFormat, VK_IMAGE_ASPECT_COLOR_BIT);
+            swapChainImageViews[i] = createImageView(swapChainImages[i], swapChainImageFormat, VK_IMAGE_ASPECT_COLOR_BIT, mipLevels);
         }
 
         std::cout << "Image Views created...\n";
     }
 
-    VkImageView PS_Device::createImageView(VkImage image, VkFormat format, VkImageAspectFlags aspectFlags) {
+    VkImageView PS_Device::createImageView(VkImage image, VkFormat format, VkImageAspectFlags aspectFlags, uint32_t mipLevels) {
         VkImageViewCreateInfo viewInfo{};
         viewInfo.sType = VK_STRUCTURE_TYPE_IMAGE_VIEW_CREATE_INFO;
         viewInfo.image = image;
@@ -475,7 +476,7 @@ namespace ps {
         viewInfo.format = format;
         viewInfo.subresourceRange.aspectMask = aspectFlags;
         viewInfo.subresourceRange.baseMipLevel = 0;
-        viewInfo.subresourceRange.levelCount = 1;
+        viewInfo.subresourceRange.levelCount = mipLevels;
         viewInfo.subresourceRange.baseArrayLayer = 0;
         viewInfo.subresourceRange.layerCount = 1;
         
@@ -490,13 +491,14 @@ namespace ps {
     //
     // Frame Buffers
     //
-    void PS_Device::createFramebuffers(VkRenderPass renderPass, VkImageView depthImageView) {
+    void PS_Device::createFramebuffers(VkRenderPass renderPass, VkImageView depthImageView, VkImageView colorImageView) {
         swapChainFramebuffers.resize(swapChainImageViews.size());
 
         for (size_t i = 0; i < swapChainImageViews.size(); i++) {
-            std::array<VkImageView, 2> attachments = {
-                swapChainImageViews[i],
-                depthImageView
+            std::array<VkImageView, 3> attachments = {
+                colorImageView,
+                depthImageView,
+                swapChainImageViews[i]
             };
 
             VkFramebufferCreateInfo framebufferInfo{};
@@ -557,7 +559,7 @@ namespace ps {
         std::cout << "Created synchronization objects for frames...\n";
     }
 
-    void PS_Device::recreateSwapChain(PS_Window *psWindow, VkRenderPass renderPass, VkImageView depthImageView) {
+    void PS_Device::recreateSwapChain(PS_Window *psWindow, VkRenderPass renderPass, VkImageView depthImageView, VkImageView colorImageView, uint32_t mipLevels) {
         int width = 0, height = 0;
         glfwGetFramebufferSize(psWindow->getWindow(), &width, &height);
         while (width == 0 || height == 0) {
@@ -566,7 +568,6 @@ namespace ps {
         }
 
         vkDeviceWaitIdle(device);
-
 
         for (auto framebuffer : swapChainFramebuffers) {
             vkDestroyFramebuffer(device, framebuffer, nullptr);
@@ -579,7 +580,7 @@ namespace ps {
         vkDestroySwapchainKHR(device, swapChain, nullptr);
 
         createSwapChain(psWindow);
-        createImageViews();
-        createFramebuffers(renderPass, depthImageView);
+        createImageViews(mipLevels);
+        createFramebuffers(renderPass, depthImageView, colorImageView);
     }
 }
