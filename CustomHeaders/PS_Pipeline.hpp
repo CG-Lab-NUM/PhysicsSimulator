@@ -57,9 +57,26 @@ namespace ps {
 			return format == VK_FORMAT_D32_SFLOAT_S8_UINT || format == VK_FORMAT_D24_UNORM_S8_UINT;
 		}
 
+		void LoadModel();
+
+		template <class T>
+		inline void hash_combine(std::size_t& s, const T& v)
+		{
+			std::hash<T> h;
+			s ^= h(v) + 0x9e3779b9 + (s << 6) + (s >> 2);
+		}
+
+		struct S {
+			int field1;
+			short field2;
+			std::string field3;
+			// ...
+		};
+
+
 		//
 		// Shader
-		//
+		/*
 		const std::vector<PS_Window::Vertex> vertices = {
 			{{-0.5f, -0.5f, 0.0f}, {1.0f, 0.0f, 0.0f}, {0.0f, 0.0f}},
 			{{0.5f, -0.5f, 0.0f}, {0.0f, 1.0f, 0.0f}, {1.0f, 0.0f}},
@@ -76,8 +93,11 @@ namespace ps {
 			0, 1, 2, 2, 3, 0,
 			4, 5, 6, 6, 7, 4
 		};
-
-
+		*/
+		std::vector<PS_Window::Vertex> vertices;
+		std::vector<uint32_t> indices;
+		const std::string MODEL_PATH = "Meshes/StingSword.obj";
+		const std::string TEXTURE_PATH = "Textures/StingSword/StingSword_Base_Color.png";
 
 		//
 		// Getters
@@ -106,8 +126,8 @@ namespace ps {
 		VkDescriptorSetLayout descriptorSetLayout;
 		VkPipelineLayout pipelineLayout{};
 		VkPipeline graphicsPipeline{};
-		VkBuffer vertexBuffer{};
-		VkDeviceMemory vertexBufferMemory{};
+		VkBuffer vertexBuffer;
+		VkDeviceMemory vertexBufferMemory;
 		VkBuffer indexBuffer{};
 		VkDeviceMemory indexBufferMemory{};
 		PS_Device *psDevice;

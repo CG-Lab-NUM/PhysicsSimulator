@@ -10,6 +10,8 @@
 #define GLM_FORCE_DEPTH_ZERO_TO_ONE
 #include <glm/glm.hpp>
 #include <glm/gtc/matrix_transform.hpp>
+#define GLM_ENABLE_EXPERIMENTAL
+#include <glm/gtx/hash.hpp>
 #include <chrono>
 #include <vector>
 #include <array>
@@ -61,7 +63,12 @@ namespace ps {
 
 				return attributeDescriptions;
 			}
+
+			bool operator==(const Vertex& other) const {
+				return pos == other.pos && color == other.color && texCoord == other.texCoord;
+			}
 		};
+
 
 		struct UniformBufferObject {
 			glm::mat4 model;
@@ -87,5 +94,13 @@ namespace ps {
 		VkSurfaceKHR surface;
 
 		static void framebufferResizeCallback(GLFWwindow* window, int width, int height);
+	};
+}
+
+namespace std {
+	template<> struct hash<ps::PS_Window::Vertex> {
+		size_t operator()(ps::PS_Window::Vertex const& vertex) const {
+			return ((hash<glm::vec3>()(vertex.pos) ^ (hash<glm::vec3>()(vertex.color) << 1)) >> 1) ^ (hash<glm::vec2>()(vertex.texCoord) << 1);
+		}
 	};
 }

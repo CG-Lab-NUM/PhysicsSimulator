@@ -1,8 +1,13 @@
 #include "PS_Pipeline.hpp"
 #include <fstream>
+#include <unordered_map>
 
 #define STB_IMAGE_IMPLEMENTATION
 #include <stb_image.h>
+
+#define TINYOBJLOADER_IMPLEMENTATION
+#include <tiny_obj_loader.h>
+
 
 namespace ps {
     void PS_Pipeline::createGraphicsPipeline(PS_Device* psDevice) {
@@ -464,7 +469,7 @@ namespace ps {
         VkDeviceSize offsets[] = { 0 };
         vkCmdBindVertexBuffers(commandBuffer, 0, 1, vertexBuffers, offsets);
 
-        vkCmdBindIndexBuffer(commandBuffer, indexBuffer, 0, VK_INDEX_TYPE_UINT16);
+        vkCmdBindIndexBuffer(commandBuffer, indexBuffer, 0, VK_INDEX_TYPE_UINT32);
 
         vkCmdBindDescriptorSets(commandBuffer, VK_PIPELINE_BIND_POINT_GRAPHICS, pipelineLayout, 0, 1, &descriptorSets[psDevice->currentFrame], 0, nullptr);
 
@@ -623,11 +628,12 @@ namespace ps {
 
     void PS_Pipeline::createTextureImage() {
         int texWidth, texHeight, texChannels;
-        stbi_uc* pixels = stbi_load("Textures/dragon.jpg", &texWidth, &texHeight, &texChannels, STBI_rgb_alpha);
+        stbi_uc* pixels = stbi_load(TEXTURE_PATH.c_str(), &texWidth, &texHeight, &texChannels, STBI_rgb_alpha);
         VkDeviceSize imageSize = texWidth * texHeight * 4;
 
         if (!pixels) {
-            throw std::runtime_error("failed to load texture image!");
+            std::string err = "Failed to load texture image: " + TEXTURE_PATH;
+            throw std::runtime_error(err);
         }
         else {
             std::cout << "Texture successfuly loaded...\n";
@@ -857,5 +863,44 @@ namespace ps {
         }
 
         throw std::runtime_error("failed to find supported format!");
+    }
+
+    void PS_Pipeline::LoadModel() {
+        tinyobj::attrib_t attrib;
+        std::vector<tinyobj::shape_t> shapes;
+        std::vector<tinyobj::material_t> materials;
+        std::string warn, err;
+
+        if (!tinyobj::LoadObj(&attrib, &shapes, &materials, &warn, &err, MODEL_PATH.c_str())) {
+            throw std::runtime_error(warn + err);
+        }
+
+        std::unordered_map<PS_Window::Vertex, uint32_t> uniqueVertices{};
+
+        for (const auto& shape : shapes) {
+            for (const auto& index : shape.mesh.indices) {
+                PS_Window::Vertex vertex{};
+
+                vertex.pos = {
+                    attrib.vertices[3 * index.vertex_index + 0] / 25,
+                    attrib.vertices[3 * index.vertex_index + 1] / 25,
+                    attrib.vertices[3 * index.vertex_index + 2] / 25
+                };
+
+                vertex.texCoord = {
+                    attrib.texcoords[2 * index.texcoord_index + 0] / 25,
+                    1.0f - attrib.texcoords[2 * index.texcoord_index + 1] / 25
+                };
+
+                vertex.color = { 1.0f, 1.0f, 1.0f };
+
+                if (uniqueVertices.count(vertex) == 0) {
+                    uniqueVertices[vertex] = static_cast<uint32_t>(vertices.size());
+                    vertices.push_back(vertex);
+                }
+
+                indices.push_back(uniqueVertices[vertex]);
+            }
+        }
     }
 }

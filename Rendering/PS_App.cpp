@@ -34,6 +34,7 @@ namespace ps {
 		psPipeline.createTextureImage();
 		psPipeline.createTextureImageView();
 		psPipeline.createTextureSampler();
+		psPipeline.LoadModel();
 		psPipeline.createVertexBuffer(psDevice.getPhysicalDevice());
 		psPipeline.createIndexBuffer(&psDevice);
 		psPipeline.createUniformBuffers(&psDevice);
