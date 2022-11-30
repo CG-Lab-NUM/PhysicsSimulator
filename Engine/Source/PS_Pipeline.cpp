@@ -35,8 +35,8 @@ namespace ps {
         VkPipelineVertexInputStateCreateInfo vertexInputInfo{};
         vertexInputInfo.sType = VK_STRUCTURE_TYPE_PIPELINE_VERTEX_INPUT_STATE_CREATE_INFO;
 
-        auto bindingDescription = PS_Window::Vertex::getBindingDescription();
-        auto attributeDescriptions = PS_Window::Vertex::getAttributeDescriptions();
+        auto bindingDescription = PS_Structs::Vertex::getBindingDescription();
+        auto attributeDescriptions = PS_Structs::Vertex::getAttributeDescriptions();
 
         vertexInputInfo.vertexBindingDescriptionCount = 1;
         vertexInputInfo.vertexAttributeDescriptionCount = static_cast<uint32_t>(attributeDescriptions.size());
@@ -439,7 +439,7 @@ namespace ps {
         }
     }
 
-    void PS_Pipeline::recordCommandBuffer(VkCommandBuffer commandBuffer, uint32_t imageIndex, VkRenderPass renderPass, VkPipeline graphicsPipeline, const std::vector<PS_Window::Vertex> vertices) {
+    void PS_Pipeline::recordCommandBuffer(VkCommandBuffer commandBuffer, uint32_t imageIndex, VkRenderPass renderPass, VkPipeline graphicsPipeline, const std::vector<PS_Structs::Vertex> vertices) {
         VkCommandBufferBeginInfo beginInfo{};
         beginInfo.sType = VK_STRUCTURE_TYPE_COMMAND_BUFFER_BEGIN_INFO;
 
@@ -458,7 +458,7 @@ namespace ps {
 
 
         std::array<VkClearValue, 2> clearValues{};
-        clearValues[0].color = { {0.0f, 0.0f, 0.0f, 1.0f} };
+        clearValues[0].color = { {0.0f, 0.0f, 0.5f, 1.0f} };
         clearValues[1].depthStencil = { 1.0f, 0 };
 
         renderPassInfo.clearValueCount = static_cast<uint32_t>(clearValues.size());
@@ -556,7 +556,7 @@ namespace ps {
         auto currentTime = std::chrono::high_resolution_clock::now();
         float time = std::chrono::duration<float, std::chrono::seconds::period>(currentTime - startTime).count();
 
-        PS_Window::UniformBufferObject ubo{};
+        PS_Structs::UniformBufferObject ubo{};
         ubo.model = glm::rotate(glm::mat4(1.0f), time * glm::radians(90.0f), glm::vec3(0.0f, 0.0f, 1.0f));
         ubo.view = glm::lookAt(glm::vec3(2.0f, 2.0f, 2.0f), glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(0.0f, 0.0f, 1.0f));
         ubo.proj = glm::perspective(glm::radians(45.0f), psDevice->swapChainExtent.width / (float)psDevice->swapChainExtent.height, 0.1f, 10.0f);
@@ -566,7 +566,7 @@ namespace ps {
     }
 
     void PS_Pipeline::createUniformBuffers(PS_Device *psDevice) {
-        VkDeviceSize bufferSize = sizeof(PS_Window::UniformBufferObject);
+        VkDeviceSize bufferSize = sizeof(PS_Structs::UniformBufferObject);
 
         uniformBuffers.resize(psDevice->MAX_FRAMES_IN_FLIGHT);
         uniformBuffersMemory.resize(psDevice->MAX_FRAMES_IN_FLIGHT);
@@ -614,7 +614,7 @@ namespace ps {
             VkDescriptorBufferInfo bufferInfo{};
             bufferInfo.buffer = uniformBuffers[i];
             bufferInfo.offset = 0;
-            bufferInfo.range = sizeof(PS_Window::UniformBufferObject);
+            bufferInfo.range = sizeof(PS_Structs::UniformBufferObject);
 
             VkDescriptorImageInfo imageInfo{};
             imageInfo.imageLayout = VK_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL;
@@ -901,11 +901,11 @@ namespace ps {
             throw std::runtime_error(warn + err);
         }
 
-        std::unordered_map<PS_Window::Vertex, uint32_t> uniqueVertices{};
+        std::unordered_map<PS_Structs::Vertex, uint32_t> uniqueVertices{};
 
         for (const auto& shape : shapes) {
             for (const auto& index : shape.mesh.indices) {
-                PS_Window::Vertex vertex{};
+                PS_Structs::Vertex vertex{};
 
                 vertex.pos = {
                     attrib.vertices[3 * index.vertex_index + 0] / 25,

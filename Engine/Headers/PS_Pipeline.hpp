@@ -2,6 +2,7 @@
 #include "PS_Window.hpp"
 #include "PS_Colors.hpp"
 #include "PS_Device.hpp"
+#include "PS_Structs.hpp"
 #include <vector>
 
 namespace ps {
@@ -34,9 +35,8 @@ namespace ps {
 		void createUniformBuffers(PS_Device *psDevice);
 
 		void updateUniformBuffer(uint32_t currentImage, PS_Device* psDevice);
-
 		void createCommandBuffer();
-		void recordCommandBuffer(VkCommandBuffer commandBuffer, uint32_t imageIndex, VkRenderPass renderPass, VkPipeline graphicsPipeline, const std::vector<PS_Window::Vertex> vertices);
+		void recordCommandBuffer(VkCommandBuffer commandBuffer, uint32_t imageIndex, VkRenderPass renderPass, VkPipeline graphicsPipeline, const std::vector<PS_Structs::Vertex> vertices);
 		void createDescriptorSetLayout(PS_Device* psDevice);
 		void createDescriptorPool(PS_Device* psDevice);
 		void createDescriptorSets(PS_Device* psDevice);
@@ -96,10 +96,11 @@ namespace ps {
 			4, 5, 6, 6, 7, 4
 		};
 		*/
-		std::vector<PS_Window::Vertex> vertices;
+		std::vector<PS_Structs::Vertex> vertices;
 		std::vector<uint32_t> indices;
 		const std::string MODEL_PATH = "Meshes/StingSword.obj";
 		const std::string TEXTURE_PATH = "Textures/StingSword/StingSword_Base_Color.png";
+		//const std::string TEXTURE_PATH = "Textures/Basic/None.png";
 
 		//
 		// Getters
@@ -113,7 +114,7 @@ namespace ps {
 		VkBuffer getVertexBuffer() {
 			return vertexBuffer;
 		}
-		const std::vector<PS_Window::Vertex> getVertices() {
+		const std::vector<PS_Structs::Vertex> getVertices() {
 			return vertices;
 		}
 		VkImageView getDepthImageView() {

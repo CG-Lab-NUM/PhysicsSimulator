@@ -15,45 +15,54 @@
     </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="Rendering\main.cpp">
+    <ClCompile Include="main.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="Rendering\PS_App.cpp">
+    <ClCompile Include="Engine\Source\PS_App.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="Rendering\PS_Window.cpp">
+    <ClCompile Include="Engine\Source\PS_Window.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="Rendering\PS_Device.cpp">
+    <ClCompile Include="Engine\Source\PS_Device.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="Rendering\PS_Logger.cpp">
+    <ClCompile Include="Engine\Source\PS_Logger.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="Rendering\PS_Pipeline.cpp">
+    <ClCompile Include="Engine\Source\PS_Pipeline.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="Rendering\PS_Colors.cpp">
+    <ClCompile Include="Engine\Source\PS_Colors.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="CustomHeaders\PS_App.hpp">
+    <ClInclude Include="Engine\Headers\PS_App.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="CustomHeaders\PS_Window.hpp">
+    <ClInclude Include="Engine\Headers\PS_Window.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="CustomHeaders\PS_Device.hpp">
+    <ClInclude Include="Engine\Headers\PS_Device.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="CustomHeaders\PS_Logger.hpp">
+    <ClInclude Include="Engine\Headers\PS_Logger.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="CustomHeaders\PS_Pipeline.hpp">
+    <ClInclude Include="Engine\Headers\PS_Pipeline.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="CustomHeaders\PS_Colors.hpp">
+    <ClInclude Include="Engine\Headers\PS_Colors.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Engine\Headers\PS_Mesh.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Engine\Headers\PS_Structs.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Engine\Headers\PS_Generic.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
