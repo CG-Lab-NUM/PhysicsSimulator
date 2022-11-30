@@ -136,6 +136,7 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="Engine\Source\PS_Mesh.cpp" />
+    <ClCompile Include="Game\Source\PS_Game_Generic.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="Engine\Source\PS_App.cpp" />
     <ClCompile Include="Engine\Source\PS_Colors.cpp" />
@@ -154,6 +155,7 @@
     <ClInclude Include="Engine\Headers\PS_Pipeline.hpp" />
     <ClInclude Include="Engine\Headers\PS_Structs.hpp" />
     <ClInclude Include="Engine\Headers\PS_Window.hpp" />
+    <ClInclude Include="Game\Headers\PS_Game_Generic.hpp" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Shader\shader.frag" />
