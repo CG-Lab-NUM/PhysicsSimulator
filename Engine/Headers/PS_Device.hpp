@@ -7,13 +7,14 @@
 #include <algorithm>
 
 namespace ps {
-
+	/*
 	#ifdef NDEBUG
 		const bool enableValidationLayers = false;
 	#else
 		const bool enableValidationLayers = true;
 	#endif
-
+	*/
+	const bool enableValidationLayers = false;
 		class PS_Device {
 		public:
 		PS_Device() {

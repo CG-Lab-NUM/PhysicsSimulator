@@ -168,6 +168,5 @@ namespace ps {
 		VkImageView textureImageView;
 		VkSampler textureSampler;
 
-
 	};
 }
