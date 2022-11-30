@@ -288,6 +288,7 @@ namespace ps {
 
         VkPhysicalDeviceFeatures deviceFeatures{};
         deviceFeatures.samplerAnisotropy = VK_TRUE;
+        deviceFeatures.sampleRateShading = VK_TRUE;
 
         VkDeviceCreateInfo createInfo{};
         createInfo.sType = VK_STRUCTURE_TYPE_DEVICE_CREATE_INFO;
@@ -490,13 +491,14 @@ namespace ps {
     //
     // Frame Buffers
     //
-    void PS_Device::createFramebuffers(VkRenderPass renderPass, VkImageView depthImageView) {
+    void PS_Device::createFramebuffers(VkRenderPass renderPass, VkImageView depthImageView, VkImageView colorImageView) {
         swapChainFramebuffers.resize(swapChainImageViews.size());
 
         for (size_t i = 0; i < swapChainImageViews.size(); i++) {
-            std::array<VkImageView, 2> attachments = {
-                swapChainImageViews[i],
-                depthImageView
+            std::array<VkImageView, 3> attachments = {
+                colorImageView,
+                depthImageView,
+                swapChainImageViews[i]
             };
 
             VkFramebufferCreateInfo framebufferInfo{};
@@ -557,7 +559,7 @@ namespace ps {
         std::cout << "Created synchronization objects for frames...\n";
     }
 
-    void PS_Device::recreateSwapChain(PS_Window *psWindow, VkRenderPass renderPass, VkImageView depthImageView, uint32_t mipLevels) {
+    void PS_Device::recreateSwapChain(PS_Window *psWindow, VkRenderPass renderPass, VkImageView depthImageView, VkImageView colorImageView, uint32_t mipLevels) {
         int width = 0, height = 0;
         glfwGetFramebufferSize(psWindow->getWindow(), &width, &height);
         while (width == 0 || height == 0) {
@@ -566,7 +568,6 @@ namespace ps {
         }
 
         vkDeviceWaitIdle(device);
-
 
         for (auto framebuffer : swapChainFramebuffers) {
             vkDestroyFramebuffer(device, framebuffer, nullptr);
@@ -580,6 +581,6 @@ namespace ps {
 
         createSwapChain(psWindow);
         createImageViews(mipLevels);
-        createFramebuffers(renderPass, depthImageView);
+        createFramebuffers(renderPass, depthImageView, colorImageView);
     }
 }

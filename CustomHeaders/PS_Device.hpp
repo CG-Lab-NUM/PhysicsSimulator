@@ -59,10 +59,10 @@ namespace ps {
 		};
 		void createSwapChain(PS_Window *psWindow);
 		void createImageViews(uint32_t mipLevels);
-		void createFramebuffers(VkRenderPass renderPass, VkImageView depthImageView);
+		void createFramebuffers(VkRenderPass renderPass, VkImageView depthImageView, VkImageView colorImageView);
 		void createCommandPool();
 		void createSyncObjects();
-		void recreateSwapChain(PS_Window* psWindow, VkRenderPass renderPass, VkImageView depthImageView, uint32_t mipLevels);
+		void recreateSwapChain(PS_Window* psWindow, VkRenderPass renderPass, VkImageView depthImageView, VkImageView colorImageView, uint32_t mipLevels);
 
 
 		std::vector<VkImage> swapChainImages;
@@ -114,11 +114,15 @@ namespace ps {
 		void setSurface(VkSurfaceKHR surface) {
 			this->surface = surface;
 		}
+		VkSampleCountFlagBits getMsaaSamples() {
+			return msaaSamples;
+		}
 
 	private:
 		PS_Logger psLogger{};
 
 		VkDevice device;
+		VkSampleCountFlagBits msaaSamples = VK_SAMPLE_COUNT_1_BIT;
 		VkSurfaceKHR surface;
 		VkPhysicalDevice physicalDevice = VK_NULL_HANDLE;
 
