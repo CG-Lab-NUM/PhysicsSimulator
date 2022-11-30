@@ -644,7 +644,8 @@ namespace ps {
         }
     }
 
-    void PS_Pipeline::createTextureImage() {
+    void PS_Pipeline::createTextureImage(PS_GameObject* object) {
+        TEXTURE_PATH = object->getTexturePath();
         int texWidth, texHeight, texChannels;
         stbi_uc* pixels = stbi_load(TEXTURE_PATH.c_str(), &texWidth, &texHeight, &texChannels, STBI_rgb_alpha);
         mipLevels = static_cast<uint32_t>(std::floor(std::log2(std::max(texWidth, texHeight)))) + 1;
@@ -892,17 +893,17 @@ namespace ps {
         throw std::runtime_error("failed to find supported format!");
     }
 
-    void PS_Pipeline::LoadModel() {
-        //psMesh.loadObjects();
-
+    void PS_Pipeline::loadModel(PS_GameObject *object) {
         tinyobj::attrib_t attrib;
         std::vector<tinyobj::shape_t> shapes;
         std::vector<tinyobj::material_t> materials;
         std::string warn, err;
 
-        if (!tinyobj::LoadObj(&attrib, &shapes, &materials, &warn, &err, MODEL_PATH.c_str())) {
+        if (!tinyobj::LoadObj(&attrib, &shapes, &materials, &warn, &err, object->getMeshPath().c_str())) {
             throw std::runtime_error(warn + err);
         }
+
+        TEXTURE_PATH = object->getTexturePath();
 
         std::unordered_map<PS_Structs::Vertex, uint32_t> uniqueVertices{};
 
@@ -911,14 +912,14 @@ namespace ps {
                 PS_Structs::Vertex vertex{};
 
                 vertex.pos = {
-                    attrib.vertices[3 * index.vertex_index + 0] / 25,
-                    attrib.vertices[3 * index.vertex_index + 1] / 25,
-                    attrib.vertices[3 * index.vertex_index + 2] / 25
+                    attrib.vertices[3 * index.vertex_index + 0] * object->getScale()[0],
+                    attrib.vertices[3 * index.vertex_index + 1] * object->getScale()[1],
+                    attrib.vertices[3 * index.vertex_index + 2] * object->getScale()[2]
                 };
 
                 vertex.texCoord = {
-                    attrib.texcoords[2 * index.texcoord_index + 0] / 25,
-                    1.0f - attrib.texcoords[2 * index.texcoord_index + 1] / 25
+                    attrib.texcoords[2 * index.texcoord_index + 0],
+                    1.0f - attrib.texcoords[2 * index.texcoord_index + 1]
                 };
 
                 vertex.color = { 1.0f, 1.0f, 1.0f };

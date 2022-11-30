@@ -3,6 +3,7 @@
 #include "PS_Colors.hpp"
 #include "PS_Device.hpp"
 #include "PS_Structs.hpp"
+#include "PS_GameObject.hpp"
 #include <vector>
 
 namespace ps {
@@ -41,7 +42,7 @@ namespace ps {
 		void createDescriptorPool(PS_Device* psDevice);
 		void createDescriptorSets(PS_Device* psDevice);
 		void createImage(uint32_t width, uint32_t height, uint32_t mipLevels, VkSampleCountFlagBits numSamples, VkFormat format, VkImageTiling tiling, VkImageUsageFlags usage, VkMemoryPropertyFlags properties, VkImage& image, VkDeviceMemory& imageMemory);
-		void createTextureImage();
+		void createTextureImage(PS_GameObject *object);
 		void copyBufferToImage(VkBuffer buffer, VkImage image, uint32_t width, uint32_t height);
 		void transitionImageLayout(VkImage image, VkFormat format, VkImageLayout oldLayout, VkImageLayout newLayout, uint32_t mipLevels);
 		VkCommandBuffer beginSingleTimeCommands();
@@ -56,7 +57,7 @@ namespace ps {
 			return format == VK_FORMAT_D32_SFLOAT_S8_UINT || format == VK_FORMAT_D24_UNORM_S8_UINT;
 		}
 
-		void LoadModel();
+		void loadModel(PS_GameObject *object);
 		void generateMipmaps(VkImage image, VkFormat imageFormat, int32_t texWidth, int32_t texHeight, uint32_t mipLevels);
 
 		void createColorResources();
@@ -99,7 +100,7 @@ namespace ps {
 		std::vector<PS_Structs::Vertex> vertices;
 		std::vector<uint32_t> indices;
 		const std::string MODEL_PATH = "Meshes/StingSword.obj";
-		const std::string TEXTURE_PATH = "Textures/StingSword/StingSword_Base_Color.png";
+		std::string TEXTURE_PATH = "Textures/StingSword/StingSword_Base_Color.png";
 		//const std::string TEXTURE_PATH = "Textures/Basic/None.png";
 
 		//
