@@ -104,7 +104,7 @@
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
-      <AdditionalIncludeDirectories>D:\VulkanProjects\PhysicsSimulator\Libraries\tinyobjloader-release;D:\VulkanProjects\PhysicsSimulator\Libraries\stb-master;C:\VulkanSDK\1.3.231.1\Include;D:\VulkanProjects\PhysicsSimulator\Libraries\glfw-3.3.8\include;D:\VulkanProjects\PhysicsSimulator\Libraries\glm-master;D:\VulkanProjects\PhysicsSimulator\CustomHeaders;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>D:\VulkanProjects\PhysicsSimulator\Libraries\tinyobjloader-release;D:\VulkanProjects\PhysicsSimulator\Libraries\stb-master;C:\VulkanSDK\1.3.231.1\Include;D:\VulkanProjects\PhysicsSimulator\Libraries\glfw-3.3.8\include;D:\VulkanProjects\PhysicsSimulator\Libraries\glm-master;D:\VulkanProjects\PhysicsSimulator\Engine\Headers;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <LanguageStandard>stdcpp17</LanguageStandard>
     </ClCompile>
     <Link>
@@ -122,7 +122,7 @@
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>NDEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
-      <AdditionalIncludeDirectories>D:\VulkanProjects\PhysicsSimulator\Libraries\tinyobjloader-release;D:\VulkanProjects\PhysicsSimulator\Libraries\stb-master;C:\VulkanSDK\1.3.231.1\Include;D:\VulkanProjects\PhysicsSimulator\Libraries\glfw-3.3.8\include;D:\VulkanProjects\PhysicsSimulator\Libraries\glm-master;D:\VulkanProjects\PhysicsSimulator\CustomHeaders;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>D:\VulkanProjects\PhysicsSimulator\Libraries\tinyobjloader-release;D:\VulkanProjects\PhysicsSimulator\Libraries\stb-master;C:\VulkanSDK\1.3.231.1\Include;D:\VulkanProjects\PhysicsSimulator\Libraries\glfw-3.3.8\include;D:\VulkanProjects\PhysicsSimulator\Libraries\glm-master;D:\VulkanProjects\PhysicsSimulator\Engine\Headers;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <LanguageStandard>stdcpp17</LanguageStandard>
     </ClCompile>
     <Link>
@@ -135,21 +135,24 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClCompile Include="Rendering\main.cpp" />
-    <ClCompile Include="Rendering\PS_App.cpp" />
-    <ClCompile Include="Rendering\PS_Colors.cpp" />
-    <ClCompile Include="Rendering\PS_Device.cpp" />
-    <ClCompile Include="Rendering\PS_Logger.cpp" />
-    <ClCompile Include="Rendering\PS_Pipeline.cpp" />
-    <ClCompile Include="Rendering\PS_Window.cpp" />
+    <ClCompile Include="main.cpp" />
+    <ClCompile Include="Engine\Source\PS_App.cpp" />
+    <ClCompile Include="Engine\Source\PS_Colors.cpp" />
+    <ClCompile Include="Engine\Source\PS_Device.cpp" />
+    <ClCompile Include="Engine\Source\PS_Logger.cpp" />
+    <ClCompile Include="Engine\Source\PS_Pipeline.cpp" />
+    <ClCompile Include="Engine\Source\PS_Window.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="CustomHeaders\PS_App.hpp" />
-    <ClInclude Include="CustomHeaders\PS_Colors.hpp" />
-    <ClInclude Include="CustomHeaders\PS_Device.hpp" />
-    <ClInclude Include="CustomHeaders\PS_Logger.hpp" />
-    <ClInclude Include="CustomHeaders\PS_Pipeline.hpp" />
-    <ClInclude Include="CustomHeaders\PS_Window.hpp" />
+    <ClInclude Include="Engine\Headers\PS_App.hpp" />
+    <ClInclude Include="Engine\Headers\PS_Colors.hpp" />
+    <ClInclude Include="Engine\Headers\PS_Device.hpp" />
+    <ClInclude Include="Engine\Headers\PS_Generic.hpp" />
+    <ClInclude Include="Engine\Headers\PS_Logger.hpp" />
+    <ClInclude Include="Engine\Headers\PS_Mesh.hpp" />
+    <ClInclude Include="Engine\Headers\PS_Pipeline.hpp" />
+    <ClInclude Include="Engine\Headers\PS_Structs.hpp" />
+    <ClInclude Include="Engine\Headers\PS_Window.hpp" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Shader\shader.frag" />

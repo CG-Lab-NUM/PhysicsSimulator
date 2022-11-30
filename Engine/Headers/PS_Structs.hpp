@@ -1,34 +1,10 @@
 #pragma once
-#define VK_USE_PLATFORM_WIN32_KHR
-#define GLFW_INCLUDE_VULKAN
-#include <GLFW/glfw3.h>
-#define GLFW_EXPOSE_NATIVE_WIN32
-#include <GLFW/glfw3native.h>
 
-#include <iostream>
-#define GLM_FORCE_RADIANS
-#define GLM_FORCE_DEPTH_ZERO_TO_ONE
-#include <glm/glm.hpp>
-#include <glm/gtc/matrix_transform.hpp>
-#define GLM_ENABLE_EXPERIMENTAL
-#include <glm/gtx/hash.hpp>
-#include <chrono>
-#include <vector>
-#include <array>
-#include "PS_Logger.hpp"
+#include "PS_Generic.hpp"
 
 namespace ps {
-	class PS_Window {
+	class PS_Structs {
 	public:
-		PS_Window(int width, int height, std::string name);
-		~PS_Window();
-
-		PS_Window(const PS_Window&) = delete;
-		PS_Window& operator = (const PS_Window&) = delete;
-
-		void initWindow();
-		void createSurface(VkInstance instance, VkDevice device);
-
 		struct Vertex {
 			glm::vec3 pos;
 			glm::vec3 color;
@@ -75,31 +51,12 @@ namespace ps {
 			glm::mat4 view;
 			glm::mat4 proj;
 		};
-
-		//
-		// Getters
-		//
-		GLFWwindow* getWindow() {
-			return window;
-		}
-		VkSurfaceKHR getSurface() {
-			return surface;
-		}
-
-	private:
-		int WIDTH;
-		int HEIGHT;
-		std::string NAME;
-		GLFWwindow* window;
-		VkSurfaceKHR surface;
-
-		static void framebufferResizeCallback(GLFWwindow* window, int width, int height);
 	};
 }
 
 namespace std {
-	template<> struct hash<ps::PS_Window::Vertex> {
-		size_t operator()(ps::PS_Window::Vertex const& vertex) const {
+	template<> struct hash<ps::PS_Structs::Vertex> {
+		size_t operator()(ps::PS_Structs::Vertex const& vertex) const {
 			return ((hash<glm::vec3>()(vertex.pos) ^ (hash<glm::vec3>()(vertex.color) << 1)) >> 1) ^ (hash<glm::vec2>()(vertex.texCoord) << 1);
 		}
 	};
