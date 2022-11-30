@@ -36,7 +36,6 @@ namespace ps {
 		void createInstance();
 		void pickPhysicalDevice(VkSurfaceKHR surface);
 		void createLogicalDevice();
-		void cleanDevice();
 
 		bool checkValidationLayerSupport();
 		static VKAPI_ATTR VkBool32 VKAPI_CALL debugCallback(VkDebugUtilsMessageSeverityFlagBitsEXT messageSeverity, VkDebugUtilsMessageTypeFlagsEXT messageType, const VkDebugUtilsMessengerCallbackDataEXT* pCallbackData, void* pUserData);
@@ -48,7 +47,8 @@ namespace ps {
 		bool isDeviceSuitable(VkPhysicalDevice device, VkSurfaceKHR surface);
 		QueueFamilyIndices findQueueFamilies(VkPhysicalDevice device);
 		bool checkDeviceExtensionSupport(VkPhysicalDevice device);
-		
+		VkImageView createImageView(VkImage image, VkFormat format, VkImageAspectFlags aspectFlags);
+
 		//
 		// Swap Chain
 		//
@@ -59,10 +59,11 @@ namespace ps {
 		};
 		void createSwapChain(PS_Window *psWindow);
 		void createImageViews();
-		void createFramebuffers(VkRenderPass renderPass);
+		void createFramebuffers(VkRenderPass renderPass, VkImageView depthImageView);
 		void createCommandPool();
 		void createSyncObjects();
-		void recreateSwapChain(PS_Window* psWindow, VkRenderPass renderPass);
+		void recreateSwapChain(PS_Window* psWindow, VkRenderPass renderPass, VkImageView depthImageView);
+
 
 		std::vector<VkImage> swapChainImages;
 		std::vector<VkFramebuffer> swapChainFramebuffers;

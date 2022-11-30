@@ -2,8 +2,6 @@
 #include "PS_Window.hpp"
 #include "PS_Colors.hpp"
 #include "PS_Device.hpp"
-
-
 #include <vector>
 
 namespace ps {
@@ -18,6 +16,9 @@ namespace ps {
 			vkDestroyPipelineLayout(psDevice->getDevice(), pipelineLayout, nullptr);
 			vkDestroyBuffer(psDevice->getDevice(), vertexBuffer, nullptr);
 			vkFreeMemory(psDevice->getDevice(), vertexBufferMemory, nullptr);
+			vkDestroyImageView(psDevice->getDevice(), textureImageView, nullptr);
+			vkDestroySampler(psDevice->getDevice(), textureSampler, nullptr);
+
 		}
 		PS_Pipeline(const PS_Pipeline&) = delete;
 		PS_Pipeline& operator = (const PS_Pipeline&) = delete;
@@ -40,19 +41,63 @@ namespace ps {
 		void createDescriptorPool(PS_Device* psDevice);
 		void createDescriptorSets(PS_Device* psDevice);
 
-		//
-		// Shader
-		//
-		const std::vector<PS_Window::Vertex> vertices = {
-			{{-0.5f, -0.5f}, {1.0f, 0.0f, 0.0f}},
-			{{0.5f, -0.5f}, {0.0f, 1.0f, 0.0f}},
-			{{0.5f, 0.5f}, {0.0f, 0.0f, 1.0f}},
-			{{-0.5f, 0.5f}, {1.0f, 1.0f, 1.0f}}
-		};
-		const std::vector<uint16_t> indices = {
-			0, 1, 2, 2, 3, 0
+		void createImage(uint32_t width, uint32_t height, VkFormat format, VkImageTiling tiling, VkImageUsageFlags usage, VkMemoryPropertyFlags properties, VkImage& image, VkDeviceMemory& imageMemory);
+		void createTextureImage();
+		void copyBufferToImage(VkBuffer buffer, VkImage image, uint32_t width, uint32_t height);
+		void transitionImageLayout(VkImage image, VkFormat format, VkImageLayout oldLayout, VkImageLayout newLayout);
+		VkCommandBuffer beginSingleTimeCommands();
+		void endSingleTimeCommands(VkCommandBuffer commandBuffer);
+		void createTextureImageView();
+		void createTextureSampler();
+
+		void createDepthResources();
+		VkFormat findDepthFormat();
+		VkFormat findSupportedFormat(const std::vector<VkFormat>& candidates, VkImageTiling tiling, VkFormatFeatureFlags features);
+		bool hasStencilComponent(VkFormat format) {
+			return format == VK_FORMAT_D32_SFLOAT_S8_UINT || format == VK_FORMAT_D24_UNORM_S8_UINT;
+		}
+
+		void LoadModel();
+
+		template <class T>
+		inline void hash_combine(std::size_t& s, const T& v)
+		{
+			std::hash<T> h;
+			s ^= h(v) + 0x9e3779b9 + (s << 6) + (s >> 2);
+		}
+
+		struct S {
+			int field1;
+			short field2;
+			std::string field3;
+			// ...
 		};
 
+
+		//
+		// Shader
+		/*
+		const std::vector<PS_Window::Vertex> vertices = {
+			{{-0.5f, -0.5f, 0.0f}, {1.0f, 0.0f, 0.0f}, {0.0f, 0.0f}},
+			{{0.5f, -0.5f, 0.0f}, {0.0f, 1.0f, 0.0f}, {1.0f, 0.0f}},
+			{{0.5f, 0.5f, 0.0f}, {0.0f, 0.0f, 1.0f}, {1.0f, 1.0f}},
+			{{-0.5f, 0.5f, 0.0f}, {1.0f, 1.0f, 1.0f}, {0.0f, 1.0f}},
+
+			{{-0.5f, -0.5f, -0.5f}, {1.0f, 0.0f, 0.0f}, {0.0f, 0.0f}},
+			{{0.5f, -0.5f, -0.5f}, {0.0f, 1.0f, 0.0f}, {1.0f, 0.0f}},
+			{{0.5f, 0.5f, -0.5f}, {0.0f, 0.0f, 1.0f}, {1.0f, 1.0f}},
+			{{-0.5f, 0.5f, -0.5f}, {1.0f, 1.0f, 1.0f}, {0.0f, 1.0f}}
+		};
+
+		const std::vector<uint16_t> indices = {
+			0, 1, 2, 2, 3, 0,
+			4, 5, 6, 6, 7, 4
+		};
+		*/
+		std::vector<PS_Window::Vertex> vertices;
+		std::vector<uint32_t> indices;
+		const std::string MODEL_PATH = "Meshes/StingSword.obj";
+		const std::string TEXTURE_PATH = "Textures/StingSword/StingSword_Base_Color.png";
 
 		//
 		// Getters
@@ -69,6 +114,9 @@ namespace ps {
 		const std::vector<PS_Window::Vertex> getVertices() {
 			return vertices;
 		}
+		VkImageView getDepthImageView() {
+			return depthImageView;
+		}
 
 	private:
 		VkShaderModule createShaderModule(const std::vector<char>& code, VkDevice device);
@@ -78,8 +126,8 @@ namespace ps {
 		VkDescriptorSetLayout descriptorSetLayout;
 		VkPipelineLayout pipelineLayout{};
 		VkPipeline graphicsPipeline{};
-		VkBuffer vertexBuffer{};
-		VkDeviceMemory vertexBufferMemory{};
+		VkBuffer vertexBuffer;
+		VkDeviceMemory vertexBufferMemory;
 		VkBuffer indexBuffer{};
 		VkDeviceMemory indexBufferMemory{};
 		PS_Device *psDevice;
@@ -96,5 +144,16 @@ namespace ps {
 		VkCommandBuffer commandBuffer;
 		std::vector<VkCommandBuffer> commandBuffers;
 		bool framebufferResized = false;
+
+		VkImage depthImage;
+		VkDeviceMemory depthImageMemory;
+		VkImageView depthImageView;
+
+		VkImage textureImage;
+		VkDeviceMemory textureImageMemory;
+		VkImageView textureImageView;
+		VkSampler textureSampler;
+
+
 	};
 }
