@@ -561,6 +561,10 @@ namespace ps {
         //ubo.view = glm::lookAt(glm::vec3(2.0f, 2.0f, 2.0f), glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(0.0f, 0.0f, 1.0f));
         //ubo.proj = glm::perspective(glm::radians(45.0f), psDevice->swapChainExtent.width / (float)psDevice->swapChainExtent.height, 0.1f, 10.0f);
         ubo.model = glm::mat4(0.1f);
+        // lookAt(param1, param2, param3)
+        // param1 = camera position vector from origin of coordinate
+        // param2 = target position vector from origin of coordinate
+        // param = up vector
         ubo.view = glm::lookAt(glm::vec3(1.0f, 0.0f, 0.3f), glm::vec3(0.0f, 0.0f, 0.1f), glm::vec3(0.2f, 0.0f, 1.0f));
         ubo.proj = glm::perspective(glm::radians(45.0f), psDevice->swapChainExtent.width / (float)psDevice->swapChainExtent.height, 0.1f, 10.0f);
         ubo.proj[1][1] *= -1;
