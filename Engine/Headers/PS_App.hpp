@@ -6,6 +6,7 @@
 #include "PS_Device.hpp"
 #include "PS_Pipeline.hpp"
 #include "PS_Loader.hpp"
+#include "PS_GameLevel.hpp"
 
 namespace ps {
 	class PS_App {
@@ -14,7 +15,6 @@ namespace ps {
 		static constexpr int HEIGHT = 800;
 
 		PS_App();
-		~PS_App();
 		PS_App(const PS_App&) = delete;
 		PS_App& operator = (const PS_App&) = delete;
 
@@ -24,9 +24,7 @@ namespace ps {
 		}
 
 	private:
-		void initVulkan();
 		void mainLoop();
-		void cleanup();
 
 		PS_Window psWindow{ WIDTH, HEIGHT, "Hello Vulkan" };
 		PS_Device psDevice{};

@@ -60,4 +60,11 @@ namespace std {
 			return ((hash<glm::vec3>()(vertex.pos) ^ (hash<glm::vec3>()(vertex.color) << 1)) >> 1) ^ (hash<glm::vec2>()(vertex.texCoord) << 1);
 		}
 	};
+
+	template <class T>
+	inline void hash_combine(std::size_t& s, const T& v)
+	{
+		std::hash<T> h;
+		s ^= h(v) + 0x9e3779b9 + (s << 6) + (s >> 2);
+	}
 }

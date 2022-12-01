@@ -10,7 +10,7 @@
 
 
 namespace ps {
-    void PS_Pipeline::createGraphicsPipeline(PS_Device* psDevice) {
+    void PS_Pipeline::createGraphicsPipeline() {
         this->psDevice = psDevice;
         auto vertShaderCode = readFile("Shaders/vert.spv");
         auto fragShaderCode = readFile("Shaders/frag.spv");
@@ -181,9 +181,9 @@ namespace ps {
         return shaderModule;
     }
 
-    void PS_Pipeline::createRenderPass(VkDevice device, VkFormat swapChainImageFormat) {
+    void PS_Pipeline::createRenderPass() {
         VkAttachmentDescription colorAttachment{};
-        colorAttachment.format = swapChainImageFormat;
+        colorAttachment.format = psDevice->getSwapChainImageFormat();
         colorAttachment.samples = psDevice->getMsaaSamples();
         colorAttachment.loadOp = VK_ATTACHMENT_LOAD_OP_CLEAR;
         colorAttachment.storeOp = VK_ATTACHMENT_STORE_OP_STORE;
@@ -203,7 +203,7 @@ namespace ps {
         depthAttachment.finalLayout = VK_IMAGE_LAYOUT_DEPTH_STENCIL_ATTACHMENT_OPTIMAL;
 
         VkAttachmentDescription colorAttachmentResolve{};
-        colorAttachmentResolve.format = swapChainImageFormat;
+        colorAttachmentResolve.format = psDevice->getSwapChainImageFormat();
         colorAttachmentResolve.samples = VK_SAMPLE_COUNT_1_BIT;
         colorAttachmentResolve.loadOp = VK_ATTACHMENT_LOAD_OP_DONT_CARE;
         colorAttachmentResolve.storeOp = VK_ATTACHMENT_STORE_OP_STORE;
@@ -249,7 +249,7 @@ namespace ps {
         renderPassInfo.dependencyCount = 1;
         renderPassInfo.pDependencies = &dependency;
 
-        VkResult result = vkCreateRenderPass(device, &renderPassInfo, nullptr, &renderPass);
+        VkResult result = vkCreateRenderPass(psDevice->getDevice(), &renderPassInfo, nullptr, &renderPass);
         if (result != VK_SUCCESS) {
             std::cout << result;
             throw std::runtime_error("failed to create render pass!");
@@ -259,19 +259,19 @@ namespace ps {
         }
     }
 
-    void PS_Pipeline::createVertexBuffer(VkPhysicalDevice physicalDevice) {
+    void PS_Pipeline::createVertexBuffer() {
         VkDeviceSize bufferSize = sizeof(vertices[0]) * vertices.size();
 
         VkBuffer stagingBuffer;
         VkDeviceMemory stagingBufferMemory;
-        createBuffer(bufferSize, VK_BUFFER_USAGE_TRANSFER_SRC_BIT, VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT | VK_MEMORY_PROPERTY_HOST_COHERENT_BIT, stagingBuffer, stagingBufferMemory, physicalDevice);
+        createBuffer(bufferSize, VK_BUFFER_USAGE_TRANSFER_SRC_BIT, VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT | VK_MEMORY_PROPERTY_HOST_COHERENT_BIT, stagingBuffer, stagingBufferMemory, psDevice->getPhysicalDevice());
 
         void* data;
         vkMapMemory(psDevice->getDevice(), stagingBufferMemory, 0, bufferSize, 0, &data);
         memcpy(data, vertices.data(), (size_t)bufferSize);
         vkUnmapMemory(psDevice->getDevice(), stagingBufferMemory);
 
-        createBuffer(bufferSize, VK_BUFFER_USAGE_TRANSFER_DST_BIT | VK_BUFFER_USAGE_VERTEX_BUFFER_BIT, VK_MEMORY_PROPERTY_DEVICE_LOCAL_BIT, vertexBuffer, vertexBufferMemory, physicalDevice);
+        createBuffer(bufferSize, VK_BUFFER_USAGE_TRANSFER_DST_BIT | VK_BUFFER_USAGE_VERTEX_BUFFER_BIT, VK_MEMORY_PROPERTY_DEVICE_LOCAL_BIT, vertexBuffer, vertexBufferMemory, psDevice->getPhysicalDevice());
 
         copyBuffer(stagingBuffer, vertexBuffer, bufferSize);
 
@@ -352,7 +352,7 @@ namespace ps {
         vkFreeCommandBuffers(psDevice->getDevice(), psDevice->getCommandPool(), 1, &commandBuffer);
     }
 
-    void PS_Pipeline::drawFrame(PS_Window* psWindow, PS_Device* psDevice) {
+    void PS_Pipeline::drawFrame(PS_Window* psWindow) {
         vkWaitForFences(psDevice->getDevice(), 1, &psDevice->inFlightFences[psDevice->currentFrame], VK_TRUE, UINT64_MAX);
 
         uint32_t imageIndex;
@@ -372,7 +372,7 @@ namespace ps {
         vkResetCommandBuffer(commandBuffers[psDevice->currentFrame], /*VkCommandBufferResetFlagBits*/ 0);
         recordCommandBuffer(commandBuffers[psDevice->currentFrame], imageIndex, renderPass, graphicsPipeline, vertices);
 
-        updateUniformBuffer(psDevice->currentFrame, psDevice);
+        updateUniformBuffer(psDevice->currentFrame);
 
         VkSubmitInfo submitInfo{};
         submitInfo.sType = VK_STRUCTURE_TYPE_SUBMIT_INFO;
@@ -501,7 +501,7 @@ namespace ps {
         }
     }
 
-    void PS_Pipeline::createIndexBuffer(PS_Device* psDevice) {
+    void PS_Pipeline::createIndexBuffer() {
         VkDeviceSize bufferSize = sizeof(indices[0]) * indices.size();
 
         VkBuffer stagingBuffer;
@@ -521,7 +521,7 @@ namespace ps {
         vkFreeMemory(psDevice->getDevice(), stagingBufferMemory, nullptr);
     }
 
-    void PS_Pipeline::createDescriptorSetLayout(PS_Device *psDevice) {
+    void PS_Pipeline::createDescriptorSetLayout() {
         VkDescriptorSetLayoutBinding uboLayoutBinding{};
         uboLayoutBinding.binding = 0;
         uboLayoutBinding.descriptorCount = 1;
@@ -551,22 +551,24 @@ namespace ps {
             std::cout << "Created descriptor set layout...\n";
         }
     }
-    void PS_Pipeline::updateUniformBuffer(uint32_t currentImage, PS_Device *psDevice) {
+    void PS_Pipeline::updateUniformBuffer(uint32_t currentImage) {
         static auto startTime = std::chrono::high_resolution_clock::now();
         auto currentTime = std::chrono::high_resolution_clock::now();
         float time = std::chrono::duration<float, std::chrono::seconds::period>(currentTime - startTime).count();
 
         PS_Structs::UniformBufferObject ubo{};
-        ubo.model = glm::mat4(0.1f);
         //ubo.model = glm::rotate(glm::mat4(1.0f), time * glm::radians(90.0f), glm::vec3(0.0f, 0.0f, 1.0f));
-        ubo.view = glm::lookAt(glm::vec3(2.0f, 2.0f, 2.0f), glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(0.0f, 0.0f, 1.0f));
+        //ubo.view = glm::lookAt(glm::vec3(2.0f, 2.0f, 2.0f), glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(0.0f, 0.0f, 1.0f));
+        //ubo.proj = glm::perspective(glm::radians(45.0f), psDevice->swapChainExtent.width / (float)psDevice->swapChainExtent.height, 0.1f, 10.0f);
+        ubo.model = glm::mat4(0.1f);
+        ubo.view = glm::lookAt(glm::vec3(1.0f, 0.0f, 0.3f), glm::vec3(0.0f, 0.0f, 0.1f), glm::vec3(0.2f, 0.0f, 1.0f));
         ubo.proj = glm::perspective(glm::radians(45.0f), psDevice->swapChainExtent.width / (float)psDevice->swapChainExtent.height, 0.1f, 10.0f);
         ubo.proj[1][1] *= -1;
 
         memcpy(uniformBuffersMapped[currentImage], &ubo, sizeof(ubo));
     }
 
-    void PS_Pipeline::createUniformBuffers(PS_Device *psDevice) {
+    void PS_Pipeline::createUniformBuffers() {
         VkDeviceSize bufferSize = sizeof(PS_Structs::UniformBufferObject);
 
         uniformBuffers.resize(psDevice->MAX_FRAMES_IN_FLIGHT);
@@ -580,7 +582,7 @@ namespace ps {
         }
     }
 
-    void PS_Pipeline::createDescriptorPool(PS_Device *psDevice) {
+    void PS_Pipeline::createDescriptorPool() {
         std::array<VkDescriptorPoolSize, 2> poolSizes{};
         poolSizes[0].type = VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER;
         poolSizes[0].descriptorCount = static_cast<uint32_t>(psDevice->MAX_FRAMES_IN_FLIGHT);
@@ -598,7 +600,7 @@ namespace ps {
         }
     }
 
-    void PS_Pipeline::createDescriptorSets(PS_Device* psDevice) {
+    void PS_Pipeline::createDescriptorSets() {
         std::vector<VkDescriptorSetLayout> layouts(psDevice->MAX_FRAMES_IN_FLIGHT, descriptorSetLayout);
         VkDescriptorSetAllocateInfo allocInfo{};
         allocInfo.sType = VK_STRUCTURE_TYPE_DESCRIPTOR_SET_ALLOCATE_INFO;
@@ -1029,6 +1031,53 @@ namespace ps {
 
         createImage(psDevice->swapChainExtent.width, psDevice->swapChainExtent.height, 1, psDevice->getMsaaSamples(), colorFormat, VK_IMAGE_TILING_OPTIMAL, VK_IMAGE_USAGE_TRANSIENT_ATTACHMENT_BIT | VK_IMAGE_USAGE_COLOR_ATTACHMENT_BIT, VK_MEMORY_PROPERTY_DEVICE_LOCAL_BIT, colorImage, colorImageMemory);
         colorImageView = psDevice->createImageView(colorImage, colorFormat, VK_IMAGE_ASPECT_COLOR_BIT, 1);
+    }
+
+    void PS_Pipeline::loadLevel(PS_GameLevel* level) {
+        std::vector<PS_GameObject*> objects = level->getGameObjects();
+        for (int i = 0; i < objects.size(); i++) {
+            PS_GameObject* object = objects[i];
+            std::cout << "Created Object: " << object->getName() << '\n';
+            std::cout << "Created Object: " << object->getScale()[0] << '\n';
+            tinyobj::attrib_t attrib;
+            std::vector<tinyobj::shape_t> shapes;
+            std::vector<tinyobj::material_t> materials;
+            std::string warn, err;
+
+            if (!tinyobj::LoadObj(&attrib, &shapes, &materials, &warn, &err, object->getMeshPath().c_str())) {
+                throw std::runtime_error(warn + err);
+            }
+
+            TEXTURE_PATH = object->getTexturePath();
+
+            std::unordered_map<PS_Structs::Vertex, uint32_t> uniqueVertices{};
+
+            for (const auto& shape : shapes) {
+                for (const auto& index : shape.mesh.indices) {
+                    PS_Structs::Vertex vertex{};
+
+                    vertex.pos = {
+                        (attrib.vertices[3 * index.vertex_index + 0] + object->getLocation()[0]) * object->getScale()[0],
+                        (attrib.vertices[3 * index.vertex_index + 1] + object->getLocation()[1]) * object->getScale()[1],
+                        (attrib.vertices[3 * index.vertex_index + 2] + object->getLocation()[2]) * object->getScale()[2]
+                    };
+
+                    vertex.texCoord = {
+                        attrib.texcoords[2 * index.texcoord_index + 0],
+                        1.0f - attrib.texcoords[2 * index.texcoord_index + 1]
+                    };
+
+                    vertex.color = { 1.0f, 1.0f, 1.0f };
+
+                    if (uniqueVertices.count(vertex) == 0) {
+                        uniqueVertices[vertex] = static_cast<uint32_t>(vertices.size());
+                        vertices.push_back(vertex);
+                    }
+
+                    indices.push_back(uniqueVertices[vertex]);
+                }
+            }
+        }
     }
 }
 
