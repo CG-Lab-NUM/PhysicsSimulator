@@ -557,9 +557,11 @@ namespace ps {
         float time = std::chrono::duration<float, std::chrono::seconds::period>(currentTime - startTime).count();
 
         PS_Structs::UniformBufferObject ubo{};
-        ubo.model = glm::mat4(0.1f);
         //ubo.model = glm::rotate(glm::mat4(1.0f), time * glm::radians(90.0f), glm::vec3(0.0f, 0.0f, 1.0f));
-        ubo.view = glm::lookAt(glm::vec3(2.0f, 2.0f, 2.0f), glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(0.0f, 0.0f, 1.0f));
+        //ubo.view = glm::lookAt(glm::vec3(2.0f, 2.0f, 2.0f), glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(0.0f, 0.0f, 1.0f));
+        //ubo.proj = glm::perspective(glm::radians(45.0f), psDevice->swapChainExtent.width / (float)psDevice->swapChainExtent.height, 0.1f, 10.0f);
+        ubo.model = glm::mat4(0.1f);
+        ubo.view = glm::lookAt(glm::vec3(1.0f, 0.0f, 0.3f), glm::vec3(0.0f, 0.0f, 0.1f), glm::vec3(0.2f, 0.0f, 1.0f));
         ubo.proj = glm::perspective(glm::radians(45.0f), psDevice->swapChainExtent.width / (float)psDevice->swapChainExtent.height, 0.1f, 10.0f);
         ubo.proj[1][1] *= -1;
 
@@ -1029,6 +1031,53 @@ namespace ps {
 
         createImage(psDevice->swapChainExtent.width, psDevice->swapChainExtent.height, 1, psDevice->getMsaaSamples(), colorFormat, VK_IMAGE_TILING_OPTIMAL, VK_IMAGE_USAGE_TRANSIENT_ATTACHMENT_BIT | VK_IMAGE_USAGE_COLOR_ATTACHMENT_BIT, VK_MEMORY_PROPERTY_DEVICE_LOCAL_BIT, colorImage, colorImageMemory);
         colorImageView = psDevice->createImageView(colorImage, colorFormat, VK_IMAGE_ASPECT_COLOR_BIT, 1);
+    }
+
+    void PS_Pipeline::loadLevel(PS_GameLevel* level) {
+        std::vector<PS_GameObject*> objects = level->getGameObjects();
+        for (int i = 0; i < objects.size(); i++) {
+            PS_GameObject* object = objects[i];
+            std::cout << "Created Object: " << object->getName() << '\n';
+            std::cout << "Created Object: " << object->getScale()[0] << '\n';
+            tinyobj::attrib_t attrib;
+            std::vector<tinyobj::shape_t> shapes;
+            std::vector<tinyobj::material_t> materials;
+            std::string warn, err;
+
+            if (!tinyobj::LoadObj(&attrib, &shapes, &materials, &warn, &err, object->getMeshPath().c_str())) {
+                throw std::runtime_error(warn + err);
+            }
+
+            TEXTURE_PATH = object->getTexturePath();
+
+            std::unordered_map<PS_Structs::Vertex, uint32_t> uniqueVertices{};
+
+            for (const auto& shape : shapes) {
+                for (const auto& index : shape.mesh.indices) {
+                    PS_Structs::Vertex vertex{};
+
+                    vertex.pos = {
+                        (attrib.vertices[3 * index.vertex_index + 0] + object->getLocation()[0]) * object->getScale()[0],
+                        (attrib.vertices[3 * index.vertex_index + 1] + object->getLocation()[1]) * object->getScale()[1],
+                        (attrib.vertices[3 * index.vertex_index + 2] + object->getLocation()[2]) * object->getScale()[2]
+                    };
+
+                    vertex.texCoord = {
+                        attrib.texcoords[2 * index.texcoord_index + 0],
+                        1.0f - attrib.texcoords[2 * index.texcoord_index + 1]
+                    };
+
+                    vertex.color = { 1.0f, 1.0f, 1.0f };
+
+                    if (uniqueVertices.count(vertex) == 0) {
+                        uniqueVertices[vertex] = static_cast<uint32_t>(vertices.size());
+                        vertices.push_back(vertex);
+                    }
+
+                    indices.push_back(uniqueVertices[vertex]);
+                }
+            }
+        }
     }
 }
 

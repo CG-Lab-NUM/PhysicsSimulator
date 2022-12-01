@@ -17,13 +17,23 @@ namespace ps {
 		psDevice.createCommandPool();
 		psPipeline.createColorResources();
 		psPipeline.createDepthResources();
-		PS_GameObject viking{ "D:\\VulkanProjects\\PhysicsSimulator\\Meshes\\VikingRoom.obj", "D:\\VulkanProjects\\PhysicsSimulator\\Textures\\Basic\\VikingRoom.png" };
-		PS_GameObject sword{ "D:\\VulkanProjects\\PhysicsSimulator\\Meshes\\StingSword.obj", "D:\\VulkanProjects\\PhysicsSimulator\\Textures\\StingSword\\StingSword_BasicColor.png" };
+		PS_GameObject building1{ "viking", "D:\\VulkanProjects\\PhysicsSimulator\\Meshes\\VikingRoom.obj", "D:\\VulkanProjects\\PhysicsSimulator\\Textures\\Basic\\VikingRoom.png" };
+		building1.setScale({0.25, 0.25, 0.25});
+
+		PS_GameObject building2{ "viking2", "D:\\VulkanProjects\\PhysicsSimulator\\Meshes\\VikingRoom.obj", "D:\\VulkanProjects\\PhysicsSimulator\\Textures\\Basic\\VikingRoom.png" };
+		building2.setScale({ 0.25, 0.25, 0.25 });
+		building2.setLocation({ 0, 1.5, 0});
+
+		PS_GameLevel level;
+		level.addGameObject(&building1);
+		level.addGameObject(&building2);
+
 		psDevice.createFramebuffers(psPipeline.getRenderPass(), psPipeline.getDepthImageView(), psPipeline.getColorImageView());
-		psPipeline.createTextureImage(&viking);
+		psPipeline.createTextureImage(&building1);
 		psPipeline.createTextureImageView();
 		psPipeline.createTextureSampler();
-		psPipeline.loadModel(&viking);
+		//psPipeline.loadModel(&viking);
+		psPipeline.loadLevel(&level);
 		psPipeline.createVertexBuffer();
 		psPipeline.createIndexBuffer();
 		psPipeline.createUniformBuffers();

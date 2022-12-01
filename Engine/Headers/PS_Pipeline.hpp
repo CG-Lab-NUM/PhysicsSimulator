@@ -4,6 +4,7 @@
 #include "PS_Device.hpp"
 #include "PS_Structs.hpp"
 #include "PS_GameObject.hpp"
+#include "PS_GameLevel.hpp"
 #include <vector>
 
 namespace ps {
@@ -62,19 +63,7 @@ namespace ps {
 
 		void createColorResources();
 
-		template <class T>
-		inline void hash_combine(std::size_t& s, const T& v)
-		{
-			std::hash<T> h;
-			s ^= h(v) + 0x9e3779b9 + (s << 6) + (s >> 2);
-		}
-
-		struct S {
-			int field1;
-			short field2;
-			std::string field3;
-			// ...
-		};
+		void loadLevel(PS_GameLevel *level);
 
 
 		//

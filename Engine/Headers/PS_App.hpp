@@ -6,6 +6,7 @@
 #include "PS_Device.hpp"
 #include "PS_Pipeline.hpp"
 #include "PS_Loader.hpp"
+#include "PS_GameLevel.hpp"
 
 namespace ps {
 	class PS_App {

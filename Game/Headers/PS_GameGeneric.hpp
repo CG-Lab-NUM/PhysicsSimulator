@@ -1,3 +1,4 @@
+#pragma once
 #define GLM_FORCE_RADIANS
 #define GLM_FORCE_DEPTH_ZERO_TO_ONE
 #include <glm/glm.hpp>
@@ -8,7 +9,7 @@
 #include <string>
 
 namespace ps {
-	class PS_Game_Generic {
+	class PS_GameGeneric {
 	public:
 		void createSphereCollision(glm::vec3 center, float radius);
 	private:
