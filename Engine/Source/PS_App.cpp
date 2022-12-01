@@ -3,20 +3,6 @@
 
 namespace ps {
 	PS_App::PS_App() {
-
-	}
-
-	PS_App::~PS_App() {
-		cleanup();
-	}
-
-	void PS_App::run() {
-		initVulkan();
-		mainLoop();
-		cleanup();
-	}
-
-	void PS_App::initVulkan() {
 		psDevice.createInstance();
 		psDevice.setupDebugMessenger();
 		psWindow.createSurface(psDevice.getInstance(), psDevice.getDevice());
@@ -25,9 +11,9 @@ namespace ps {
 		psDevice.createLogicalDevice();
 		psDevice.createSwapChain(&psWindow);
 		psDevice.createImageViews(psPipeline.getMipLevels());
-		psPipeline.createRenderPass(psDevice.getDevice(), psDevice.getSwapChainImageFormat());
-		psPipeline.createDescriptorSetLayout(&psDevice);
-		psPipeline.createGraphicsPipeline(&psDevice);
+		psPipeline.createRenderPass();
+		psPipeline.createDescriptorSetLayout();
+		psPipeline.createGraphicsPipeline();
 		psDevice.createCommandPool();
 		psPipeline.createColorResources();
 		psPipeline.createDepthResources();
@@ -38,26 +24,24 @@ namespace ps {
 		psPipeline.createTextureImageView();
 		psPipeline.createTextureSampler();
 		psPipeline.loadModel(&viking);
-		//psPipeline.loadModel(&sword);
-		//psPipeline.loadModel(psLoader.meshPaths[1], psLoader.materialPaths[0]);
-		//psPipeline.loadModel(psLoader.meshPaths[0], psLoader.materialPaths[0]);
-		psPipeline.createVertexBuffer(psDevice.getPhysicalDevice());
-		psPipeline.createIndexBuffer(&psDevice);
-		psPipeline.createUniformBuffers(&psDevice);
-		psPipeline.createDescriptorPool(&psDevice);
-		psPipeline.createDescriptorSets(&psDevice);
+		psPipeline.createVertexBuffer();
+		psPipeline.createIndexBuffer();
+		psPipeline.createUniformBuffers();
+		psPipeline.createDescriptorPool();
+		psPipeline.createDescriptorSets();
 		psPipeline.createCommandBuffer();
 		psDevice.createSyncObjects();
+	}
+
+	void PS_App::run() {
+		mainLoop();
 	}
 	
 	void PS_App::mainLoop() {
 		while (!glfwWindowShouldClose(psWindow.getWindow())) {
 			glfwPollEvents();
-			psPipeline.drawFrame(&psWindow, &psDevice);
+			psPipeline.drawFrame(&psWindow);
 		}
 		vkDeviceWaitIdle(psDevice.getDevice());
-	}
-	void PS_App::cleanup() {
-
 	}
 }

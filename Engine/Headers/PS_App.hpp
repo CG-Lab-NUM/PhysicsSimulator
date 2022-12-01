@@ -14,7 +14,6 @@ namespace ps {
 		static constexpr int HEIGHT = 800;
 
 		PS_App();
-		~PS_App();
 		PS_App(const PS_App&) = delete;
 		PS_App& operator = (const PS_App&) = delete;
 
@@ -24,9 +23,7 @@ namespace ps {
 		}
 
 	private:
-		void initVulkan();
 		void mainLoop();
-		void cleanup();
 
 		PS_Window psWindow{ WIDTH, HEIGHT, "Hello Vulkan" };
 		PS_Device psDevice{};

@@ -25,22 +25,22 @@ namespace ps {
 		PS_Pipeline(const PS_Pipeline&) = delete;
 		PS_Pipeline& operator = (const PS_Pipeline&) = delete;
 
-		void createGraphicsPipeline(PS_Device* psDevice);
-		void createRenderPass(VkDevice device, VkFormat swapChainImageFormat);
+		void createGraphicsPipeline();
+		void createRenderPass();
 		static std::vector<char> readFile(const std::string& path);
-		void createVertexBuffer(VkPhysicalDevice physicalDevice);
-		void createIndexBuffer(PS_Device* psDevice);
+		void createVertexBuffer();
+		void createIndexBuffer();
 		void createBuffer(VkDeviceSize size, VkBufferUsageFlags usage, VkMemoryPropertyFlags properties, VkBuffer& buffer, VkDeviceMemory& bufferMemory, VkPhysicalDevice physicalDevice);
 		void copyBuffer(VkBuffer srcBuffer, VkBuffer dstBuffer, VkDeviceSize size);
-		void drawFrame(PS_Window* psWindow, PS_Device* psDevice);
-		void createUniformBuffers(PS_Device *psDevice);
+		void drawFrame(PS_Window* psWindow);
+		void createUniformBuffers();
 
-		void updateUniformBuffer(uint32_t currentImage, PS_Device* psDevice);
+		void updateUniformBuffer(uint32_t currentImage);
 		void createCommandBuffer();
 		void recordCommandBuffer(VkCommandBuffer commandBuffer, uint32_t imageIndex, VkRenderPass renderPass, VkPipeline graphicsPipeline, const std::vector<PS_Structs::Vertex> vertices);
-		void createDescriptorSetLayout(PS_Device* psDevice);
-		void createDescriptorPool(PS_Device* psDevice);
-		void createDescriptorSets(PS_Device* psDevice);
+		void createDescriptorSetLayout();
+		void createDescriptorPool();
+		void createDescriptorSets();
 		void createImage(uint32_t width, uint32_t height, uint32_t mipLevels, VkSampleCountFlagBits numSamples, VkFormat format, VkImageTiling tiling, VkImageUsageFlags usage, VkMemoryPropertyFlags properties, VkImage& image, VkDeviceMemory& imageMemory);
 		void createTextureImage(PS_GameObject *object);
 		void copyBufferToImage(VkBuffer buffer, VkImage image, uint32_t width, uint32_t height);
