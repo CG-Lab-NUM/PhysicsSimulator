@@ -6,16 +6,16 @@
 namespace ps {
 	void PS_Loader::loadObjects() {
 		std::filesystem::path curDir = std::filesystem::current_path();
-		std::string meshDir = curDir.string() + "/Meshes";
+		std::string meshDir = curDir.string() + "/Content/Meshes";
 		for (const auto& entry : std::filesystem::directory_iterator(meshDir)) {
 			meshPaths.push_back(entry.path().string());
 		}
-		std::cout << meshPaths.size() << " .obj files loaded...\n";
+		std::cout << meshPaths.size() << " obj files loaded...\n";
 	}
 
 	void PS_Loader::loadMaterials() {
 		std::filesystem::path curDir = std::filesystem::current_path();
-		std::string textureDir = curDir.string() + "/Textures";
+		std::string textureDir = curDir.string() + "/Content/Textures";
 		addFilesRecursive(textureDir);
 		std::cout << materialPaths.size() << " texture files loaded...\n";
 	}

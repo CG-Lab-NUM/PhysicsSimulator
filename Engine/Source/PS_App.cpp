@@ -17,10 +17,10 @@ namespace ps {
 		psDevice.createCommandPool();
 		psPipeline.createColorResources();
 		psPipeline.createDepthResources();
-		PS_GameObject building1{ "viking", "D:\\VulkanProjects\\PhysicsSimulator\\Meshes\\VikingRoom.obj", "D:\\VulkanProjects\\PhysicsSimulator\\Textures\\Basic\\VikingRoom.png" };
+		PS_GameObject building1{ "viking", "D:\\VulkanProjects\\PhysicsSimulator\\Content\\Meshes\\VikingRoom.obj", "D:\\VulkanProjects\\PhysicsSimulator\\Content\\Textures\\Basic\\VikingRoom.png" };
 		building1.setScale({0.25, 0.25, 0.25});
 
-		PS_GameObject building2{ "viking2", "D:\\VulkanProjects\\PhysicsSimulator\\Meshes\\VikingRoom.obj", "D:\\VulkanProjects\\PhysicsSimulator\\Textures\\Basic\\VikingRoom.png" };
+		PS_GameObject building2{ "viking2", "D:\\VulkanProjects\\PhysicsSimulator\\Content\\Meshes\\VikingRoom.obj", "D:\\VulkanProjects\\PhysicsSimulator\\Content\\Textures\\Basic\\VikingRoom.png" };
 		building2.setScale({ 0.25, 0.25, 0.25 });
 		building2.setLocation({ 0, 1.5, 0});
 
