@@ -1,6 +1,6 @@
 #pragma once
 #include "PS_SwapChain.hpp"
-#include "PS_GameObject.hpp"
+#include "PS_GameLevel.hpp"
 
 namespace ps {
 	class PS_Helper {

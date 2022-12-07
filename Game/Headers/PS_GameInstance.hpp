@@ -1,21 +1,16 @@
 #include "PS_App.hpp"
-#include <cstdlib>
-#include <iostream>
-#include <stdexcept>
 
 namespace ps {
 	class PS_GameInstance {
 	public:
-		int startInstance() {
-			ps::PS_App app{};
-			try {
-				app.run();
-			}
-			catch (const std::exception& e) {
-				std::cerr << e.what() << '\n';
-				return EXIT_FAILURE;
-			}
-		}
+		int startInstance();
+
 	private:
+		PS_GameLevel gameLevel;
+		PS_GameObject gameObject;
+		PS_GameObject gameObject1{ {0, 1.0f, 0}, {90, 0, 0}, {1, 1, 1} };
+		PS_GameObject gameObject2{ {-1.0f, -1.0f, 0}, {0, 0, 0}, {1, 1, 1} };
+		PS_GameObject gameObject3{ {0, -1.0f, 0}, {0, 0, 0}, {1, 1, 1} };
+		PS_GameObject gameObject4{ {1.0f, -1.0f, 0}, {0, 0, 0}, {1, 1, 1} };
 	};
 }
