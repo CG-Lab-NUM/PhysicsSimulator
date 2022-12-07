@@ -13,16 +13,14 @@ namespace ps {
 
 	private:
 		PS_GameObject gameObject;
-		PS_GameObject gameObject1{ {0, 0, 0}, {0, 0, 0}, {1, 2, 1} };
-		PS_GameObject gameObject2{ {0, 0, 0}, {0, 0, 0}, {1, 1, 2} };
-		PS_GameObject gameObject3{ {0, 0, 0}, {0, 0, 0}, {2, 1, 1} };
+		PS_GameObject gameObject1{ {0, 1.0f, 0}, {90, 0, 0}, {1, 1, 1} };
+		PS_GameObject gameObject2{ {-1.0f, -1.0f, 0}, {0, 0, 0}, {1, 1, 1} };
+		PS_GameObject gameObject3{ {0, -1.0f, 0}, {0, 0, 0}, {1, 1, 1} };
+		PS_GameObject gameObject4{ {1.0f, -1.0f, 0}, {0, 0, 0}, {1, 1, 1} };
 		std::vector<PS_GameObject*> gameObjects;
-		std::vector<PS_GameObject*> gameObjects1;
-		PS_Window psWindow{};
+		PS_Window psWindow{ 800, 600, "CustomTitle" };
 		PS_Device psDevice{ &psWindow };
 		PS_SwapChain psSwapChain{ &psDevice, &psWindow };
 		PS_Pipeline *psPipeline;
-		PS_Pipeline* psPipeline1;
-		//PS_Pipeline psPipeline1 { &psWindow, &psDevice, &psSwapChain, &gameObject1, false };
 	};
 }

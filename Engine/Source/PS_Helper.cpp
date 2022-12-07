@@ -212,8 +212,8 @@ namespace ps {
 
 				vertex.pos = {
 					(attrib.vertices[3 * index.vertex_index + 0] + object->getLocation()[0]) * object->getScale()[0],
-					(attrib.vertices[3 * index.vertex_index + 1] + object->getLocation()[0]) * object->getScale()[1],
-					(attrib.vertices[3 * index.vertex_index + 2] + object->getLocation()[0]) * object->getScale()[2],
+					(attrib.vertices[3 * index.vertex_index + 1] + object->getLocation()[1]) * object->getScale()[1],
+					(attrib.vertices[3 * index.vertex_index + 2] + object->getLocation()[2]) * object->getScale()[2],
 				};
 
 				vertex.texCoord = {

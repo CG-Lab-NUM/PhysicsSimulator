@@ -141,6 +141,7 @@
     <ClCompile Include="Engine\Source\PS_Pipeline.cpp" />
     <ClCompile Include="Engine\Source\PS_SwapChain.cpp" />
     <ClCompile Include="Engine\Source\PS_Window.cpp" />
+    <ClCompile Include="Game\Source\PS_GameInstance.cpp" />
     <ClCompile Include="Game\Source\PS_GameLevel.cpp" />
     <ClCompile Include="Game\Source\PS_GameObject.cpp" />
     <ClCompile Include="main.cpp" />
@@ -155,6 +156,7 @@
     <ClInclude Include="Engine\Headers\PS_SwapChain.hpp" />
     <ClInclude Include="Engine\Headers\PS_Window.hpp" />
     <ClInclude Include="Game\Headers\PS_GameGeneric.hpp" />
+    <ClInclude Include="Game\Headers\PS_GameInstance.hpp" />
     <ClInclude Include="Game\Headers\PS_GameLevel.hpp" />
     <ClInclude Include="Game\Headers\PS_GameObject.hpp" />
     <ClInclude Include="Libraries\imgui\backends\imgui_impl_vulkan_but_better.h" />
