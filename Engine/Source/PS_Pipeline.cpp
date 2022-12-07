@@ -15,10 +15,12 @@
 
 
 namespace ps {
-	PS_Pipeline::PS_Pipeline(PS_Window* window, PS_Device *device, PS_SwapChain *chain) : PS_Helper(device) {
+	PS_Pipeline::PS_Pipeline(PS_Window* window, PS_Device *device, PS_SwapChain *chain, std::vector<PS_GameObject*> objects, bool imguiInit) : PS_Helper(device) {
 		psWindow = window;
 		psDevice = device;
 		psSwapChain = chain;
+		gameObjects = objects;
+		isInitial = imguiInit;
 		createRenderPass();
 		createDescriptorSetLayout();
 		createGraphicsPipeline();
@@ -28,31 +30,37 @@ namespace ps {
 		psSwapChain->createFramebuffers(renderPass);
 
 
-		Model = new ModelLoader(psDevice);
-		Model1 = new ModelLoader(psDevice);
-
-		Texture = new TextureImage(psDevice, &descriptorPool, &textureDescriptorSetLayout);
-		Texture1 = new TextureImage(psDevice, &descriptorPool, &textureDescriptorSetLayout);
-
-		Model->Load(MODEL_PATH.c_str());
-		Model1->Load("D:\\VulkanProjects\\PhysicsSimulator\\Content\\Meshes/F1.obj");
+		int i;
+		for (int i = 0; i < gameObjects.size(); i++) {
+			ModelLoader *Model = new ModelLoader(psDevice);
+			modelLoaders.push_back(Model);
+			TextureImage *Texture = new TextureImage(psDevice, &descriptorPool, &textureDescriptorSetLayout);
+			textureImages.push_back(Texture);
+			Model->Load(gameObjects[i]);
+		}
 
 		createUniformBuffers();
 		createDescriptorPool();
 		createDescriptorSets();
 
-		Texture->Load(TEXTURE_PATH.c_str());
-		Texture1->Load("D:\\VulkanProjects\\PhysicsSimulator\\Content\\Textures/Arnold.jpg");
+		for (int i = 0; i < gameObjects.size(); i++) {
+			textureImages[i]->Load(gameObjects[i]);
+		}
 
 		createCommandBuffers();
 		createSyncObjects();
-		initImgui();
+
+		if (imguiInit == true) {
+			initImgui();
+		}
 	}
 
 	PS_Pipeline::~PS_Pipeline() {
-		ImGui_ImplVulkan_Shutdown();
-		ImGui_ImplGlfw_Shutdown();
-		ImGui::DestroyContext();
+		if (isInitial) {
+			ImGui_ImplVulkan_Shutdown();
+			ImGui_ImplGlfw_Shutdown();
+			ImGui::DestroyContext();
+		}
 
 		vkDestroyPipeline(psDevice->device, graphicsPipeline, nullptr);
 		vkDestroyPipelineLayout(psDevice->device, pipelineLayout, nullptr);
@@ -64,15 +72,18 @@ namespace ps {
 		}
 
 		vkDestroyDescriptorPool(psDevice->device, descriptorPool, nullptr);
-		Texture->Destroy();
-		Texture1->Destroy();
+
+		int i;
+		for (int i = 0; i < gameObjects.size(); i++) {
+			textureImages[i]->Destroy();
+		}
 
 		vkDestroyDescriptorSetLayout(psDevice->device, uniformDescriptorSetLayout, nullptr);
 		vkDestroyDescriptorSetLayout(psDevice->device, textureDescriptorSetLayout, nullptr);
 
-		//Delete here
-		Model->Destroy();
-		Model1->Destroy();
+		for (int i = 0; i < gameObjects.size(); i++) {
+			modelLoaders[i]->Destroy();
+		}
 
 		for (size_t i = 0; i < MAX_FRAMES_IN_FLIGHT; i++) {
 			vkDestroySemaphore(psDevice->device, renderFinishedSemaphores[i], nullptr);
@@ -349,7 +360,7 @@ namespace ps {
 		poolSizes[0].type = VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER;
 		poolSizes[0].descriptorCount = static_cast<uint32_t>(MAX_FRAMES_IN_FLIGHT);
 		poolSizes[1].type = VK_DESCRIPTOR_TYPE_COMBINED_IMAGE_SAMPLER;
-		poolSizes[1].descriptorCount = 3;
+		poolSizes[1].descriptorCount = 4;
 
 		VkDescriptorPoolCreateInfo poolInfo{};
 		poolInfo.sType = VK_STRUCTURE_TYPE_DESCRIPTOR_POOL_CREATE_INFO;
@@ -359,6 +370,10 @@ namespace ps {
 		poolInfo.maxSets = static_cast<uint32_t>(MAX_FRAMES_IN_FLIGHT) + 3;
 
 		if (vkCreateDescriptorPool(psDevice->device, &poolInfo, nullptr, &descriptorPool) != VK_SUCCESS) {
+			throw std::runtime_error("failed to create descriptor pool!");
+		}
+
+		if (vkCreateDescriptorPool(psDevice->device, &poolInfo, nullptr, &imgDescriptorPool) != VK_SUCCESS) {
 			throw std::runtime_error("failed to create descriptor pool!");
 		}
 	}
@@ -394,6 +409,7 @@ namespace ps {
 			vkUpdateDescriptorSets(psDevice->device, 1, &descriptorWrite, 0, nullptr);
 		}
 	}
+
 
 	void PS_Pipeline::drawFrame() {
 		vkWaitForFences(psDevice->device, 1, &inFlightFences[currentFrame], VK_TRUE, UINT64_MAX);
@@ -445,9 +461,8 @@ namespace ps {
 		presentInfo.pSwapchains = swapChains;
 
 		presentInfo.pImageIndices = &imageIndex;
-
+		
 		result = vkQueuePresentKHR(psDevice->presentQueue, &presentInfo);
-
 		if (result == VK_ERROR_OUT_OF_DATE_KHR || result == VK_SUBOPTIMAL_KHR || psWindow->framebufferResized) {
 			psWindow->framebufferResized = false;
 			psSwapChain->recreateSwapChain(renderPass);
@@ -519,9 +534,26 @@ namespace ps {
 		vkCmdSetScissor(commandBuffer, 0, 1, &scissor);
 
 		vkCmdBindDescriptorSets(commandBuffer, VK_PIPELINE_BIND_POINT_GRAPHICS, pipelineLayout, 0, 1, &descriptorSets[currentFrame], 0, nullptr);
+		
+		int i;
+		for (i = 0; i < gameObjects.size(); i++) {
+			if (i == 0) {
+				glm::mat4 transform = glm::translate(glm::mat4(1.0f), glm::vec3(0.0f, 0.0f, 0.0f));
+				vkCmdBindDescriptorSets(commandBuffer, VK_PIPELINE_BIND_POINT_GRAPHICS, pipelineLayout, 1, 1, &textureImages[i]->descriptorSet, 0, nullptr);
+				vkCmdPushConstants(commandBuffer, pipelineLayout, VK_SHADER_STAGE_VERTEX_BIT, 0, sizeof(glm::mat4), &transform);
+				modelLoaders[i]->Render(commandBuffer);
+			}
+			else {
+				glm::mat4 transform = glm::translate(glm::mat4(1.0f), glm::vec3(2.0f, 0.0f, 0.0f));
+				vkCmdPushConstants(commandBuffer, pipelineLayout, VK_SHADER_STAGE_VERTEX_BIT, 0, sizeof(glm::mat4), &transform);
+				vkCmdBindDescriptorSets(commandBuffer, VK_PIPELINE_BIND_POINT_GRAPHICS, pipelineLayout, 1, 1, &textureImages[i]->descriptorSet, 0, nullptr);
+				modelLoaders[i]->Render(commandBuffer);
+			}
+		}
+		/*
 		vkCmdBindDescriptorSets(commandBuffer, VK_PIPELINE_BIND_POINT_GRAPHICS, pipelineLayout, 1, 1, &Texture->descriptorSet, 0, nullptr);
 
-		glm::mat4 transform = glm::translate(glm::mat4(1.0f), glm::vec3(-2.0f, 0.0f, 0.0f));
+		glm::mat4 transform = glm::translate(glm::mat4(1.0f), glm::vec3(0.0f, 0.0f, 0.0f));
 		vkCmdPushConstants(commandBuffer, pipelineLayout, VK_SHADER_STAGE_VERTEX_BIT, 0, sizeof(glm::mat4), &transform);
 		Model->Render(commandBuffer);
 
@@ -532,6 +564,14 @@ namespace ps {
 		vkCmdBindDescriptorSets(commandBuffer, VK_PIPELINE_BIND_POINT_GRAPHICS, pipelineLayout, 1, 1, &Texture1->descriptorSet, 0, nullptr);
 		Model1->Render(commandBuffer);
 
+		transform = glm::translate(glm::mat4(1.0f), glm::vec3(2.0f, 0.0f, 0.0f));
+		transform = glm::rotate(transform, glm::radians(90.0f), glm::vec3(1.0f, 0.0f, 0.0f));
+		transform = glm::scale(transform, glm::vec3(0.4f));
+		vkCmdPushConstants(commandBuffer, pipelineLayout, VK_SHADER_STAGE_VERTEX_BIT, 0, sizeof(glm::mat4), &transform);
+		vkCmdBindDescriptorSets(commandBuffer, VK_PIPELINE_BIND_POINT_GRAPHICS, pipelineLayout, 1, 1, &Texture2->descriptorSet, 0, nullptr);
+		Model2->Render(commandBuffer);
+		*/
+		
 		ImGui_ImplVulkan_NewFrame();
 		ImGui_ImplGlfw_NewFrame();
 		ImGui::NewFrame();
@@ -539,14 +579,18 @@ namespace ps {
 		//	ImGui::ShowDemoWindow();
 		ImGui::Begin("Window");
 		{
-			ImGui::Image(&Texture->descriptorSet, ImVec2(300, 300));
-			ImGui::Image(&Texture1->descriptorSet, ImVec2(300, 300));
+			for (i = 0; i < gameObjects.size(); i++) {
+				ImGui::Image(&textureImages[i]->descriptorSet, ImVec2(250, 250));
+			}
+			//ImGui::Image(&Texture->descriptorSet, ImVec2(300, 300));
+			//ImGui::Image(&Texture1->descriptorSet, ImVec2(300, 300));
+			//ImGui::Image(&Texture2->descriptorSet, ImVec2(300, 300));
 		}
 		ImGui::End();
 
 		ImGui::Render();
 		ImGui_ImplVulkan_RenderDrawData(ImGui::GetDrawData(), commandBuffer, 0, NULL);
-
+		
 		vkCmdEndRenderPass(commandBuffer);
 
 		if (vkEndCommandBuffer(commandBuffer) != VK_SUCCESS) {
@@ -562,7 +606,7 @@ namespace ps {
 		ImGui_ImplGlfw_InitForVulkan(psWindow->getWindow(), true);
 
 		ImGui_ImplVulkan_InitInfo info;
-		info.DescriptorPool = descriptorPool;
+		info.DescriptorPool = imgDescriptorPool;
 		info.RenderPass = renderPass;
 		info.Device = psDevice->device;
 		info.PhysicalDevice = psDevice->physicalDevice;

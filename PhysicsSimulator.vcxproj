@@ -140,19 +140,23 @@
     <ClCompile Include="Engine\Source\PS_Helper.cpp" />
     <ClCompile Include="Engine\Source\PS_Pipeline.cpp" />
     <ClCompile Include="Engine\Source\PS_SwapChain.cpp" />
-    <ClCompile Include="Engine\Source\PS_UI.cpp" />
     <ClCompile Include="Engine\Source\PS_Window.cpp" />
+    <ClCompile Include="Game\Source\PS_GameLevel.cpp" />
+    <ClCompile Include="Game\Source\PS_GameObject.cpp" />
     <ClCompile Include="main.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Engine\Headers\PS_App.hpp" />
+    <ClInclude Include="Engine\Headers\PS_Colors.hpp" />
     <ClInclude Include="Engine\Headers\PS_Device.hpp" />
     <ClInclude Include="Engine\Headers\PS_EngineGeneric.hpp" />
     <ClInclude Include="Engine\Headers\PS_Helper.hpp" />
     <ClInclude Include="Engine\Headers\PS_Pipeline.hpp" />
     <ClInclude Include="Engine\Headers\PS_SwapChain.hpp" />
-    <ClInclude Include="Engine\Headers\PS_UI.hpp" />
     <ClInclude Include="Engine\Headers\PS_Window.hpp" />
+    <ClInclude Include="Game\Headers\PS_GameGeneric.hpp" />
+    <ClInclude Include="Game\Headers\PS_GameLevel.hpp" />
+    <ClInclude Include="Game\Headers\PS_GameObject.hpp" />
     <ClInclude Include="Libraries\imgui\backends\imgui_impl_vulkan_but_better.h" />
   </ItemGroup>
   <ItemGroup>

@@ -1,18 +1,21 @@
 #define STB_IMAGE_IMPLEMENTATION
 #include <stb_image.h>
-
 #define TINYOBJLOADER_IMPLEMENTATION
 #include <tiny_obj_loader.h>
 
 #include "PS_Helper.hpp"
 
 namespace ps {
-	void TextureImage::createTextureImage(const char* path) {
+
+	// -------------
+	// Texture Image
+	// -------------
+	void TextureImage::createTextureImage(PS_GameObject *object) {
 		int texWidth, texHeight, texChannels;
-		stbi_uc* pixels = stbi_load(path, &texWidth, &texHeight, &texChannels, STBI_rgb_alpha);
+		stbi_uc* pixels = stbi_load(object->getTexture().c_str(), &texWidth, &texHeight, &texChannels, STBI_rgb_alpha);
 		VkDeviceSize imageSize = texWidth * texHeight * 4;
 		mipLevels = static_cast<uint32_t>(std::floor(std::log2(std::max(texWidth, texHeight)))) + 1;
-		std::cout << path << std::endl;
+		std::cout << "Loaded Texture: " << object->getTexture().c_str() << std::endl;
 		if (!pixels) {
 			throw std::runtime_error("failed to load texture image!");
 		}
@@ -187,19 +190,19 @@ namespace ps {
 		vkUpdateDescriptorSets(psDevice->device, 1, &descriptorWrite, 0, nullptr);
 	}
 
-
-
-
-
-	void ModelLoader::loadModel(const char* Path) {
+	// ------------
+	// Model Loader
+	// ------------
+	void ModelLoader::loadModel(PS_GameObject* object) {
 		tinyobj::attrib_t attrib;
 		std::vector<tinyobj::shape_t> shapes;
 		std::vector<tinyobj::material_t> materials;
 		std::string warn, err;
-
-		if (!tinyobj::LoadObj(&attrib, &shapes, &materials, &warn, &err, Path)) {
+		
+		if (!tinyobj::LoadObj(&attrib, &shapes, &materials, &warn, &err, object->getModel().c_str())) {
 			throw std::runtime_error(warn + err);
 		}
+		std::cout << "Loaded Model:" << object->getModel() << std::endl;
 
 		std::unordered_map<Vertex, uint32_t> uniqueVertices{};
 
@@ -208,9 +211,9 @@ namespace ps {
 				Vertex vertex{};
 
 				vertex.pos = {
-					attrib.vertices[3 * index.vertex_index + 0],
-					attrib.vertices[3 * index.vertex_index + 1],
-					attrib.vertices[3 * index.vertex_index + 2]
+					(attrib.vertices[3 * index.vertex_index + 0] + object->getLocation()[0]) * object->getScale()[0],
+					(attrib.vertices[3 * index.vertex_index + 1] + object->getLocation()[0]) * object->getScale()[1],
+					(attrib.vertices[3 * index.vertex_index + 2] + object->getLocation()[0]) * object->getScale()[2],
 				};
 
 				vertex.texCoord = {
