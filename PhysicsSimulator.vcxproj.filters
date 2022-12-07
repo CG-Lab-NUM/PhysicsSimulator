@@ -27,27 +27,27 @@
     <ClCompile Include="Engine\Source\PS_Device.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="Engine\Source\PS_Logger.cpp">
+    <ClCompile Include="Engine\Source\PS_SwapChain.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="Engine\Source\PS_Pipeline.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="Engine\Source\PS_Colors.cpp">
+    <ClCompile Include="Engine\Source\PS_Helper.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="Engine\Source\PS_Loader.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="Game\Source\PS_Game_Generic.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="Game\Source\PS_GameObject.cpp">
+    <ClCompile Include="Engine\Source\PS_UI.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="Libraries\imgui\backends\imgui_impl_vulkan_but_better.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
     <ClInclude Include="Engine\Headers\PS_App.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Engine\Headers\PS_EngineGeneric.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="Engine\Headers\PS_Window.hpp">
@@ -56,28 +56,16 @@
     <ClInclude Include="Engine\Headers\PS_Device.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="Engine\Headers\PS_Logger.hpp">
+    <ClInclude Include="Engine\Headers\PS_SwapChain.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="Engine\Headers\PS_Pipeline.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="Engine\Headers\PS_Colors.hpp">
+    <ClInclude Include="Engine\Headers\PS_Helper.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="Engine\Headers\PS_Structs.hpp">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="Engine\Headers\PS_Generic.hpp">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="Engine\Headers\PS_Loader.hpp">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="Game\Headers\PS_Game_Generic.hpp">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="Game\Headers\PS_GameObject.hpp">
+    <ClInclude Include="Engine\Headers\PS_UI.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

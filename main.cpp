@@ -1,4 +1,4 @@
-#define GLFW_INCLUDE_VULKAN
+#pragma once
 #include "PS_App.hpp"
 
 #include <cstdlib>
@@ -10,7 +10,7 @@ int main() {
     try {
         app.run();
     }
-    catch(const std::exception &e) {
+    catch (const std::exception& e) {
         std::cerr << e.what() << '\n';
         return EXIT_FAILURE;
     }
