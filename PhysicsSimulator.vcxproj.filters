@@ -36,7 +36,13 @@
     <ClCompile Include="Engine\Source\PS_Helper.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="Engine\Source\PS_UI.cpp">
+    <ClCompile Include="Game\Source\PS_GameObject.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Game\Source\PS_GameLevel.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Game\Source\PS_GameInstance.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
@@ -65,7 +71,19 @@
     <ClInclude Include="Engine\Headers\PS_Helper.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="Engine\Headers\PS_UI.hpp">
+    <ClInclude Include="Engine\Headers\PS_Colors.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Game\Headers\PS_GameGeneric.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Game\Headers\PS_GameObject.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Game\Headers\PS_GameLevel.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Game\Headers\PS_GameInstance.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

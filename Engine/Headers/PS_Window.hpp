@@ -5,6 +5,7 @@ namespace ps {
 	class PS_Window {
 	public:
 		PS_Window();
+		PS_Window(uint32_t w, uint32_t h, std::string windowTitle);
 		~PS_Window();
 
 		VkSurfaceKHR getSurface() {
@@ -24,7 +25,7 @@ namespace ps {
 		GLFWwindow* window{};
 		VkSurfaceKHR surface{};
 		
-		const uint32_t WIDTH = 800;
-		const uint32_t HEIGHT = 600;
+		uint32_t WIDTH = 800;
+		uint32_t HEIGHT = 600;
 	};
 }

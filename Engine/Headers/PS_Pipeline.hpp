@@ -4,7 +4,7 @@
 namespace ps {
 	class PS_Pipeline : public PS_Helper {
 	public:
-		PS_Pipeline(PS_Window *window, PS_Device *device, PS_SwapChain *chain);
+		PS_Pipeline(PS_Window *window, PS_Device *device, PS_SwapChain *chain, std::vector<PS_GameObject*> objects, bool imguiInit);
 		~PS_Pipeline();
 
 		void createRenderPass();
@@ -27,13 +27,14 @@ namespace ps {
 		void initImgui();
 		
 
-		const int MAX_FRAMES_IN_FLIGHT = 2;
+		int MAX_FRAMES_IN_FLIGHT = 4;
 
 		VkRenderPass renderPass;
 		VkPipelineLayout pipelineLayout;
 		VkPipeline graphicsPipeline;
 
 		VkDescriptorPool descriptorPool;
+		VkDescriptorPool imgDescriptorPool;
 		VkDescriptorSetLayout uniformDescriptorSetLayout;
 		VkDescriptorSetLayout textureDescriptorSetLayout;
 
@@ -41,22 +42,20 @@ namespace ps {
 		std::vector<VkDeviceMemory> uniformBuffersMemory;
 
 		std::vector<VkDescriptorSet> descriptorSets;
-		TextureImage *Texture;
-		TextureImage *Texture1;
 
 	private:
 
-		const std::string MODEL_PATH = "D:\\VulkanProjects\\PhysicsSimulator\\Content\\Meshes/VikingRoom.obj";
-		const std::string TEXTURE_PATH = "D:\\VulkanProjects\\PhysicsSimulator\\Content\\Textures/Basic/VikingRoom.png";
-
 		PS_Window* psWindow;
 		PS_Device* psDevice;
-		PS_SwapChain* psSwapChain;
+		PS_SwapChain *psSwapChain;
+		PS_GameObject *gameObject;
+		bool isInitial = false;
 
 		std::vector<VkCommandBuffer> commandBuffers;
 
-		ModelLoader *Model;
-		ModelLoader *Model1;
+		std::vector<PS_GameObject*> gameObjects;
+		std::vector<ModelLoader*> modelLoaders;
+		std::vector<TextureImage*> textureImages;
 
 		std::vector<VkSemaphore> imageAvailableSemaphores;
 		std::vector<VkSemaphore> renderFinishedSemaphores;

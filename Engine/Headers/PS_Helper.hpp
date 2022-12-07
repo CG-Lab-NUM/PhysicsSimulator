@@ -1,5 +1,6 @@
 #pragma once
 #include "PS_SwapChain.hpp"
+#include "PS_GameObject.hpp"
 
 namespace ps {
 	class PS_Helper {
@@ -235,9 +236,9 @@ namespace ps {
 
 		VkDescriptorSet descriptorSet;
 
-		void Load(const char* path)
+		void Load(PS_GameObject *object)
 		{
-			createTextureImage(path);
+			createTextureImage(object);
 			createTextureImageView();
 			createTextureSampler();
 			createTextureDescriptorSet();
@@ -267,8 +268,9 @@ namespace ps {
 
 		VkDescriptorPool *descriptorPool;
 		VkDescriptorSetLayout *textureDescriptorSetLayout;
+		VkDescriptorSetLayout *textureDescriptorSetLayouts[2];
 
-		void createTextureImage(const char* path);
+		void createTextureImage(PS_GameObject *object);
 		void generateMipmaps(VkImage image, VkFormat imageFormat, int32_t texWidth, int32_t texHeight, uint32_t mipLevels);
 		void createTextureImageView();
 		void createTextureSampler();
@@ -293,9 +295,9 @@ namespace ps {
 		VkBuffer indexBuffer;
 		VkDeviceMemory indexBufferMemory;
 
-		void Load(const char* Path)
+		void Load(PS_GameObject* object)
 		{
-			loadModel(Path);
+			loadModel(object);
 			createVertexBuffer();
 			createIndexBuffer();
 		}
@@ -317,12 +319,11 @@ namespace ps {
 
 			vkCmdBindIndexBuffer(commandBuffer, indexBuffer, 0, VK_INDEX_TYPE_UINT32);
 
-
 			vkCmdDrawIndexed(commandBuffer, static_cast<uint32_t>(indices.size()), 1, 0, 0, 0);
 		}
 
 	private:
-		void loadModel(const char* Path);
+		void loadModel(PS_GameObject* object);
 		void createVertexBuffer();
 		void createIndexBuffer();
 	};
