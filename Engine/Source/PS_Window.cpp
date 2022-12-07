@@ -1,11 +1,15 @@
 #include "PS_Window.hpp"
+#include <stdexcept>
 
 namespace ps {
-	PS_Window::PS_Window(int width, int height, std::string name) {
-		WIDTH = width;
-		HEIGHT = height;
-		NAME = name;
-		initWindow();
+	PS_Window::PS_Window() {
+		glfwInit();
+
+		glfwWindowHint(GLFW_CLIENT_API, GLFW_NO_API);
+
+		window = glfwCreateWindow(WIDTH, HEIGHT, "Vulkan", nullptr, nullptr);
+		glfwSetWindowUserPointer(window, this);
+		glfwSetFramebufferSizeCallback(window, framebufferResizeCallback);
 	}
 
 	PS_Window::~PS_Window() {
@@ -13,32 +17,14 @@ namespace ps {
 		glfwTerminate();
 	}
 
-	void PS_Window::initWindow() {
-		glfwInit();
-		glfwWindowHint(GLFW_CLIENT_API, GLFW_NO_API);
-		glfwWindowHint(GLFW_RESIZABLE, GLFW_FALSE);
-
-		window = glfwCreateWindow(WIDTH, HEIGHT, NAME.c_str(), nullptr, nullptr);
-		glfwSetFramebufferSizeCallback(window, framebufferResizeCallback);
-	}
-
-
 	void PS_Window::framebufferResizeCallback(GLFWwindow* window, int width, int height) {
-
+		auto app = reinterpret_cast<PS_Window*>(glfwGetWindowUserPointer(window));
+		app->framebufferResized = true;
 	}
 
-	void PS_Window::createSurface(VkInstance instance, VkDevice device) {
-		VkWin32SurfaceCreateInfoKHR createInfo{};
-		createInfo.sType = VK_STRUCTURE_TYPE_WIN32_SURFACE_CREATE_INFO_KHR;
-		createInfo.hwnd = glfwGetWin32Window(window);
-		createInfo.hinstance = GetModuleHandle(nullptr);
-		
-		if (vkCreateWin32SurfaceKHR(instance, &createInfo, nullptr, &surface) != VK_SUCCESS) {
+	void PS_Window::createSurface(VkInstance instance) {
+		if (glfwCreateWindowSurface(instance, window, nullptr, &surface) != VK_SUCCESS) {
 			throw std::runtime_error("failed to create window surface!");
 		}
-		else {
-			std::cout << "Window Surface created...\n";
-		}
 	}
-
 }
