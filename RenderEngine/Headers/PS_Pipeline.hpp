@@ -1,5 +1,7 @@
 #pragma once
 #include "PS_Helper.hpp"
+#include "PS_TextureImage.hpp"
+#include "PS_ModelLoader.hpp"
 
 namespace ps {
 	class PS_Pipeline : public PS_Helper {
@@ -27,7 +29,7 @@ namespace ps {
 		void initImgui();
 		
 
-		int MAX_FRAMES_IN_FLIGHT = 4;
+		int MAX_FRAMES_IN_FLIGHT = 2;
 
 		VkRenderPass renderPass;
 		VkPipelineLayout pipelineLayout;
@@ -54,8 +56,8 @@ namespace ps {
 		std::vector<VkCommandBuffer> commandBuffers;
 
 		std::vector<PS_GameObject*> gameObjects;
-		std::vector<ModelLoader*> modelLoaders;
-		std::vector<TextureImage*> textureImages;
+		std::vector<PS_ModelLoader*> modelLoaders;
+		std::vector<PS_TextureImage*> textureImages;
 
 		std::vector<VkSemaphore> imageAvailableSemaphores;
 		std::vector<VkSemaphore> renderFinishedSemaphores;

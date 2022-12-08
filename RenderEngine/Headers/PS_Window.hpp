@@ -25,7 +25,7 @@ namespace ps {
 		GLFWwindow* window{};
 		VkSurfaceKHR surface{};
 		
-		uint32_t WIDTH = 800;
-		uint32_t HEIGHT = 600;
+		uint32_t WIDTH = 1024;
+		uint32_t HEIGHT = 768;
 	};
 }

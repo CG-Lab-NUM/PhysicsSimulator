@@ -1,26 +1,17 @@
-#pragma once
-#include "PS_Pipeline.hpp"
+#include "PS_App.hpp"
 
 namespace ps {
-	class PS_App {
+	class PS_GameInstance {
 	public:
-		PS_App();
-		~PS_App();
-
-		void run();
-		void mainLoop();
-		void cleanup();
+		int startInstance();
 
 	private:
+		PS_GameLevel gameLevel;
 		PS_GameObject gameObject;
 		PS_GameObject gameObject1{ {0, 1.0f, 0}, {90, 0, 0}, {1, 1, 1} };
 		PS_GameObject gameObject2{ {-1.0f, -1.0f, 0}, {0, 0, 0}, {1, 1, 1} };
 		PS_GameObject gameObject3{ {0, -1.0f, 0}, {0, 0, 0}, {1, 1, 1} };
 		PS_GameObject gameObject4{ {1.0f, -1.0f, 0}, {0, 0, 0}, {1, 1, 1} };
-		std::vector<PS_GameObject*> gameObjects;
-		PS_Window psWindow{ 800, 600, "CustomTitle" };
-		PS_Device psDevice{ &psWindow };
-		PS_SwapChain psSwapChain{ &psDevice, &psWindow };
-		PS_Pipeline *psPipeline;
+		PS_GameObject gameObject5{ true, "square" };
 	};
 }
