@@ -1,19 +1,9 @@
-#define GLFW_INCLUDE_VULKAN
-#include "PS_App.hpp"
-
-#include <cstdlib>
+#pragma once
+#include "PS_GameInstance.hpp"
+#include <thread>
 #include <iostream>
-#include <stdexcept>
 
 int main() {
-    ps::PS_App app{};
-    try {
-        app.run();
-    }
-    catch(const std::exception &e) {
-        std::cerr << e.what() << '\n';
-        return EXIT_FAILURE;
-    }
-
-    return EXIT_SUCCESS;
+    ps::PS_GameInstance instance1;
+    instance1.startInstance();
 }

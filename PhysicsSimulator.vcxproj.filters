@@ -18,66 +18,90 @@
     <ClCompile Include="main.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="Engine\Source\PS_App.cpp">
+    <ClCompile Include="RenderEngine\Source\PS_App.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="Engine\Source\PS_Window.cpp">
+    <ClCompile Include="RenderEngine\Source\PS_Window.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="Engine\Source\PS_Device.cpp">
+    <ClCompile Include="RenderEngine\Source\PS_Device.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="Engine\Source\PS_Logger.cpp">
+    <ClCompile Include="RenderEngine\Source\PS_SwapChain.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="Engine\Source\PS_Pipeline.cpp">
+    <ClCompile Include="RenderEngine\Source\PS_Pipeline.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="Engine\Source\PS_Colors.cpp">
+    <ClCompile Include="RenderEngine\Source\PS_Helper.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="Engine\Source\PS_Loader.cpp">
+    <ClCompile Include="GameEngine\Source\PS_GameObject.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="Game\Source\PS_Game_Generic.cpp">
+    <ClCompile Include="GameEngine\Source\PS_GameLevel.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="Game\Source\PS_GameObject.cpp">
+    <ClCompile Include="GameEngine\Source\PS_GameInstance.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="GameEngine\Source\PS_GameMesh.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="RenderEngine\Source\PS_TextureImage.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="RenderEngine\Source\PS_ModelLoader.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="Engine\Headers\PS_App.hpp">
+    <ClInclude Include="Libraries\imgui\backends\imgui_impl_vulkan_but_better.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="Engine\Headers\PS_Window.hpp">
+    <ClInclude Include="RenderEngine\Headers\PS_App.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="Engine\Headers\PS_Device.hpp">
+    <ClInclude Include="RenderEngine\Headers\PS_EngineGeneric.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="Engine\Headers\PS_Logger.hpp">
+    <ClInclude Include="RenderEngine\Headers\PS_Window.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="Engine\Headers\PS_Pipeline.hpp">
+    <ClInclude Include="RenderEngine\Headers\PS_Device.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="Engine\Headers\PS_Colors.hpp">
+    <ClInclude Include="RenderEngine\Headers\PS_SwapChain.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="Engine\Headers\PS_Structs.hpp">
+    <ClInclude Include="RenderEngine\Headers\PS_Pipeline.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="Engine\Headers\PS_Generic.hpp">
+    <ClInclude Include="RenderEngine\Headers\PS_Helper.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="Engine\Headers\PS_Loader.hpp">
+    <ClInclude Include="RenderEngine\Headers\PS_Colors.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="Game\Headers\PS_Game_Generic.hpp">
+    <ClInclude Include="GameEngine\Headers\PS_GameGeneric.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="Game\Headers\PS_GameObject.hpp">
+    <ClInclude Include="GameEngine\Headers\PS_GameObject.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="GameEngine\Headers\PS_GameLevel.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="GameEngine\Headers\PS_GameInstance.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="GameEngine\Headers\PS_GameMesh.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="RenderEngine\Headers\PS_TextureImage.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="RenderEngine\Headers\PS_ModelLoader.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
