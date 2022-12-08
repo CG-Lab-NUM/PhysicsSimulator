@@ -1,22 +1,12 @@
 #include "PS_GameGeneric.hpp"
+#include "PS_GameMesh.hpp"
 
 namespace ps {
-	class PS_GameObject {
+	class PS_GameObject : protected PS_GameMesh {
 	public:
-		PS_GameObject() {
-			setLocation({ 0, 0, 0 });
-			setRotation({ 0, 0, 0 });
-			setScale({1, 1, 1});
-			setModel("D:\\VulkanProjects\\PhysicsSimulator\\Content\\Meshes\\VikingRoom.obj");
-			setTexture("D:\\VulkanProjects\\PhysicsSimulator\\Content\\Textures\\Basic\\None.png");
-		}
-		PS_GameObject(glm::vec3 newLocation, glm::vec3 newRotation, glm::vec3 newScale) {
-			setLocation(newLocation);
-			setRotation(newRotation);
-			setScale(newScale);
-			setModel("D:\\VulkanProjects\\PhysicsSimulator\\Content\\Meshes\\VikingRoom.obj");
-			setTexture("D:\\VulkanProjects\\PhysicsSimulator\\Content\\Textures\\Basic\\None.png");
-		}
+		PS_GameObject();
+		PS_GameObject(bool isBasicObject, std::string shape);
+		PS_GameObject(glm::vec3 newLocation, glm::vec3 newRotation, glm::vec3 newScale);
 
 		void setLocation(glm::vec3 newLocation) {
 			location = newLocation;
@@ -33,6 +23,15 @@ namespace ps {
 		void setTexture(std::string newTexturePath) {
 			texturePath = newTexturePath;
 		}
+		void setIsBasicShape(bool newBool, std::vector<Vertex> newVertices) {
+			isBasicShape = newBool;
+			if (isBasicShape == true) {
+				vertices = newVertices;
+				return;
+			}
+			std::vector<Vertex> tempVertices;
+			vertices = tempVertices;
+		}
 		glm::vec3 getLocation() {
 			return location;
 		}
@@ -48,6 +47,12 @@ namespace ps {
 		std::string getTexture() {
 			return texturePath;
 		}
+		bool getIsBasicShape() {
+			return isBasicShape;
+		}
+		std::vector<Vertex> getVertices() {
+			return vertices;
+		}
 
 	private:
 		glm::vec3 location;
@@ -56,5 +61,7 @@ namespace ps {
 
 		std::string modelPath;
 		std::string texturePath;
+
+		bool isBasicShape;
 	};
 }

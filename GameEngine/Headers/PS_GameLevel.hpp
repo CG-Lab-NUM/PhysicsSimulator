@@ -4,6 +4,10 @@
 namespace ps {
 	class PS_GameLevel {
 	public:
+		void loadMap(std::string path) {
+
+		}
+
 		void addGameObject(PS_GameObject* object) {
 			gameObjects.push_back(object);
 		}

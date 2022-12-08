@@ -17,6 +17,7 @@ namespace ps {
 		gameLevel.addGameObject(&gameObject2);
 		gameLevel.addGameObject(&gameObject3);
 		gameLevel.addGameObject(&gameObject4);
+		gameLevel.addGameObject(&gameObject5);
 
 		ps::PS_App app{ &gameLevel };
 		try {
@@ -26,5 +27,6 @@ namespace ps {
 			std::cerr << e.what() << '\n';
 			return EXIT_FAILURE;
 		}
+		return EXIT_SUCCESS;
 	}
 }
