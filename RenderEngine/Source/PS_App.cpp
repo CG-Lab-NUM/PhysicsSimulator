@@ -14,7 +14,6 @@ namespace ps {
 		while (!glfwWindowShouldClose(psWindow.getWindow())) {
 			glfwPollEvents();
 			psPipeline->drawFrame();
-			//psPipeline1->drawFrame();
 		}
 
 		vkDeviceWaitIdle(psDevice.device);
