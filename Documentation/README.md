@@ -1,16 +1,23 @@
 ### Folder Structure
 
 RenderEngine: Classes related to rendering.
+
 GameEngine: Classes related to game logic.
+
 PhysicsEngine: Classes related to physics simulation.
+
 UI: Classes related to user interface.
+
 Content: Files that are used for the program. E.g: Models, Textures, Levels.
 
 ### Class Naming
 
 RenderEngine: PS_{ClassName} - PS_Pipeline, PS_ModelLoader etc.
+
 GameEngine: PS_Game{ClassName} - PS_GameObject, PS_GameLevel etc.
+
 PhysicsEngine: PS_Physics{ClassName} - PS_PhysicsObject etc.
+
 UI: PS_{ClassName} - PS_UserInterface, PS_StartMenu
 
 Classes must be named in PascalCase. First letter of every word capitalized. E.g: PhysicsObject, GameObject. 
