@@ -1,4 +1,4 @@
-###Folder Structure
+### Folder Structure
 
 RenderEngine: Classes related to rendering.
 GameEngine: Classes related to game logic.
