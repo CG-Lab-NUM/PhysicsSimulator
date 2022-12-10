@@ -34,6 +34,12 @@ namespace ps {
 		}
 	};
 
+	struct ImguiInfo {
+		VkDescriptorPool DescriptorPool;
+		VkRenderPass RenderPass;
+		uint32_t ImageCount;
+	};
+
 	struct SwapChainSupportDetails {
 		VkSurfaceCapabilitiesKHR capabilities;
 		std::vector<VkSurfaceFormatKHR> formats;

@@ -1,7 +1,5 @@
 #pragma once
-#include "PS_Helper.hpp"
-#include "PS_TextureImage.hpp"
-#include "PS_ModelLoader.hpp"
+#include "PS_UserInterface.hpp"
 
 namespace ps {
 	class PS_Pipeline : public PS_Helper {
@@ -25,9 +23,6 @@ namespace ps {
 
 		void updateUniformBuffer(uint32_t currentImage);
 		void recordCommandBuffer(VkCommandBuffer commandBuffer, uint32_t imageIndex);
-
-		void initImgui();
-		
 
 		int MAX_FRAMES_IN_FLIGHT = 2;
 

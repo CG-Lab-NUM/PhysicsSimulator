@@ -54,6 +54,9 @@
     <ClCompile Include="RenderEngine\Source\PS_ModelLoader.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="UI\Source\PS_UI.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Libraries\imgui\backends\imgui_impl_vulkan_but_better.h">

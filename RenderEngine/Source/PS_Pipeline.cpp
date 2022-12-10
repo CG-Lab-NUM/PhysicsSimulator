@@ -1,20 +1,11 @@
 #include "PS_Pipeline.hpp"
 
-#ifndef IMGUI_H
-#define IMGUI_H
-#include <imconfig.h>
-#include <imgui_tables.cpp>
-#include <imgui_internal.h>
-#include <imgui.cpp>
-#include <imgui_draw.cpp>
-#include <imgui_widgets.cpp>
-#include <imgui_demo.cpp>
-#include <backends/imgui_impl_glfw.cpp>
-#include <backends/imgui_impl_vulkan_but_better.h>
-#endif
+
 
 
 namespace ps {
+	PS_UserInterface *UI;
+
 	PS_Pipeline::PS_Pipeline(PS_Window* window, PS_Device *device, PS_SwapChain *chain, std::vector<PS_GameObject*> objects, bool imguiInit) : PS_Helper(device) {
 		psWindow = window;
 		psDevice = device;
@@ -48,19 +39,19 @@ namespace ps {
 		}
 
 		createCommandBuffers();
+		createCommandBuffers();
 		createSyncObjects();
 
 		if (imguiInit == true) {
-			initImgui();
+			struct ImguiInfo imguiInfo;
+			imguiInfo.DescriptorPool = imgDescriptorPool;
+			imguiInfo.ImageCount = MAX_FRAMES_IN_FLIGHT;
+			imguiInfo.RenderPass = renderPass;
+			UI = new PS_UserInterface(psWindow, psDevice, imguiInfo);
 		}
 	}
 
 	PS_Pipeline::~PS_Pipeline() {
-		if (isInitial) {
-			ImGui_ImplVulkan_Shutdown();
-			ImGui_ImplGlfw_Shutdown();
-			ImGui::DestroyContext();
-		}
 
 		vkDestroyPipeline(psDevice->device, graphicsPipeline, nullptr);
 		vkDestroyPipelineLayout(psDevice->device, pipelineLayout, nullptr);
@@ -550,55 +541,13 @@ namespace ps {
 				modelLoaders[i]->Render(commandBuffer);
 			}
 		}
-		
-		ImGui_ImplVulkan_NewFrame();
-		ImGui_ImplGlfw_NewFrame();
-		ImGui::NewFrame();
+		UI->createTextureWindow(gameObjects.size(), textureImages, &commandBuffer);
 
-		//	ImGui::ShowDemoWindow();
-		ImGui::Begin("Window");
-		{
-			for (i = 0; i < gameObjects.size(); i++) {
-				ImGui::Image(&textureImages[i]->descriptorSet, ImVec2(250, 250));
-			}
-			//ImGui::Image(&Texture->descriptorSet, ImVec2(300, 300));
-			//ImGui::Image(&Texture1->descriptorSet, ImVec2(300, 300));
-			//ImGui::Image(&Texture2->descriptorSet, ImVec2(300, 300));
-		}
-		ImGui::End();
-
-		ImGui::Render();
-		ImGui_ImplVulkan_RenderDrawData(ImGui::GetDrawData(), commandBuffer, 0, NULL);
-		
 		vkCmdEndRenderPass(commandBuffer);
 
 		if (vkEndCommandBuffer(commandBuffer) != VK_SUCCESS) {
 			throw std::runtime_error("failed to record command buffer!");
 		}
-	}
-	
-	void PS_Pipeline::initImgui()
-	{
-		ImGui::CreateContext();
-		ImGui::GetIO().ConfigFlags |= ImGuiConfigFlags_DockingEnable;
-
-		ImGui_ImplGlfw_InitForVulkan(psWindow->getWindow(), true);
-
-		ImGui_ImplVulkan_InitInfo info;
-		info.DescriptorPool = imgDescriptorPool;
-		info.RenderPass = renderPass;
-		info.Device = psDevice->device;
-		info.PhysicalDevice = psDevice->physicalDevice;
-		info.ImageCount = MAX_FRAMES_IN_FLIGHT;
-		info.MsaaSamples = psDevice->msaaSamples;
-		ImGui_ImplVulkan_Init(&info);
-
-		VkCommandBuffer commandBuffer = beginSingleTimeCommands();
-		ImGui_ImplVulkan_CreateFontsTexture(commandBuffer);
-		endSingleTimeCommands(commandBuffer);
-
-		vkDeviceWaitIdle(psDevice->device);
-		ImGui_ImplVulkan_DestroyFontUploadObjects();
 	}
 
 	void PS_Pipeline::createCommandBuffers() {
