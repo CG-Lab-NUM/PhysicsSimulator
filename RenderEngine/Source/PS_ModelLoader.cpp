@@ -11,7 +11,6 @@ namespace ps {
 		std::unordered_map<Vertex, uint32_t> uniqueVertices{};
 		if (object->getIsBasicShape()) {
 			std::vector<Vertex> tempVertices = object->getVertices();
-			std::cout << tempVertices[0].pos[0];
 
 			for (int i = 0; i < tempVertices.size(); i++) {
 				Vertex vertex = tempVertices[i];
@@ -64,7 +63,6 @@ namespace ps {
 
 	void PS_ModelLoader::createVertexBuffer() {
 		VkDeviceSize bufferSize = sizeof(vertices[0]) * vertices.size();
-		std::cout << bufferSize << std::endl;
 
 		VkBuffer stagingBuffer;
 		VkDeviceMemory stagingBufferMemory;
