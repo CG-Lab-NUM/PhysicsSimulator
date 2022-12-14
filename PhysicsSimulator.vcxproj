@@ -135,6 +135,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="GameEngine\Source\PS_GameCamera.cpp" />
     <ClCompile Include="RenderEngine\Source\PS_ModelLoader.cpp" />
     <ClCompile Include="RenderEngine\Source\PS_TextureImage.cpp" />
     <ClCompile Include="RenderEngine\Source\PS_App.cpp" />
@@ -148,9 +149,9 @@
     <ClCompile Include="GameEngine\Source\PS_GameMesh.cpp" />
     <ClCompile Include="GameEngine\Source\PS_GameObject.cpp" />
     <ClCompile Include="main.cpp" />
-    <ClCompile Include="UI\Source\PS_UI.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="GameEngine\Headers\PS_GameCamera.hpp" />
     <ClInclude Include="RenderEngine\Headers\PS_App.hpp" />
     <ClInclude Include="RenderEngine\Headers\PS_Colors.hpp" />
     <ClInclude Include="RenderEngine\Headers\PS_Device.hpp" />
@@ -166,7 +167,7 @@
     <ClInclude Include="GameEngine\Headers\PS_GameLevel.hpp" />
     <ClInclude Include="GameEngine\Headers\PS_GameMesh.hpp" />
     <ClInclude Include="GameEngine\Headers\PS_GameObject.hpp" />
-    <ClInclude Include="Libraries\imgui\backends\imgui_impl_vulkan_but_better.h" />
+    <ClInclude Include="Libraries\imgui\backends\imgui_impl_vulkan_but_betters.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Shader\shader.frag" />

@@ -13,11 +13,22 @@ namespace ps {
 		gameObject3.setTexture("D:\\VulkanProjects\\PhysicsSimulator\\Content\\Textures\\Basic\\VikingRoom.png");
 		gameObject4.setTexture("D:\\VulkanProjects\\PhysicsSimulator\\Content\\Textures\\Basic\\VikingRoom.png");
 
+		gameObject5.setModel("D:\\VulkanProjects\\PhysicsSimulator\\Content\\Meshes\\Cube.obj");
+		gameObject5.setTexture("D:\\VulkanProjects\\PhysicsSimulator\\Content\\Textures\\Basic\\None.png");
+		gameObject5.setScale({3, 3, 0.1});
+		gameObject5.setLocation({ 0, 0, -10 });
+
+		PS_GameCamera camera;
+		camera.setLocation({3, 4, 0});
+		camera.setRotation({0, 0.0f, 1.0f});
+
+		gameLevel.setCamera(&camera);
 		gameLevel.addGameObject(&gameObject1);
 		gameLevel.addGameObject(&gameObject2);
 		gameLevel.addGameObject(&gameObject3);
 		gameLevel.addGameObject(&gameObject4);
 		gameLevel.addGameObject(&gameObject5);
+
 
 		ps::PS_App app{ &gameLevel };
 		try {

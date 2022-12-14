@@ -1,17 +1,13 @@
 #include "PS_Pipeline.hpp"
 
-
-
-
 namespace ps {
-	PS_UserInterface *UI;
 
-	PS_Pipeline::PS_Pipeline(PS_Window* window, PS_Device *device, PS_SwapChain *chain, std::vector<PS_GameObject*> objects, bool imguiInit) : PS_Helper(device) {
+	PS_Pipeline::PS_Pipeline(PS_Window* window, PS_Device *device, PS_SwapChain *chain, std::vector<PS_GameObject*> objects, PS_GameCamera *camera) : PS_Helper(device) {
 		psWindow = window;
 		psDevice = device;
 		psSwapChain = chain;
 		gameObjects = objects;
-		isInitial = imguiInit;
+		gameCamera = camera;
 		createRenderPass();
 		createDescriptorSetLayout();
 		createGraphicsPipeline();
@@ -19,7 +15,6 @@ namespace ps {
 		psSwapChain->createColorResources();
 		psSwapChain->createDepthResources();
 		psSwapChain->createFramebuffers(renderPass);
-
 
 		int i;
 		for (i = 0; i < gameObjects.size(); i++) {
@@ -41,14 +36,6 @@ namespace ps {
 		createCommandBuffers();
 		createCommandBuffers();
 		createSyncObjects();
-
-		if (imguiInit == true) {
-			struct ImguiInfo imguiInfo;
-			imguiInfo.DescriptorPool = imgDescriptorPool;
-			imguiInfo.ImageCount = MAX_FRAMES_IN_FLIGHT;
-			imguiInfo.RenderPass = renderPass;
-			UI = new PS_UserInterface(psWindow, psDevice, imguiInfo);
-		}
 	}
 
 	PS_Pipeline::~PS_Pipeline() {
@@ -363,10 +350,6 @@ namespace ps {
 		if (vkCreateDescriptorPool(psDevice->device, &poolInfo, nullptr, &descriptorPool) != VK_SUCCESS) {
 			throw std::runtime_error("failed to create descriptor pool!");
 		}
-
-		if (vkCreateDescriptorPool(psDevice->device, &poolInfo, nullptr, &imgDescriptorPool) != VK_SUCCESS) {
-			throw std::runtime_error("failed to create descriptor pool!");
-		}
 	}
 
 	void PS_Pipeline::createDescriptorSets() {
@@ -466,16 +449,23 @@ namespace ps {
 	}
 
 	void PS_Pipeline::updateUniformBuffer(uint32_t currentImage) {
-		static auto startTime = std::chrono::high_resolution_clock::now();
+		UniformBufferObject ubo{};
+		ubo.model = glm::mat4(1.0f);
+		ubo.view = glm::lookAt(gameCamera->getEye(), gameCamera->getCenter(), gameCamera->getUp());
+		ubo.proj = glm::perspective(glm::radians(45.0f), psSwapChain->swapChainExtent.width / (float)psSwapChain->swapChainExtent.height, 1.0f, 10.0f);
+		ubo.proj[1][1] *= -1;
 
-		auto currentTime = std::chrono::high_resolution_clock::now();
-		float time = std::chrono::duration<float, std::chrono::seconds::period>(currentTime - startTime).count();
-
+		/*
 		UniformBufferObject ubo{};
 		ubo.model = glm::rotate(glm::mat4(1.0f), time * glm::radians(90.0f), glm::vec3(0.0f, 0.0f, 1.0f));
-		ubo.view = glm::lookAt(glm::vec3(0.0f, 4.0f, 4.0f), glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(0.0f, 0.0f, 1.0f));
-		ubo.proj = glm::perspective(glm::radians(45.0f), psSwapChain->swapChainExtent.width / (float)psSwapChain->swapChainExtent.height, 0.1f, 10.0f);
+		ubo.view = glm::lookAt(gameCamera->getEye(), gameCamera->getCenter(), gameCamera->getUp());
+		ubo.proj = glm::perspective(glm::radians(45.0f), psSwapChain->swapChainExtent.width / (float)psSwapChain->swapChainExtent.height, 1.0f, 10.0f);
 		ubo.proj[1][1] *= -1;
+		*/
+		//ubo.model = glm::rotate(glm::mat4(1.0f), time * glm::radians(90.0f), glm::vec3(0.0f, 0.0f, 1.0f));
+		//ubo.view = glm::lookAt(glm::vec3(0.0f, 4.0f, 4.0f), glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(0.0f, 0.0f, 1.0f));
+		//ubo.proj = glm::perspective(glm::radians(45.0f), psSwapChain->swapChainExtent.width / (float)psSwapChain->swapChainExtent.height, 0.1f, 10.0f);
+		//ubo.proj[1][1] *= -1;
 
 		void* data;
 		vkMapMemory(psDevice->device, uniformBuffersMemory[currentImage], 0, sizeof(ubo), 0, &data);
@@ -541,7 +531,6 @@ namespace ps {
 				modelLoaders[i]->Render(commandBuffer);
 			}
 		}
-		UI->createTextureWindow(gameObjects.size(), textureImages, &commandBuffer);
 
 		vkCmdEndRenderPass(commandBuffer);
 
