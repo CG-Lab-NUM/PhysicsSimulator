@@ -135,6 +135,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="GameEngine\Source\PS_GameCamera.cpp" />
     <ClCompile Include="RenderEngine\Source\PS_ModelLoader.cpp" />
     <ClCompile Include="RenderEngine\Source\PS_TextureImage.cpp" />
     <ClCompile Include="RenderEngine\Source\PS_App.cpp" />
@@ -150,6 +151,7 @@
     <ClCompile Include="main.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="GameEngine\Headers\PS_GameCamera.hpp" />
     <ClInclude Include="RenderEngine\Headers\PS_App.hpp" />
     <ClInclude Include="RenderEngine\Headers\PS_Colors.hpp" />
     <ClInclude Include="RenderEngine\Headers\PS_Device.hpp" />

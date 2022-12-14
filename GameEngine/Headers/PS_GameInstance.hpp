@@ -13,6 +13,6 @@ namespace ps {
 		PS_GameObject gameObject2{ {-1.0f, -1.0f, 0}, {0, 0, 0}, {1, 1, 1} };
 		PS_GameObject gameObject3{ {0, -1.0f, 0}, {0, 0, 0}, {1, 1, 1} };
 		PS_GameObject gameObject4{ {1.0f, -1.0f, 0}, {0, 0, 0}, {1, 1, 1} };
-		PS_GameObject gameObject5{ true, "square" };
+		PS_GameObject gameObject5{ {0, 1.0f, 0}, {90, 0, 0}, {1, 1, 1} };
 	};
 }

@@ -5,7 +5,7 @@ namespace ps {
 		setLocation({ 0, 0, 0 });
 		setRotation({ 0, 0, 0 });
 		setScale({ 1, 1, 1 });
-		setModel("D:\\VulkanProjects\\PhysicsSimulator\\Content\\Meshes\\VikingRoom.obj");
+		setModel("D:\\VulkanProjects\\PhysicsSimulator\\Content\\Meshes\\Cube.obj");
 		setTexture("D:\\VulkanProjects\\PhysicsSimulator\\Content\\Textures\\Basic\\None.png");
 		isBasicShape = false;
 	}
@@ -23,7 +23,7 @@ namespace ps {
 		setLocation(newLocation);
 		setRotation(newRotation);
 		setScale(newScale);
-		setModel("D:\\VulkanProjects\\PhysicsSimulator\\Content\\Meshes\\VikingRoom.obj");
+		setModel("D:\\VulkanProjects\\PhysicsSimulator\\Content\\Meshes\\Cube.obj");
 		setTexture("D:\\VulkanProjects\\PhysicsSimulator\\Content\\Textures\\Basic\\None.png");
 		isBasicShape = false;
 	}

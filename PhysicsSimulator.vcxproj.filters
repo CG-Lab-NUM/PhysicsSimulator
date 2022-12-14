@@ -54,6 +54,9 @@
     <ClCompile Include="RenderEngine\Source\PS_ModelLoader.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="GameEngine\Source\PS_GameCamera.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Libraries\imgui\backends\imgui_impl_vulkan_but_betters.h">
@@ -102,6 +105,9 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="RenderEngine\Headers\PS_ModelLoader.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="GameEngine\Headers\PS_GameCamera.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
