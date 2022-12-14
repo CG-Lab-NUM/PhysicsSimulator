@@ -1,5 +1,5 @@
 #pragma once
-#include "PS_UserInterface.hpp"
+#include "PS_UI.hpp"
 
 namespace ps {
 	class PS_Pipeline : public PS_Helper {
@@ -58,5 +58,7 @@ namespace ps {
 		std::vector<VkSemaphore> renderFinishedSemaphores;
 		std::vector<VkFence> inFlightFences;
 		uint32_t currentFrame = 0;
+
+		PS_UI* UI;
 	};
 }

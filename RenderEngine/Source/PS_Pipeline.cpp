@@ -1,10 +1,6 @@
 #include "PS_Pipeline.hpp"
 
-
-
-
 namespace ps {
-	PS_UserInterface *UI;
 
 	PS_Pipeline::PS_Pipeline(PS_Window* window, PS_Device *device, PS_SwapChain *chain, std::vector<PS_GameObject*> objects, bool imguiInit) : PS_Helper(device) {
 		psWindow = window;
@@ -47,7 +43,7 @@ namespace ps {
 			imguiInfo.DescriptorPool = imgDescriptorPool;
 			imguiInfo.ImageCount = MAX_FRAMES_IN_FLIGHT;
 			imguiInfo.RenderPass = renderPass;
-			UI = new PS_UserInterface(psWindow, psDevice, imguiInfo);
+			UI = new PS_UI(psWindow, psDevice, imguiInfo);
 		}
 	}
 

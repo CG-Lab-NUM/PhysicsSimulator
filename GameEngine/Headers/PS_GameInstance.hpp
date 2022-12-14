@@ -1,3 +1,4 @@
+#pragma once
 #include "PS_App.hpp"
 
 namespace ps {

@@ -1,20 +1,9 @@
-#include "PS_UserInterface.hpp"
+#include "PS_UI.hpp"
 
-#ifndef IMGUI_H
-#define IMGUI_H
-#include <imconfig.h>
-#include <imgui_tables.cpp>
-#include <imgui_internal.h>
-#include <imgui.cpp>
-#include <imgui_draw.cpp>
-#include <imgui_widgets.cpp>
-#include <imgui_demo.cpp>
-#include <backends/imgui_impl_glfw.cpp>
-#include <backends/imgui_impl_vulkan_but_better.h>
-#endif
+
 
 namespace ps {
-	PS_UserInterface::PS_UserInterface(PS_Window* window, PS_Device* device, ImguiInfo pipelineInfo) : PS_Helper(device) {
+	PS_UI::PS_UI(PS_Window* window, PS_Device* device, ImguiInfo pipelineInfo) : PS_Helper(device) {
 		psWindow = window;
 		psDevice = device;
 		this->pipelineInfo = pipelineInfo;
@@ -41,13 +30,13 @@ namespace ps {
 		ImGui_ImplVulkan_DestroyFontUploadObjects();
 	}
 
-	PS_UserInterface::~PS_UserInterface() {
+	PS_UI::~PS_UI() {
 		ImGui_ImplVulkan_Shutdown();
 		ImGui_ImplGlfw_Shutdown();
 		ImGui::DestroyContext();
 	}
 
-	void PS_UserInterface::createTextureWindow(int gameObjectsSize, std::vector<PS_TextureImage*> textureImages, VkCommandBuffer* commandBuffer) {
+	void PS_UI::createTextureWindow(int gameObjectsSize, std::vector<PS_TextureImage*> textureImages, VkCommandBuffer* commandBuffer) {
 		ImGui_ImplVulkan_NewFrame();
 		ImGui_ImplGlfw_NewFrame();
 		ImGui::NewFrame();

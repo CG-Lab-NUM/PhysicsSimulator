@@ -1,3 +1,4 @@
+#pragma once
 #include "PS_GameGeneric.hpp"
 #include "PS_GameObject.hpp"
 

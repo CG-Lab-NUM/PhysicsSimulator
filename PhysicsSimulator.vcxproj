@@ -148,6 +148,7 @@
     <ClCompile Include="GameEngine\Source\PS_GameMesh.cpp" />
     <ClCompile Include="GameEngine\Source\PS_GameObject.cpp" />
     <ClCompile Include="main.cpp" />
+    <ClCompile Include="UI\Source\PS_MainMenu.cpp" />
     <ClCompile Include="UI\Source\PS_UI.cpp" />
   </ItemGroup>
   <ItemGroup>
@@ -167,6 +168,7 @@
     <ClInclude Include="GameEngine\Headers\PS_GameMesh.hpp" />
     <ClInclude Include="GameEngine\Headers\PS_GameObject.hpp" />
     <ClInclude Include="Libraries\imgui\backends\imgui_impl_vulkan_but_better.h" />
+    <ClInclude Include="UI\Headers\PS_MainMenu.hpp" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Shader\shader.frag" />
