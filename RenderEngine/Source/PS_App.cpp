@@ -3,7 +3,7 @@
 namespace ps {
 	PS_App::PS_App(PS_GameLevel* gameLevel) {
 		gameObjects = gameLevel->getGameObjects();
-		psPipeline = new PS_Pipeline(&psWindow, &psDevice, &psSwapChain, gameObjects, true);
+		psPipeline = new PS_Pipeline(&psWindow, &psDevice, &psSwapChain, gameObjects);
 	}
 
 	PS_App::~PS_App() {

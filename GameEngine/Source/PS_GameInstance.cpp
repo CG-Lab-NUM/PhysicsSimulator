@@ -6,7 +6,6 @@
 
 namespace ps {
 	int PS_GameInstance::startInstance() {
-		/*
 		gameObject1.setModel("D:\\VulkanProjects\\PhysicsSimulator\\Content\\Meshes\\StingSword.obj");
 		gameObject1.setTexture("D:\\VulkanProjects\\PhysicsSimulator\\Content\\Textures\\StingSword\\StingSword_Base_Color.png");
 		gameObject1.setScale({ 0.1, 0.1, 0.1 });
@@ -19,7 +18,6 @@ namespace ps {
 		gameLevel.addGameObject(&gameObject3);
 		gameLevel.addGameObject(&gameObject4);
 		gameLevel.addGameObject(&gameObject5);
-		*/
 
 		ps::PS_App app{ &gameLevel };
 		try {

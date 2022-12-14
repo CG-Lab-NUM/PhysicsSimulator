@@ -2,12 +2,11 @@
 
 namespace ps {
 
-	PS_Pipeline::PS_Pipeline(PS_Window* window, PS_Device *device, PS_SwapChain *chain, std::vector<PS_GameObject*> objects, bool imguiInit) : PS_Helper(device) {
+	PS_Pipeline::PS_Pipeline(PS_Window* window, PS_Device *device, PS_SwapChain *chain, std::vector<PS_GameObject*> objects) : PS_Helper(device) {
 		psWindow = window;
 		psDevice = device;
 		psSwapChain = chain;
 		gameObjects = objects;
-		isInitial = imguiInit;
 		createRenderPass();
 		createDescriptorSetLayout();
 		createGraphicsPipeline();
@@ -37,14 +36,6 @@ namespace ps {
 		createCommandBuffers();
 		createCommandBuffers();
 		createSyncObjects();
-
-		if (imguiInit == true) {
-			struct ImguiInfo imguiInfo;
-			imguiInfo.DescriptorPool = imgDescriptorPool;
-			imguiInfo.ImageCount = MAX_FRAMES_IN_FLIGHT;
-			imguiInfo.RenderPass = renderPass;
-			UI = new PS_UI(psWindow, psDevice, imguiInfo);
-		}
 	}
 
 	PS_Pipeline::~PS_Pipeline() {
@@ -359,10 +350,6 @@ namespace ps {
 		if (vkCreateDescriptorPool(psDevice->device, &poolInfo, nullptr, &descriptorPool) != VK_SUCCESS) {
 			throw std::runtime_error("failed to create descriptor pool!");
 		}
-
-		if (vkCreateDescriptorPool(psDevice->device, &poolInfo, nullptr, &imgDescriptorPool) != VK_SUCCESS) {
-			throw std::runtime_error("failed to create descriptor pool!");
-		}
 	}
 
 	void PS_Pipeline::createDescriptorSets() {
@@ -537,7 +524,6 @@ namespace ps {
 				modelLoaders[i]->Render(commandBuffer);
 			}
 		}
-		UI->createTextureWindow(gameObjects.size(), textureImages, &commandBuffer);
 
 		vkCmdEndRenderPass(commandBuffer);
 
