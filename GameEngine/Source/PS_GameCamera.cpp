@@ -10,7 +10,15 @@ namespace ps {
 	}
 
 	glm::vec3 PS_GameCamera::getCenter() {
-		return {0, 0, 0};
+		float distance = 1;
+		float x = getLocation()[0] + (distance * glm::cos(getRotation()[0]));
+		float y = getLocation()[1] + (distance * glm::sin(getRotation()[1]));
+		float z = getLocation()[2];
+		if (!printed) {
+			std::cout << x << " " << y << " " << z << std::endl;
+			printed = true;
+		}
+		return { x, y, z};
 	}
 
 	glm::vec3 PS_GameCamera::getUp() {
