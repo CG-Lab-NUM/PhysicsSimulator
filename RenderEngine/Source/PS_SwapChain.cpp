@@ -271,12 +271,28 @@ namespace ps {
 
 		vkDeviceWaitIdle(psDevice->device);
 
-		//cleanupSwapChain();
+		cleanupSwapChain();
 
 		createSwapChain();
 		createImageViews();
 		createColorResources();
 		createDepthResources();
 		createFramebuffers(renderPass);
+	}
+
+	void PS_SwapChain::cleanupSwapChain() {
+		vkDestroyImageView(psDevice->device, depthImageView, nullptr);
+		vkDestroyImage(psDevice->device, depthImage, nullptr);
+		vkFreeMemory(psDevice->device, depthImageMemory, nullptr);
+
+		for (auto framebuffer : swapChainFramebuffers) {
+			vkDestroyFramebuffer(psDevice->device, framebuffer, nullptr);
+		}
+
+		for (auto imageView : swapChainImageViews) {
+			vkDestroyImageView(psDevice->device, imageView, nullptr);
+		}
+
+		vkDestroySwapchainKHR(psDevice->device, swapChain, nullptr);
 	}
 }

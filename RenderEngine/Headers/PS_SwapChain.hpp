@@ -26,6 +26,7 @@ namespace ps {
 		VkFormat findDepthFormat();
 
 		void recreateSwapChain(VkRenderPass renderPass);
+		void cleanupSwapChain();
 
 	private:
 		void createSwapChain();

@@ -19,9 +19,10 @@ namespace ps {
 		gameObject5.setLocation({ 0, 0, -10 });
 
 		PS_GameCamera camera;
-		camera.setLocation({3, 4, 0});
-		camera.setRotation({0, 0.0f, 1.0f});
-
+		camera.setLocation({2, 2, 0});
+		camera.setRotation({0.0f, 30.0f, 0.0f});
+		//0 3 1
+		//0 2.01197 0.154251
 		gameLevel.setCamera(&camera);
 		gameLevel.addGameObject(&gameObject1);
 		gameLevel.addGameObject(&gameObject2);

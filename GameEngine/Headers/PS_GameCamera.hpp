@@ -7,5 +7,8 @@ namespace ps {
 		glm::vec3 getEye();
 		glm::vec3 getCenter();
 		glm::vec3 getUp();
+
+	private:
+		bool printed = false;
 	};
 }
