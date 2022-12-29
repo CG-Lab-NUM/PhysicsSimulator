@@ -1,0 +1,21 @@
+{
+  "name": "TestLevel",
+  "game_objects": [
+    {
+      "type": "EditorCamera",
+      "name": "MainCamera",
+      "location": [ 2, 2, 0 ],
+      "rotation": [ 0, 30, 0 ],
+      "scale": [ 1, 1, 1 ]
+    },
+    {
+      "type": "GameObject",
+      "name": "Object",
+      "location": [ 0, 0, 0 ],
+      "rotation": [ 0, 0, 0 ],
+      "scale": [ 0.1, 0.1, 0.1 ],
+      "model_path": "D:/VulkanProjects/PhysicsSimulator/Content/Meshes/StingSword.obj",
+      "texture_path": "D:/VulkanProjects/PhysicsSimulator/Content/Textures/StingSword/StingSword_Base_Color.png"
+    }
+  ]
+}
