@@ -9,6 +9,7 @@ namespace ps {
 
 	void PS_ModelLoader::loadModel(PS_GameObject* object) {
 		std::unordered_map<Vertex, uint32_t> uniqueVertices{};
+		/*
 		if (object->getIsBasicShape()) {
 			std::vector<Vertex> tempVertices = object->getVertices();
 
@@ -24,6 +25,7 @@ namespace ps {
 			}
 			return;
 		}
+		*/
 		tinyobj::attrib_t attrib;
 		std::vector<tinyobj::shape_t> shapes;
 		std::vector<tinyobj::material_t> materials;
