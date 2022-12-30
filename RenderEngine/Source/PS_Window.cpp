@@ -20,6 +20,7 @@ namespace ps {
 		window = glfwCreateWindow(WIDTH, HEIGHT, windowTitle.c_str(), nullptr, nullptr);
 		glfwSetWindowUserPointer(window, this);
 		glfwSetFramebufferSizeCallback(window, framebufferResizeCallback);
+		glfwSetKeyCallback(window, keyCallback);
 	}
 
 	PS_Window::~PS_Window() {
@@ -30,6 +31,12 @@ namespace ps {
 	void PS_Window::framebufferResizeCallback(GLFWwindow* window, int width, int height) {
 		auto app = reinterpret_cast<PS_Window*>(glfwGetWindowUserPointer(window));
 		app->framebufferResized = true;
+	}
+
+	void PS_Window::keyCallback(GLFWwindow* window, int key, int scanCode, int action, int mods) {
+		if (key == GLFW_KEY_E && action == GLFW_PRESS) {
+			std::cout << "Temp\n";
+		}
 	}
 
 	void PS_Window::createSurface(VkInstance instance) {
