@@ -136,6 +136,7 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="GameEngine\Source\PS_GameCamera.cpp" />
+    <ClCompile Include="GameEngine\Source\PS_KeyboardListener.cpp" />
     <ClCompile Include="RenderEngine\Source\PS_ModelLoader.cpp" />
     <ClCompile Include="RenderEngine\Source\PS_TextureImage.cpp" />
     <ClCompile Include="RenderEngine\Source\PS_App.cpp" />
@@ -152,6 +153,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="GameEngine\Headers\PS_GameCamera.hpp" />
+    <ClInclude Include="GameEngine\Headers\PS_KeyboardListener.hpp" />
     <ClInclude Include="RenderEngine\Headers\PS_App.hpp" />
     <ClInclude Include="RenderEngine\Headers\PS_Colors.hpp" />
     <ClInclude Include="RenderEngine\Headers\PS_Device.hpp" />

@@ -10,7 +10,7 @@ namespace ps {
 	}
 
 	glm::vec3 PS_GameCamera::getCenter() {
-		return { 0,0,0 };
+		return { 0, 0, 0 };
 	}
 
 	glm::vec3 PS_GameCamera::getUp() {
