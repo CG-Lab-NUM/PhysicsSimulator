@@ -1,3 +1,4 @@
+#pragma once
 #include "PS_GameObject.hpp"
 #include "PS_Window.hpp"
 
@@ -10,8 +11,13 @@ namespace ps {
 		glm::vec3 getUp();
 
 		void tick();
-
 	private:
-		bool printed = false;
+		bool mouseRightStatus = false;
+		glm::vec2 previousCursorPosition;
+		glm::vec2 currentCursorPosition;
+		
+		void keyboardMovement();
+		void mouseRotation();
+		float makeAbsolute(float num);
 	};
 }
