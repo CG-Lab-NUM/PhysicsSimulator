@@ -387,6 +387,8 @@ namespace ps {
 
 
 	void PS_Pipeline::drawFrame() {
+		gameCamera->tick();
+
 		vkWaitForFences(psDevice->device, 1, &inFlightFences[currentFrame], VK_TRUE, UINT64_MAX);
 
 		uint32_t imageIndex;

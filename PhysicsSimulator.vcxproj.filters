@@ -57,7 +57,10 @@
     <ClCompile Include="GameEngine\Source\PS_GameCamera.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="GameEngine\Source\PS_KeyboardListener.cpp">
+    <ClCompile Include="Misc\Source\PS_KeyboardHandler.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Misc\Source\PS_MouseHandler.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
@@ -113,7 +116,10 @@
     <ClInclude Include="GameEngine\Headers\PS_GameCamera.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="GameEngine\Headers\PS_KeyboardListener.hpp">
+    <ClInclude Include="Misc\Headers\PS_KeyboardHandler.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Misc\Headers\PS_MouseHandler.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
