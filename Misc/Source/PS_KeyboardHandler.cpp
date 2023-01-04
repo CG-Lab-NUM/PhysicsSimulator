@@ -8,13 +8,12 @@ namespace ps {
 	void PS_KeyboardHandler::keyCallback(GLFWwindow* window, int key, int scanCode, int action, int mods) {
 		letterCallback(window, key, scanCode, action, mods);
 		numberCallback(window, key, scanCode, action, mods);
-
 	}
 
 	void PS_KeyboardHandler::letterCallback(GLFWwindow* window, int key, int scanCode, int action, int mods) {
-		//if (!lettersEnabled) {
-		//	return;
-		//}
+		if (!lettersEnabled) {
+			return;
+		}
 		for (int i = 65; i <= 90; i++) {
 			if (key == i and action == GLFW_PRESS) {
 				currentKeyboard[i] = true;
@@ -26,9 +25,9 @@ namespace ps {
 	}
 
 	void PS_KeyboardHandler::numberCallback(GLFWwindow* window, int key, int scanCode, int action, int mods) {
-		//if (!numbersEnabled) {
-		//	return;
-		//}
+		if (!numbersEnabled) {
+			return;
+		}
 		for (int i = 0; i <= 9; i++) {
 			if (key == i and action == GLFW_PRESS) {
 				currentKeyboard[i] = true;

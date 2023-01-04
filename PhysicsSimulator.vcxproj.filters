@@ -60,6 +60,9 @@
     <ClCompile Include="Misc\Source\PS_KeyboardHandler.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="Misc\Source\PS_MouseHandler.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Libraries\imgui\backends\imgui_impl_vulkan_but_betters.h">
@@ -114,6 +117,9 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="Misc\Headers\PS_KeyboardHandler.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Misc\Headers\PS_MouseHandler.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

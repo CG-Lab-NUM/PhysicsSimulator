@@ -10,7 +10,10 @@ namespace ps {
 
 		window = glfwCreateWindow(WIDTH, HEIGHT, "Vulkan", nullptr, nullptr);
 		glfwSetWindowUserPointer(window, this);
+
+		// Callbacks
 		glfwSetFramebufferSizeCallback(window, framebufferResizeCallback);
+		glfwSetKeyCallback(window, PS_KeyboardHandler::keyCallback);
 	}
 
 	PS_Window::PS_Window(uint32_t w, uint32_t h, std::string windowTitle) {
@@ -21,8 +24,13 @@ namespace ps {
 
 		window = glfwCreateWindow(WIDTH, HEIGHT, windowTitle.c_str(), nullptr, nullptr);
 		glfwSetWindowUserPointer(window, this);
+
+		// Callbacks
 		glfwSetFramebufferSizeCallback(window, framebufferResizeCallback);
 		glfwSetKeyCallback(window, PS_KeyboardHandler::keyCallback);
+		glfwSetCursorPosCallback(window, PS_MouseHandler::positionCallback);
+		glfwSetCursorEnterCallback(window, PS_MouseHandler::enterCallback);
+		glfwSetMouseButtonCallback(window, PS_MouseHandler::buttonCallback);
 	}
 
 	PS_Window::~PS_Window() {

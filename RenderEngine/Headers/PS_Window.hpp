@@ -1,6 +1,7 @@
 #pragma once
 #include "PS_RenderGeneric.hpp"
 #include "PS_KeyboardHandler.hpp"
+#include "PS_MouseHandler.hpp"
 
 namespace ps {
 	class PS_Window {
