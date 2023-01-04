@@ -36,6 +36,17 @@ namespace ps {
 	}
 	void PS_GameObject::setRotation(glm::vec3 newRotation) {
 		rotation = newRotation;
+		forwardVector = glm::vec3(
+			glm::cos(rotation.x) * glm::sin(rotation.y),
+			-glm::sin(rotation.x),
+			glm::cos(rotation.x) * glm::cos(rotation.y)
+		);
+		rightVector = glm::vec3(
+			glm::cos(rotation.y),
+			0,
+			-glm::sin(rotation.y)
+		);
+		upVector = glm::cross(forwardVector, rightVector);
 	}
 	void PS_GameObject::setScale(glm::vec3 newScale) {
 		scale = newScale;
