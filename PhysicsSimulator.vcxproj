@@ -140,6 +140,7 @@
     <ClCompile Include="Misc\Source\PS_KeyboardHandler.cpp" />
     <ClCompile Include="Misc\Source\PS_MouseHandler.cpp" />
     <ClCompile Include="RenderEngine\Source\PS_ModelLoader.cpp" />
+    <ClCompile Include="RenderEngine\Source\PS_RenderGeneric.cpp" />
     <ClCompile Include="RenderEngine\Source\PS_TextureImage.cpp" />
     <ClCompile Include="RenderEngine\Source\PS_Renderer.cpp" />
     <ClCompile Include="RenderEngine\Source\PS_Device.cpp" />
