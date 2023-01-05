@@ -52,10 +52,10 @@ namespace ps {
 		scale = newScale;
 	}
 	void PS_GameObject::setModel(std::string newModelPath) {
-		modelPath = fileHandler.makeAbsolute(newModelPath);
+		modelPath = PS_FileHandler::makeAbsolute(newModelPath);
 	}
 	void PS_GameObject::setTexture(std::string newTexturePath) {
-		texturePath = fileHandler.makeAbsolute(newTexturePath);
+		texturePath = PS_FileHandler::makeAbsolute(newTexturePath);
 	}
 	void PS_GameObject::setName(std::string newName) {
 		objectName = newName;

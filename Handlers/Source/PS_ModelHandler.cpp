@@ -1,13 +1,13 @@
-#include "PS_ModelLoader.hpp"
+#include "PS_ModelHandler.hpp"
 #define TINYOBJLOADER_IMPLEMENTATION
 #include <tiny_obj_loader.h>
 
 namespace ps {
-	PS_ModelLoader::PS_ModelLoader(PS_Device* device) : PS_Helper(device) {
+	PS_ModelHandler::PS_ModelHandler(PS_Device* device) : PS_Helper(device) {
 		this->psDevice = device;
 	}
 
-	void PS_ModelLoader::loadModel(PS_GameObject* object) {
+	void PS_ModelHandler::loadModel(PS_GameObject* object) {
 		std::unordered_map<Vertex, uint32_t> uniqueVertices{};
 		tinyobj::attrib_t attrib;
 		std::vector<tinyobj::shape_t> shapes;
@@ -59,7 +59,7 @@ namespace ps {
 		}
 	}
 
-	void PS_ModelLoader::createVertexBuffer() {
+	void PS_ModelHandler::createVertexBuffer() {
 		VkDeviceSize bufferSize = sizeof(vertices[0]) * vertices.size();
 
 		VkBuffer stagingBuffer;
@@ -79,7 +79,7 @@ namespace ps {
 		vkFreeMemory(psDevice->device, stagingBufferMemory, nullptr);
 	}
 
-	void PS_ModelLoader::createIndexBuffer() {
+	void PS_ModelHandler::createIndexBuffer() {
 		VkDeviceSize bufferSize = sizeof(indices[0]) * indices.size();
 
 		VkBuffer stagingBuffer;
@@ -99,13 +99,13 @@ namespace ps {
 		vkFreeMemory(psDevice->device, stagingBufferMemory, nullptr);
 	}
 
-	void PS_ModelLoader::Load(PS_GameObject* object) {
+	void PS_ModelHandler::Load(PS_GameObject* object) {
 		loadModel(object);
 		createVertexBuffer();
 		createIndexBuffer();
 	}
 
-	void PS_ModelLoader::Destroy() {
+	void PS_ModelHandler::Destroy() {
 		vkDestroyBuffer(psDevice->device, indexBuffer, nullptr);
 		vkFreeMemory(psDevice->device, indexBufferMemory, nullptr);
 
@@ -113,7 +113,7 @@ namespace ps {
 		vkFreeMemory(psDevice->device, vertexBufferMemory, nullptr);
 	}
 
-	void PS_ModelLoader::Render(VkCommandBuffer commandBuffer){
+	void PS_ModelHandler::Render(VkCommandBuffer commandBuffer){
 		VkBuffer vertexBuffers[] = { vertexBuffer };
 		VkDeviceSize offsets[] = { 0 };
 		vkCmdBindVertexBuffers(commandBuffer, 0, 1, vertexBuffers, offsets);

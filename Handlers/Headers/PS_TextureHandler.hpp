@@ -2,9 +2,9 @@
 #include "PS_Helper.hpp"
 
 namespace ps {
-	class PS_TextureImage : PS_Helper {
+	class PS_TextureHandler : PS_Helper {
 	public:
-		PS_TextureImage(PS_Device* psDevice, VkDescriptorPool* descriptorPool, VkDescriptorSetLayout* textureDescriptorSetLayout);
+		PS_TextureHandler(PS_Device* psDevice, VkDescriptorPool* descriptorPool, VkDescriptorSetLayout* textureDescriptorSetLayout);
 		void Load(PS_GameObject* object);
 		void Free();
 		void Destroy();

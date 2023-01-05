@@ -2,9 +2,9 @@
 #include "PS_Helper.hpp"
 
 namespace ps {
-	class PS_ModelLoader : PS_Helper {
+	class PS_ModelHandler : PS_Helper {
 	public:
-		PS_ModelLoader(PS_Device* device);
+		PS_ModelHandler(PS_Device* device);
 		void Load(PS_GameObject* object);
 		void Destroy();
 		void Render(VkCommandBuffer commandBuffer);

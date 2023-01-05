@@ -1,16 +1,16 @@
-#include "PS_TextureImage.hpp"
+#include "PS_TextureHandler.hpp"
 
 #define STB_IMAGE_IMPLEMENTATION
 #include <stb_image.h>
 
 namespace ps {
-	PS_TextureImage::PS_TextureImage(PS_Device* psDevice, VkDescriptorPool* descriptorPool, VkDescriptorSetLayout* textureDescriptorSetLayout) : PS_Helper(psDevice) {
+	PS_TextureHandler::PS_TextureHandler(PS_Device* psDevice, VkDescriptorPool* descriptorPool, VkDescriptorSetLayout* textureDescriptorSetLayout) : PS_Helper(psDevice) {
 		this->psDevice = psDevice;
 		this->descriptorPool = descriptorPool;
 		this->textureDescriptorSetLayout = textureDescriptorSetLayout;
 	}
 
-	void PS_TextureImage::createTextureImage(PS_GameObject* object) {
+	void PS_TextureHandler::createTextureImage(PS_GameObject* object) {
 		int texWidth, texHeight, texChannels;
 		stbi_uc* pixels = stbi_load(object->getTexture().c_str(), &texWidth, &texHeight, &texChannels, STBI_rgb_alpha);
 		VkDeviceSize imageSize = texWidth * texHeight * 4;
@@ -44,7 +44,7 @@ namespace ps {
 		generateMipmaps(textureImage, VK_FORMAT_R8G8B8A8_SRGB, texWidth, texHeight, mipLevels);
 	}
 
-	void PS_TextureImage::generateMipmaps(VkImage image, VkFormat imageFormat, int32_t texWidth, int32_t texHeight, uint32_t mipLevels) {
+	void PS_TextureHandler::generateMipmaps(VkImage image, VkFormat imageFormat, int32_t texWidth, int32_t texHeight, uint32_t mipLevels) {
 		// Check if image format supports linear blitting
 		VkFormatProperties formatProperties;
 		vkGetPhysicalDeviceFormatProperties(psDevice->physicalDevice, imageFormat, &formatProperties);
@@ -131,11 +131,11 @@ namespace ps {
 		endSingleTimeCommands(commandBuffer);
 	}
 
-	void PS_TextureImage::createTextureImageView() {
+	void PS_TextureHandler::createTextureImageView() {
 		textureImageView = createImageView(textureImage, VK_FORMAT_R8G8B8A8_SRGB, VK_IMAGE_ASPECT_COLOR_BIT, mipLevels);
 	}
 
-	void PS_TextureImage::createTextureSampler() {
+	void PS_TextureHandler::createTextureSampler() {
 		VkPhysicalDeviceProperties properties{};
 		vkGetPhysicalDeviceProperties(psDevice->physicalDevice, &properties);
 
@@ -162,7 +162,7 @@ namespace ps {
 		}
 	}
 
-	void PS_TextureImage::createTextureDescriptorSet()
+	void PS_TextureHandler::createTextureDescriptorSet()
 	{
 		VkDescriptorSetAllocateInfo allocInfo{};
 		allocInfo.sType = VK_STRUCTURE_TYPE_DESCRIPTOR_SET_ALLOCATE_INFO;
@@ -191,7 +191,7 @@ namespace ps {
 		vkUpdateDescriptorSets(psDevice->device, 1, &descriptorWrite, 0, nullptr);
 	}
 
-	void PS_TextureImage::Destroy()
+	void PS_TextureHandler::Destroy()
 	{
 		vkDestroySampler(psDevice->device, textureSampler, nullptr);
 		vkDestroyImageView(psDevice->device, textureImageView, nullptr);
@@ -200,12 +200,12 @@ namespace ps {
 		vkFreeMemory(psDevice->device, textureImageMemory, nullptr);
 	}
 
-	void PS_TextureImage::Free()
+	void PS_TextureHandler::Free()
 	{
 		vkFreeDescriptorSets(psDevice->device, *descriptorPool, 1, &descriptorSet);
 	}
 
-	void PS_TextureImage::Load(PS_GameObject* object)
+	void PS_TextureHandler::Load(PS_GameObject* object)
 	{
 		createTextureImage(object);
 		createTextureImageView();

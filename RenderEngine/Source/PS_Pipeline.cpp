@@ -19,9 +19,9 @@ namespace ps {
 
 		int i;
 		for (i = 0; i < gameObjects.size(); i++) {
-			PS_ModelLoader *Model = new PS_ModelLoader(psDevice);
+			PS_ModelHandler *Model = new PS_ModelHandler(psDevice);
 			modelLoaders.push_back(Model);
-			PS_TextureImage *Texture = new PS_TextureImage(psDevice, &descriptorPool, &textureDescriptorSetLayout);
+			PS_TextureHandler *Texture = new PS_TextureHandler(psDevice, &descriptorPool, &textureDescriptorSetLayout);
 			textureImages.push_back(Texture);
 			Model->Load(gameObjects[i]);
 		}
@@ -145,8 +145,6 @@ namespace ps {
 		}
 	}
 
-
-
 	void PS_Pipeline::createDescriptorSetLayout() {
 		VkDescriptorSetLayoutBinding uboLayoutBinding{};
 		uboLayoutBinding.binding = 0;
@@ -161,6 +159,7 @@ namespace ps {
 		samplerLayoutBinding.descriptorType = VK_DESCRIPTOR_TYPE_COMBINED_IMAGE_SAMPLER;
 		samplerLayoutBinding.pImmutableSamplers = nullptr;
 		samplerLayoutBinding.stageFlags = VK_SHADER_STAGE_FRAGMENT_BIT;
+
 		VkDescriptorSetLayoutCreateInfo layoutInfo{};
 		layoutInfo.sType = VK_STRUCTURE_TYPE_DESCRIPTOR_SET_LAYOUT_CREATE_INFO;
 		layoutInfo.bindingCount = 1;
@@ -178,8 +177,8 @@ namespace ps {
 	}
 
 	void PS_Pipeline::createGraphicsPipeline() {
-		auto vertShaderCode = readFile("Shaders/vert.spv");
-		auto fragShaderCode = readFile("Shaders/frag.spv");
+		auto vertShaderCode = PS_FileHandler::readFile("Shaders/vert.spv");
+		auto fragShaderCode = PS_FileHandler::readFile("Shaders/frag.spv");
 
 		VkShaderModule vertShaderModule = createShaderModule(vertShaderCode);
 		VkShaderModule fragShaderModule = createShaderModule(fragShaderCode);
