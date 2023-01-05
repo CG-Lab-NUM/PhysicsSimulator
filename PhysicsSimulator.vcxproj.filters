@@ -48,22 +48,22 @@
     <ClCompile Include="GameEngine\Source\PS_GameMesh.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="RenderEngine\Source\PS_TextureImage.cpp">
+    <ClCompile Include="Handlers\Source\PS_TextureHandler.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="RenderEngine\Source\PS_ModelLoader.cpp">
+    <ClCompile Include="Handlers\Source\PS_ModelHandler.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="GameEngine\Source\PS_GameCamera.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="Misc\Source\PS_KeyboardHandler.cpp">
+    <ClCompile Include="Handlers\Source\PS_KeyboardHandler.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="Misc\Source\PS_MouseHandler.cpp">
+    <ClCompile Include="Handlers\Source\PS_MouseHandler.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="Misc\Source\PS_FileHandler.cpp">
+    <ClCompile Include="Handlers\Source\PS_FileHandler.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="RenderEngine\Source\PS_RenderGeneric.cpp">
@@ -95,7 +95,7 @@
     <ClInclude Include="RenderEngine\Headers\PS_Helper.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="RenderEngine\Headers\PS_Colors.hpp">
+    <ClInclude Include="Handlers\Headers\PS_ColorHandler.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="GameEngine\Headers\PS_GameGeneric.hpp">
@@ -113,22 +113,22 @@
     <ClInclude Include="GameEngine\Headers\PS_GameMesh.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="RenderEngine\Headers\PS_TextureImage.hpp">
+    <ClInclude Include="Handlers\Headers\PS_TextureHandler.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="RenderEngine\Headers\PS_ModelLoader.hpp">
+    <ClInclude Include="Handlers\Headers\PS_ModelHandler.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="GameEngine\Headers\PS_GameCamera.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="Misc\Headers\PS_KeyboardHandler.hpp">
+    <ClInclude Include="Handlers\Headers\PS_KeyboardHandler.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="Misc\Headers\PS_MouseHandler.hpp">
+    <ClInclude Include="Handlers\Headers\PS_MouseHandler.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="Misc\Headers\PS_FileHandler.hpp">
+    <ClInclude Include="Handlers\Headers\PS_FileHandler.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

@@ -1,7 +1,7 @@
 #pragma once
 #include "PS_Helper.hpp"
-#include "PS_ModelLoader.hpp"
-#include "PS_TextureImage.hpp"
+#include "PS_ModelHandler.hpp"
+#include "PS_TextureHandler.hpp"
 
 namespace ps {
 	class PS_Pipeline : public PS_Helper {
@@ -52,8 +52,8 @@ namespace ps {
 		std::vector<VkCommandBuffer> commandBuffers;
 
 		std::vector<PS_GameObject*> gameObjects;
-		std::vector<PS_ModelLoader*> modelLoaders;
-		std::vector<PS_TextureImage*> textureImages;
+		std::vector<PS_ModelHandler*> modelLoaders;
+		std::vector<PS_TextureHandler*> textureImages;
 
 		std::vector<VkSemaphore> imageAvailableSemaphores;
 		std::vector<VkSemaphore> renderFinishedSemaphores;

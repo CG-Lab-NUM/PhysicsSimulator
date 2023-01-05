@@ -5,11 +5,9 @@
 #include "PS_Window.hpp"
 
 namespace ps {
-	class PS_Colors {
+	class PS_ColorHandler {
 	public:
 		glm::vec3 makeColor(std::string hex) {
-			// 0 ---> 1
-			// HEXCODE ---> RGB
 			std::string temp = "";
 			for (int i = 0; i < 2; i++) {
 				temp += hex[i];

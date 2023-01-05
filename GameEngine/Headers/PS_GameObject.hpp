@@ -44,6 +44,5 @@ namespace ps {
 		std::string objectName;
 
 		bool isBasicShape;
-		PS_FileHandler fileHandler;
 	};
 }
