@@ -458,7 +458,7 @@ namespace ps {
 		float time = std::chrono::duration<float, std::chrono::seconds::period>(currentTime - startTime).count();
 
 		UniformBufferObject ubo{};
-		ubo.model = glm::mat4(0.0f);
+		ubo.model = glm::mat4(1.0f);
 		ubo.view = glm::lookAt(gameCamera->getEye(), gameCamera->getCenter(), gameCamera->getUp());
 		ubo.proj = glm::perspective(glm::radians(45.0f), psSwapChain->swapChainExtent.width / (float)psSwapChain->swapChainExtent.height, 1.0f, 50.0f);
 		ubo.proj[1][1] *= -1;
