@@ -141,7 +141,7 @@
     <ClCompile Include="Misc\Source\PS_MouseHandler.cpp" />
     <ClCompile Include="RenderEngine\Source\PS_ModelLoader.cpp" />
     <ClCompile Include="RenderEngine\Source\PS_TextureImage.cpp" />
-    <ClCompile Include="RenderEngine\Source\PS_App.cpp" />
+    <ClCompile Include="RenderEngine\Source\PS_Renderer.cpp" />
     <ClCompile Include="RenderEngine\Source\PS_Device.cpp" />
     <ClCompile Include="RenderEngine\Source\PS_Helper.cpp" />
     <ClCompile Include="RenderEngine\Source\PS_Pipeline.cpp" />
@@ -158,7 +158,7 @@
     <ClInclude Include="Misc\Headers\PS_FileHandler.hpp" />
     <ClInclude Include="Misc\Headers\PS_KeyboardHandler.hpp" />
     <ClInclude Include="Misc\Headers\PS_MouseHandler.hpp" />
-    <ClInclude Include="RenderEngine\Headers\PS_App.hpp" />
+    <ClInclude Include="RenderEngine\Headers\PS_Renderer.hpp" />
     <ClInclude Include="RenderEngine\Headers\PS_Colors.hpp" />
     <ClInclude Include="RenderEngine\Headers\PS_Device.hpp" />
     <ClInclude Include="RenderEngine\Headers\PS_EngineGeneric.hpp" />

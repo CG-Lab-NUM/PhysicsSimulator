@@ -15,6 +15,7 @@ namespace ps {
 		void setScale(glm::vec3 newScale);
 		void setModel(std::string newModelPath);
 		void setTexture(std::string newTexturePath);
+		void setName(std::string newName);
 		void setIsBasicShape(bool newBool, std::vector<Vertex> newVertices);
 
 		glm::vec3 getLocation();

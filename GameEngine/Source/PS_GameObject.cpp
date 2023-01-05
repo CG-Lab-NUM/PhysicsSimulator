@@ -38,13 +38,13 @@ namespace ps {
 		rotation = newRotation;
 		forwardVector = glm::vec3(
 			glm::cos(rotation.x) * glm::sin(rotation.y),
-			-glm::sin(rotation.x),
-			glm::cos(rotation.x) * glm::cos(rotation.y)
+			glm::cos(rotation.x) * glm::cos(rotation.y),
+			-glm::sin(rotation.x)
 		);
 		rightVector = glm::vec3(
 			glm::cos(rotation.y),
-			0,
-			-glm::sin(rotation.y)
+			-glm::sin(rotation.y),
+			0
 		);
 		upVector = glm::cross(forwardVector, rightVector);
 	}
@@ -56,6 +56,9 @@ namespace ps {
 	}
 	void PS_GameObject::setTexture(std::string newTexturePath) {
 		texturePath = fileHandler.makeAbsolute(newTexturePath);
+	}
+	void PS_GameObject::setName(std::string newName) {
+		objectName = newName;
 	}
 	void PS_GameObject::setIsBasicShape(bool newBool, std::vector<Vertex> newVertices) {
 		isBasicShape = newBool;

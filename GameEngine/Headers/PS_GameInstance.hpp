@@ -1,5 +1,5 @@
 #pragma once
-#include "PS_App.hpp"
+#include "PS_Renderer.hpp"
 
 namespace ps {
 	class PS_GameInstance {

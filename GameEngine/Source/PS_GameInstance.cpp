@@ -7,7 +7,7 @@
 
 namespace ps {
 	int PS_GameInstance::startInstance() {
-		ps::PS_App app{ &gameLevel };
+		ps::PS_Renderer app{ &gameLevel };
 		try {
 			app.run();
 		}
