@@ -25,6 +25,7 @@ namespace ps {
 				gameObject->setScale(get3DVector(elem, "scale"));
 				gameObject->setModel(elem["model_path"]);
 				gameObject->setTexture(elem["texture_path"]);
+				gameObject->setName(elem["name"]);
 				gameObjects.push_back(gameObject);
 			}
 		}

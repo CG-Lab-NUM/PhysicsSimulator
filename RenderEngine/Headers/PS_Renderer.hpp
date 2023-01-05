@@ -2,10 +2,10 @@
 #include "PS_Pipeline.hpp"
 
 namespace ps {
-	class PS_App {
+	class PS_Renderer {
 	public:
-		PS_App(PS_GameLevel *gameLevel);
-		~PS_App();
+		PS_Renderer(PS_GameLevel *gameLevel);
+		~PS_Renderer();
 
 		void run();
 		void mainLoop();

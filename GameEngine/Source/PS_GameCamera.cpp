@@ -1,5 +1,8 @@
 #include "PS_GameCamera.hpp"
 
+#define ROTATION_SENSITIVITY 0.01f
+#define MOVEMENT_SPEED 0.01f
+
 namespace ps {
 	PS_GameCamera::PS_GameCamera() {
 		setRotation({ 0.0f, 0.0f, 1.0f });
@@ -25,17 +28,18 @@ namespace ps {
 	void PS_GameCamera::keyboardMovement() {
 		PS_KeyboardHandler::setLetterEnabled(true);
 		if (PS_KeyboardHandler::isPressed('W')) {
-			setLocation(getLocation() + (getForwardVector() * 0.01f));
+			setLocation(getLocation() + (getForwardVector() * MOVEMENT_SPEED));
 		}
 		if (PS_KeyboardHandler::isPressed('S')) {
-			setLocation(getLocation() - (getForwardVector() * 0.01f));
+			setLocation(getLocation() - (getForwardVector() * MOVEMENT_SPEED));
 		}
 		if (PS_KeyboardHandler::isPressed('A')) {
-			setLocation(getLocation() + (getRightVector() * 0.01f));
+			setLocation(getLocation() + (getRightVector() * MOVEMENT_SPEED));
 		}
 		if (PS_KeyboardHandler::isPressed('D')) {
-			setLocation(getLocation() - (getRightVector() * 0.01f));
+			setLocation(getLocation() - (getRightVector() * MOVEMENT_SPEED));
 		}
+		//std::cout << getLocation().x << " " << getLocation().y << " " << getLocation().z << std::endl;
 	}
 
 	void PS_GameCamera::mouseRotation() {
@@ -43,17 +47,19 @@ namespace ps {
 			currentCursorPosition = PS_MouseHandler::getPosition();
 			if (previousCursorPosition != currentCursorPosition) {
 				glm::vec3 tempRotation = getRotation();
+
 				if (currentCursorPosition.x > previousCursorPosition.x) {
-					tempRotation.y -= 0.01f;
-				} else if (currentCursorPosition.x < previousCursorPosition.x) {
-					tempRotation.y += 0.01f;
+					tempRotation.y += ROTATION_SENSITIVITY;
+				}
+				else if (currentCursorPosition.x < previousCursorPosition.x) {
+					tempRotation.y -= ROTATION_SENSITIVITY;
 				}
 
 				if (currentCursorPosition.y > previousCursorPosition.y) {
-					tempRotation.x += 0.01f;
+					tempRotation.x += ROTATION_SENSITIVITY;
 				}
 				else if (currentCursorPosition.y < previousCursorPosition.y) {
-					tempRotation.x -= 0.01f;
+					tempRotation.x -= ROTATION_SENSITIVITY;
 				}
 				setRotation(tempRotation);
 			}

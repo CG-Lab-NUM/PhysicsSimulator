@@ -1,16 +1,16 @@
-#include "PS_App.hpp"
+#include "PS_Renderer.hpp"
 
 namespace ps {
-	PS_App::PS_App(PS_GameLevel* gameLevel) {
+	PS_Renderer::PS_Renderer(PS_GameLevel* gameLevel) {
 		gameObjects = gameLevel->getGameObjects();
 		psPipeline = new PS_Pipeline(&psWindow, &psDevice, &psSwapChain, gameObjects, gameLevel->getCamera());
 	}
 
-	PS_App::~PS_App() {
+	PS_Renderer::~PS_Renderer() {
 
 	}
 
-	void PS_App::mainLoop() {
+	void PS_Renderer::mainLoop() {
 		while (!glfwWindowShouldClose(psWindow.getWindow())) {
 			glfwPollEvents();
 			psPipeline->drawFrame();
@@ -19,11 +19,11 @@ namespace ps {
 		vkDeviceWaitIdle(psDevice.device);
 	}
 
-	void PS_App::cleanup() {
+	void PS_Renderer::cleanup() {
 
 	}
 
-	void PS_App::run() {
+	void PS_Renderer::run() {
 		mainLoop();
 		cleanup();
 	}
