@@ -4,8 +4,8 @@
     {
       "type": "EditorCamera",
       "name": "MainCamera",
-      "location": [ 2, 0, 0 ],
-      "rotation": [ 0, 30, 0 ],
+      "location": [ 16, -7, -14 ],
+      "rotation": [ -0.72, 30.24, 0 ],
       "scale": [ 1, 1, 1 ]
     },
     {
@@ -22,7 +22,7 @@
       "name": "Floor",
       "location": [ 0, 0, 0 ],
       "rotation": [ 0, 0, 0 ],
-      "scale": [ 0.05, 10, 0.05 ],
+      "scale": [ 10, 10, 0.05 ],
       "model_path": "Content/Meshes/Cube.obj",
       "texture_path": "Content/Textures/Basic/None.png"
     }

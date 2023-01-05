@@ -39,6 +39,7 @@ namespace ps {
 		if (PS_KeyboardHandler::isPressed('D')) {
 			setLocation(getLocation() - (getRightVector() * MOVEMENT_SPEED));
 		}
+		//std::cout << getLocation().x << " " << getLocation().y << " " << getLocation().z << std::endl;
 	}
 
 	void PS_GameCamera::mouseRotation() {
