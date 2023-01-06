@@ -136,6 +136,7 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="GameEngine\Source\PS_GameCamera.cpp" />
+    <ClCompile Include="Handlers\Source\PS_BufferHandler.cpp" />
     <ClCompile Include="Handlers\Source\PS_FileHandler.cpp" />
     <ClCompile Include="Handlers\Source\PS_KeyboardHandler.cpp" />
     <ClCompile Include="Handlers\Source\PS_MouseHandler.cpp" />
@@ -156,6 +157,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="GameEngine\Headers\PS_GameCamera.hpp" />
+    <ClInclude Include="Handlers\Headers\PS_BufferHandler.hpp" />
     <ClInclude Include="Handlers\Headers\PS_FileHandler.hpp" />
     <ClInclude Include="Handlers\Headers\PS_KeyboardHandler.hpp" />
     <ClInclude Include="Handlers\Headers\PS_MouseHandler.hpp" />

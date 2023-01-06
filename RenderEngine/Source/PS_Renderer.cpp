@@ -2,6 +2,7 @@
 
 namespace ps {
 	PS_Renderer::PS_Renderer(PS_GameLevel* gameLevel) {
+
 		gameObjects = gameLevel->getGameObjects();
 		psPipeline = new PS_Pipeline(&psWindow, &psDevice, &psSwapChain, gameObjects, gameLevel->getCamera());
 	}

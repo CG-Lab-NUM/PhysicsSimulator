@@ -69,6 +69,9 @@
     <ClCompile Include="RenderEngine\Source\PS_RenderGeneric.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="Handlers\Source\PS_BufferHandler.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Libraries\imgui\backends\imgui_impl_vulkan_but_betters.h">
@@ -129,6 +132,9 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="Handlers\Headers\PS_FileHandler.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Handlers\Headers\PS_BufferHandler.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

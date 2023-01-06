@@ -47,6 +47,7 @@ namespace ps {
 		VkInstance instance{};
 		VkDevice device{};
 		VkPhysicalDevice physicalDevice = VK_NULL_HANDLE;
+		VkPhysicalDeviceProperties properties;
 		VkSampleCountFlagBits msaaSamples = VK_SAMPLE_COUNT_1_BIT;
 		VkDebugUtilsMessengerEXT debugMessenger{};
 
