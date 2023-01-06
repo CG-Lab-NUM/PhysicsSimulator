@@ -10,6 +10,7 @@ namespace ps {
 		psSwapChain = chain;
 		gameObjects = objects;
 		gameCamera = camera;
+
 		createRenderPass();
 		createDescriptorSetLayout();
 		createGraphicsPipeline();
@@ -18,17 +19,6 @@ namespace ps {
 		psSwapChain->createDepthResources();
 		psSwapChain->createFramebuffers(renderPass);
 
-		uboBuffers = std::vector<std::unique_ptr<PS_BufferHandler>>(MAX_FRAMES_IN_FLIGHT);
-		for (int i = 0; i < uboBuffers.size(); i++) {
-			uboBuffers[i] = std::make_unique<PS_BufferHandler>(
-				psDevice,
-				sizeof(GlobalUniformBufferObject),
-				1,
-				VK_BUFFER_USAGE_UNIFORM_BUFFER_BIT,
-				VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT
-			);
-			uboBuffers[i]->map();
-		}
 
 		int i;
 		for (i = 0; i < gameObjects.size(); i++) {
@@ -249,8 +239,10 @@ namespace ps {
 
 		VkPushConstantRange psRange;
 		psRange.offset = 0;
-		psRange.size = sizeof(glm::mat4);
+		psRange.size = sizeof(PushConstant);
 		psRange.stageFlags = VK_SHADER_STAGE_VERTEX_BIT;
+
+		//std::vector<VkDescriptorSetLayout> descriptorSetLayouts{ globalSetLayout };
 
 		VkPipelineLayoutCreateInfo pipelineLayoutInfo{};
 		pipelineLayoutInfo.sType = VK_STRUCTURE_TYPE_PIPELINE_LAYOUT_CREATE_INFO;
@@ -303,6 +295,8 @@ namespace ps {
 	}
 
 	void PS_Pipeline::createUniformBuffers() {
+
+
 		VkDeviceSize bufferSize = sizeof(UniformBufferObject);
 
 		uniformBuffers.resize(MAX_FRAMES_IN_FLIGHT);
@@ -438,16 +432,11 @@ namespace ps {
 		float time = std::chrono::duration<float, std::chrono::seconds::period>(currentTime - startTime).count();
 
 		UniformBufferObject ubo{};
-		ubo.model = glm::mat4(1.0f);
-		ubo.view = glm::lookAt(gameCamera->getEye(), gameCamera->getCenter(), gameCamera->getUp());
-		ubo.proj = glm::perspective(glm::radians(45.0f), psSwapChain->swapChainExtent.width / (float)psSwapChain->swapChainExtent.height, 1.0f, 50.0f);
-		ubo.proj[1][1] *= -1;
-
-
-		GlobalUniformBufferObject global;
-		global.projectionView = ubo.proj;
-		uboBuffers[currentImage]->writeToBuffer(&global);
-		uboBuffers[currentImage]->flush();
+		glm::highp_mat4 model = glm::mat4(1.0f);
+		glm::highp_mat4 view = glm::lookAt(gameCamera->getEye(), gameCamera->getCenter(), gameCamera->getUp());
+		glm::highp_mat4 proj = glm::perspective(glm::radians(45.0f), psSwapChain->swapChainExtent.width / (float)psSwapChain->swapChainExtent.height, 1.0f, 50.0f);
+		proj[1][1] *= -1;
+		ubo.transform = proj * view * model; // Order Matters
 
 		void* data;
 		vkMapMemory(psDevice->device, uniformBuffersMemory[currentImage], 0, sizeof(ubo), 0, &data);
@@ -498,17 +487,17 @@ namespace ps {
 
 		vkCmdBindDescriptorSets(commandBuffer, VK_PIPELINE_BIND_POINT_GRAPHICS, pipelineLayout, 0, 1, &descriptorSets[currentFrame], 0, nullptr);
 		
+		PushConstant pushConstant;
+
 		int i;
 		for (i = 0; i < gameObjects.size(); i++) {
 			if (i == 0) {
-				glm::mat4 transform = glm::translate(glm::mat4(1.0f), glm::vec3(0.0f, 0.0f, 0.0f));
 				vkCmdBindDescriptorSets(commandBuffer, VK_PIPELINE_BIND_POINT_GRAPHICS, pipelineLayout, 1, 1, &textureImages[i]->descriptorSet, 0, nullptr);
-				vkCmdPushConstants(commandBuffer, pipelineLayout, VK_SHADER_STAGE_VERTEX_BIT, 0, sizeof(glm::mat4), &transform);
+				vkCmdPushConstants(commandBuffer, pipelineLayout, VK_SHADER_STAGE_VERTEX_BIT, 0, sizeof(pushConstant), &pushConstant);
 				modelLoaders[i]->Render(commandBuffer);
 			}
 			else {
-				glm::mat4 transform = glm::translate(glm::mat4(1.0f), glm::vec3(0.0f, 0.0f, 0.0f));
-				vkCmdPushConstants(commandBuffer, pipelineLayout, VK_SHADER_STAGE_VERTEX_BIT, 0, sizeof(glm::mat4), &transform);
+				vkCmdPushConstants(commandBuffer, pipelineLayout, VK_SHADER_STAGE_VERTEX_BIT, 0, sizeof(pushConstant), &pushConstant);
 				vkCmdBindDescriptorSets(commandBuffer, VK_PIPELINE_BIND_POINT_GRAPHICS, pipelineLayout, 1, 1, &textureImages[i]->descriptorSet, 0, nullptr);
 				modelLoaders[i]->Render(commandBuffer);
 			}
