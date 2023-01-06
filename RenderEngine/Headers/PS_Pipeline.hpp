@@ -7,7 +7,6 @@ namespace ps {
 	class PS_Pipeline : public PS_Helper {
 	public:
 		PS_Pipeline(PS_Window *window, PS_Device *device, PS_SwapChain *chain, std::vector<PS_GameObject*> objects, PS_GameCamera* camera);
-		~PS_Pipeline();
 
 		void createRenderPass();
 		void createDescriptorSetLayout();
@@ -22,6 +21,7 @@ namespace ps {
 		void createSyncObjects();
 
 		void drawFrame();
+		void cleanup();
 
 		void updateUniformBuffer(uint32_t currentImage);
 		void recordCommandBuffer(VkCommandBuffer commandBuffer, uint32_t imageIndex);

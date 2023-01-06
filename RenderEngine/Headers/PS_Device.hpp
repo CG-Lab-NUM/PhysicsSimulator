@@ -18,9 +18,9 @@ namespace ps {
 
 	class PS_Device {
 	public:
-		PS_Device(PS_Window *psWindow);
-		~PS_Device();
+		PS_Device(PS_Window* psWindow);
 
+		void cleanup();
 		void createInstance();
 		void setupDebugMessenger();
 		void pickPhysicalDevice();
@@ -53,7 +53,5 @@ namespace ps {
 		VkQueue presentQueue{};
 		VkQueue graphicsQueue{};
 		VkCommandPool commandPool{};
-
-	private:
 	};
 }

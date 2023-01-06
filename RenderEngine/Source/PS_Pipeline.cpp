@@ -39,39 +39,6 @@ namespace ps {
 		createSyncObjects();
 	}
 
-	PS_Pipeline::~PS_Pipeline() {
-
-		vkDestroyPipeline(psDevice->device, graphicsPipeline, nullptr);
-		vkDestroyPipelineLayout(psDevice->device, pipelineLayout, nullptr);
-		vkDestroyRenderPass(psDevice->device, renderPass, nullptr);
-
-		for (size_t i = 0; i < MAX_FRAMES_IN_FLIGHT; i++) {
-			vkDestroyBuffer(psDevice->device, uniformBuffers[i], nullptr);
-			vkFreeMemory(psDevice->device, uniformBuffersMemory[i], nullptr);
-		}
-
-		vkDestroyDescriptorPool(psDevice->device, descriptorPool, nullptr);
-
-		int i;
-		for (i = 0; i < gameObjects.size(); i++) {
-			textureImages[i]->Destroy();
-		}
-
-		vkDestroyDescriptorSetLayout(psDevice->device, uniformDescriptorSetLayout, nullptr);
-		vkDestroyDescriptorSetLayout(psDevice->device, textureDescriptorSetLayout, nullptr);
-
-		for (i = 0; i < gameObjects.size(); i++) {
-			modelLoaders[i]->Destroy();
-		}
-
-		for (size_t i = 0; i < MAX_FRAMES_IN_FLIGHT; i++) {
-			vkDestroySemaphore(psDevice->device, renderFinishedSemaphores[i], nullptr);
-			vkDestroySemaphore(psDevice->device, imageAvailableSemaphores[i], nullptr);
-			vkDestroyFence(psDevice->device, inFlightFences[i], nullptr);
-		}
-
-	}
-
 	void PS_Pipeline::createRenderPass() {
 		VkAttachmentDescription colorAttachment{};
 		colorAttachment.format = psSwapChain->swapChainImageFormat;
@@ -578,6 +545,43 @@ namespace ps {
 				vkCreateFence(psDevice->device, &fenceInfo, nullptr, &inFlightFences[i]) != VK_SUCCESS) {
 				throw std::runtime_error("failed to create synchronization objects for a frame!");
 			}
+		}
+	}
+
+	void PS_Pipeline::cleanup() {
+		vkDestroyPipeline(psDevice->device, graphicsPipeline, nullptr);
+		vkDestroyPipelineLayout(psDevice->device, pipelineLayout, nullptr);
+		vkDestroyRenderPass(psDevice->device, renderPass, nullptr);
+
+		for (size_t i = 0; i < MAX_FRAMES_IN_FLIGHT; i++) {
+			vkDestroyBuffer(psDevice->device, uniformBuffers[i], nullptr);
+			vkFreeMemory(psDevice->device, uniformBuffersMemory[i], nullptr);
+		}
+
+		vkDestroyDescriptorPool(psDevice->device, descriptorPool, nullptr);
+
+		for (int i = 0; i < textureImages.size(); i++) {
+			vkDestroySampler(psDevice->device, textureImages[i]->getTextureSampler(), nullptr);
+			vkDestroyImageView(psDevice->device, textureImages[i]->getTextureImageView(), nullptr);
+			vkDestroyImage(psDevice->device, textureImages[i]->getTextureImage(), nullptr);
+			vkFreeMemory(psDevice->device, textureImages[i]->getTextureImageMemory(), nullptr);
+		}
+
+		vkDestroyDescriptorSetLayout(psDevice->device, uniformDescriptorSetLayout, nullptr);
+		vkDestroyDescriptorSetLayout(psDevice->device, textureDescriptorSetLayout, nullptr);
+
+		for (int i = 0; i < modelLoaders.size(); i++) {
+			vkDestroyBuffer(psDevice->device, modelLoaders[i]->indexBuffer, nullptr);
+			vkFreeMemory(psDevice->device, modelLoaders[i]->indexBufferMemory, nullptr);
+
+			vkDestroyBuffer(psDevice->device, modelLoaders[i]->vertexBuffer, nullptr);
+			vkFreeMemory(psDevice->device, modelLoaders[i]->vertexBufferMemory, nullptr);
+		}
+
+		for (size_t i = 0; i < MAX_FRAMES_IN_FLIGHT; i++) {
+			vkDestroySemaphore(psDevice->device, renderFinishedSemaphores[i], nullptr);
+			vkDestroySemaphore(psDevice->device, imageAvailableSemaphores[i], nullptr);
+			vkDestroyFence(psDevice->device, inFlightFences[i], nullptr);
 		}
 	}
 }

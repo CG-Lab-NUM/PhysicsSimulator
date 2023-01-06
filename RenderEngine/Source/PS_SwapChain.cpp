@@ -8,26 +8,6 @@ namespace ps {
 		createImageViews();
 	}
 
-	PS_SwapChain::~PS_SwapChain() {
-		vkDestroyImageView(psDevice->device, depthImageView, nullptr);
-		vkDestroyImage(psDevice->device, depthImage, nullptr);
-		vkFreeMemory(psDevice->device, depthImageMemory, nullptr);
-
-		vkDestroyImageView(psDevice->device, colorImageView, nullptr);
-		vkDestroyImage(psDevice->device, colorImage, nullptr);
-		vkFreeMemory(psDevice->device, colorImageMemory, nullptr);
-
-		for (auto framebuffer : swapChainFramebuffers) {
-			vkDestroyFramebuffer(psDevice->device, framebuffer, nullptr);
-		}
-
-		for (auto imageView : swapChainImageViews) {
-			vkDestroyImageView(psDevice->device, imageView, nullptr);
-		}
-
-		vkDestroySwapchainKHR(psDevice->device, swapChain, nullptr);
-	}
-
 	void PS_SwapChain::createSwapChain() {
 		SwapChainSupportDetails swapChainSupport = psDevice->querySwapChainSupport(psDevice->physicalDevice);
 
@@ -271,7 +251,7 @@ namespace ps {
 
 		vkDeviceWaitIdle(psDevice->device);
 
-		cleanupSwapChain();
+		cleanup();
 
 		createSwapChain();
 		createImageViews();
@@ -280,7 +260,7 @@ namespace ps {
 		createFramebuffers(renderPass);
 	}
 
-	void PS_SwapChain::cleanupSwapChain() {
+	void PS_SwapChain::cleanup() {
 		vkDestroyImageView(psDevice->device, depthImageView, nullptr);
 		vkDestroyImage(psDevice->device, depthImage, nullptr);
 		vkFreeMemory(psDevice->device, depthImageMemory, nullptr);

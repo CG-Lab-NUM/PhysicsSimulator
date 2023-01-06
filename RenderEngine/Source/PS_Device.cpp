@@ -12,7 +12,7 @@ namespace ps {
 		createLogicalDevice();
 	}
 
-	PS_Device::~PS_Device() {
+	void PS_Device::cleanup() {
 		vkDestroyCommandPool(device, commandPool, nullptr);
 		vkDestroyDevice(device, nullptr);
 
@@ -31,9 +31,9 @@ namespace ps {
 
 		VkApplicationInfo appInfo{};
 		appInfo.sType = VK_STRUCTURE_TYPE_APPLICATION_INFO;
-		appInfo.pApplicationName = "Hello Triangle";
+		appInfo.pApplicationName = "Physics Simulator";
 		appInfo.applicationVersion = VK_MAKE_VERSION(1, 0, 0);
-		appInfo.pEngineName = "No Engine";
+		appInfo.pEngineName = "PS";
 		appInfo.engineVersion = VK_MAKE_VERSION(1, 0, 0);
 		appInfo.apiVersion = VK_API_VERSION_1_0;
 

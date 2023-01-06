@@ -5,7 +5,6 @@ namespace ps {
 	class PS_Renderer {
 	public:
 		PS_Renderer(PS_GameLevel *gameLevel);
-		~PS_Renderer();
 
 		void run();
 		void mainLoop();

@@ -33,7 +33,7 @@ namespace ps {
 		glfwSetMouseButtonCallback(window, PS_MouseHandler::buttonCallback);
 	}
 
-	PS_Window::~PS_Window() {
+	void PS_Window::cleanup() {
 		glfwDestroyWindow(window);
 		glfwTerminate();
 	}
