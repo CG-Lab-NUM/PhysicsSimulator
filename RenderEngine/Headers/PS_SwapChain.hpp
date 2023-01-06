@@ -5,8 +5,6 @@ namespace ps {
 	class PS_SwapChain {
 	public:
 		PS_SwapChain(PS_Device *psDevice, PS_Window *psWindow);
-		~PS_SwapChain();
-
 
 		VkSwapchainKHR swapChain;
 		std::vector<VkImage> swapChainImages;
@@ -26,7 +24,7 @@ namespace ps {
 		VkFormat findDepthFormat();
 
 		void recreateSwapChain(VkRenderPass renderPass);
-		void cleanupSwapChain();
+		void cleanup();
 
 	private:
 		void createSwapChain();

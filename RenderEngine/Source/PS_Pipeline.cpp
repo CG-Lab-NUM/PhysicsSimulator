@@ -1,5 +1,6 @@
 #include "PS_Pipeline.hpp"
 #include <chrono>
+#include <numeric>
 
 namespace ps {
 
@@ -16,6 +17,18 @@ namespace ps {
 		psSwapChain->createColorResources();
 		psSwapChain->createDepthResources();
 		psSwapChain->createFramebuffers(renderPass);
+
+		uboBuffers = std::vector<std::unique_ptr<PS_BufferHandler>>(MAX_FRAMES_IN_FLIGHT);
+		for (int i = 0; i < uboBuffers.size(); i++) {
+			uboBuffers[i] = std::make_unique<PS_BufferHandler>(
+				psDevice,
+				sizeof(GlobalUniformBufferObject),
+				1,
+				VK_BUFFER_USAGE_UNIFORM_BUFFER_BIT,
+				VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT
+			);
+			uboBuffers[i]->map();
+		}
 
 		int i;
 		for (i = 0; i < gameObjects.size(); i++) {
@@ -37,39 +50,6 @@ namespace ps {
 		createCommandBuffers();
 		createCommandBuffers();
 		createSyncObjects();
-	}
-
-	PS_Pipeline::~PS_Pipeline() {
-
-		vkDestroyPipeline(psDevice->device, graphicsPipeline, nullptr);
-		vkDestroyPipelineLayout(psDevice->device, pipelineLayout, nullptr);
-		vkDestroyRenderPass(psDevice->device, renderPass, nullptr);
-
-		for (size_t i = 0; i < MAX_FRAMES_IN_FLIGHT; i++) {
-			vkDestroyBuffer(psDevice->device, uniformBuffers[i], nullptr);
-			vkFreeMemory(psDevice->device, uniformBuffersMemory[i], nullptr);
-		}
-
-		vkDestroyDescriptorPool(psDevice->device, descriptorPool, nullptr);
-
-		int i;
-		for (i = 0; i < gameObjects.size(); i++) {
-			textureImages[i]->Destroy();
-		}
-
-		vkDestroyDescriptorSetLayout(psDevice->device, uniformDescriptorSetLayout, nullptr);
-		vkDestroyDescriptorSetLayout(psDevice->device, textureDescriptorSetLayout, nullptr);
-
-		for (i = 0; i < gameObjects.size(); i++) {
-			modelLoaders[i]->Destroy();
-		}
-
-		for (size_t i = 0; i < MAX_FRAMES_IN_FLIGHT; i++) {
-			vkDestroySemaphore(psDevice->device, renderFinishedSemaphores[i], nullptr);
-			vkDestroySemaphore(psDevice->device, imageAvailableSemaphores[i], nullptr);
-			vkDestroyFence(psDevice->device, inFlightFences[i], nullptr);
-		}
-
 	}
 
 	void PS_Pipeline::createRenderPass() {
@@ -403,6 +383,7 @@ namespace ps {
 
 		updateUniformBuffer(currentFrame);
 		recordCommandBuffer(commandBuffers[currentFrame], imageIndex);
+		
 
 		vkResetFences(psDevice->device, 1, &inFlightFences[currentFrame]);
 
@@ -462,17 +443,11 @@ namespace ps {
 		ubo.proj = glm::perspective(glm::radians(45.0f), psSwapChain->swapChainExtent.width / (float)psSwapChain->swapChainExtent.height, 1.0f, 50.0f);
 		ubo.proj[1][1] *= -1;
 
-		/*
-		UniformBufferObject ubo{};
-		ubo.model = glm::rotate(glm::mat4(1.0f), time * glm::radians(90.0f), glm::vec3(0.0f, 0.0f, 1.0f));
-		ubo.view = glm::lookAt(gameCamera->getEye(), gameCamera->getCenter(), gameCamera->getUp());
-		ubo.proj = glm::perspective(glm::radians(45.0f), psSwapChain->swapChainExtent.width / (float)psSwapChain->swapChainExtent.height, 1.0f, 10.0f);
-		ubo.proj[1][1] *= -1;
-		*/
-		//ubo.model = glm::rotate(glm::mat4(1.0f), time * glm::radians(90.0f), glm::vec3(0.0f, 0.0f, 1.0f));
-		//ubo.view = glm::lookAt(glm::vec3(0.0f, 4.0f, 4.0f), glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(0.0f, 0.0f, 1.0f));
-		//ubo.proj = glm::perspective(glm::radians(45.0f), psSwapChain->swapChainExtent.width / (float)psSwapChain->swapChainExtent.height, 0.1f, 10.0f);
-		//ubo.proj[1][1] *= -1;
+
+		GlobalUniformBufferObject global;
+		global.projectionView = ubo.proj;
+		uboBuffers[currentImage]->writeToBuffer(&global);
+		uboBuffers[currentImage]->flush();
 
 		void* data;
 		vkMapMemory(psDevice->device, uniformBuffersMemory[currentImage], 0, sizeof(ubo), 0, &data);
@@ -578,6 +553,35 @@ namespace ps {
 				vkCreateFence(psDevice->device, &fenceInfo, nullptr, &inFlightFences[i]) != VK_SUCCESS) {
 				throw std::runtime_error("failed to create synchronization objects for a frame!");
 			}
+		}
+	}
+
+	void PS_Pipeline::cleanup() {
+		vkDestroyPipeline(psDevice->device, graphicsPipeline, nullptr);
+		vkDestroyPipelineLayout(psDevice->device, pipelineLayout, nullptr);
+		vkDestroyRenderPass(psDevice->device, renderPass, nullptr);
+
+		for (size_t i = 0; i < MAX_FRAMES_IN_FLIGHT; i++) {
+			vkDestroyBuffer(psDevice->device, uniformBuffers[i], nullptr);
+			vkFreeMemory(psDevice->device, uniformBuffersMemory[i], nullptr);
+		}
+
+		vkDestroyDescriptorPool(psDevice->device, descriptorPool, nullptr);
+
+		for (int i = 0; i < textureImages.size(); i++) {
+			vkDestroySampler(psDevice->device, textureImages[i]->getTextureSampler(), nullptr);
+			vkDestroyImageView(psDevice->device, textureImages[i]->getTextureImageView(), nullptr);
+			vkDestroyImage(psDevice->device, textureImages[i]->getTextureImage(), nullptr);
+			vkFreeMemory(psDevice->device, textureImages[i]->getTextureImageMemory(), nullptr);
+		}
+
+		vkDestroyDescriptorSetLayout(psDevice->device, uniformDescriptorSetLayout, nullptr);
+		vkDestroyDescriptorSetLayout(psDevice->device, textureDescriptorSetLayout, nullptr);
+
+		for (size_t i = 0; i < MAX_FRAMES_IN_FLIGHT; i++) {
+			vkDestroySemaphore(psDevice->device, renderFinishedSemaphores[i], nullptr);
+			vkDestroySemaphore(psDevice->device, imageAvailableSemaphores[i], nullptr);
+			vkDestroyFence(psDevice->device, inFlightFences[i], nullptr);
 		}
 	}
 }

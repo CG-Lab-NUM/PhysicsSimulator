@@ -8,7 +8,6 @@ namespace ps {
 	public:
 		PS_Window();
 		PS_Window(uint32_t w, uint32_t h, std::string windowTitle);
-		~PS_Window();
 
 		VkSurfaceKHR getSurface() {
 			return surface;
@@ -17,8 +16,8 @@ namespace ps {
 			return window;
 		}
 
+		void cleanup();
 		void createSurface(VkInstance instance);
-
 		bool framebufferResized = false;
 
 	private:

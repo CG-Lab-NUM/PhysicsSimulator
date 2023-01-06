@@ -14,7 +14,19 @@ namespace ps {
 		}
 
 		VkDescriptorSet descriptorSet;
-		
+
+		VkImage getTextureImage() {
+			return textureImage;
+		}
+		VkDeviceMemory getTextureImageMemory() {
+			return textureImageMemory;
+		}
+		VkImageView getTextureImageView() {
+			return textureImageView;
+		}
+		VkSampler getTextureSampler() {
+			return textureSampler;
+		}
 	private:
 		PS_Device* psDevice;
 		uint32_t mipLevels;
