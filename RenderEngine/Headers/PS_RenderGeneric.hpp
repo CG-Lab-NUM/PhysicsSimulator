@@ -36,20 +36,7 @@ namespace ps {
 	};
 
 	struct UniformBufferObject {
-		alignas(16) glm::mat4 model;
-		alignas(16) glm::mat4 view;
-		alignas(16) glm::mat4 proj;
-	};
-
-	struct GlobalBufferObject {
-		glm::mat4 ambientLightColor{ 1.f };
-		glm::mat4 lightPosition{ -1.f };
-		alignas(16) glm::vec4 lightColor{ 1.f };
-	};
-
-	struct GlobalUniformBufferObject {
-		glm::mat4 projectionView{ 1.f };
-		glm::vec3 lightDirection = glm::normalize(glm::vec3(1.f, -3.f, -1.f));
+		alignas(16) glm::mat4 transform;
 	};
 
 	struct PushConstant {
