@@ -10,6 +10,7 @@ namespace ps {
 		psSwapChain = chain;
 		gameObjects = objects;
 		gameCamera = camera;
+
 		createRenderPass();
 		createDescriptorSetLayout();
 		createGraphicsPipeline();
@@ -252,6 +253,8 @@ namespace ps {
 		psRange.size = sizeof(glm::mat4);
 		psRange.stageFlags = VK_SHADER_STAGE_VERTEX_BIT;
 
+		//std::vector<VkDescriptorSetLayout> descriptorSetLayouts{ globalSetLayout };
+
 		VkPipelineLayoutCreateInfo pipelineLayoutInfo{};
 		pipelineLayoutInfo.sType = VK_STRUCTURE_TYPE_PIPELINE_LAYOUT_CREATE_INFO;
 		pipelineLayoutInfo.setLayoutCount = 2;
@@ -303,6 +306,8 @@ namespace ps {
 	}
 
 	void PS_Pipeline::createUniformBuffers() {
+
+
 		VkDeviceSize bufferSize = sizeof(UniformBufferObject);
 
 		uniformBuffers.resize(MAX_FRAMES_IN_FLIGHT);
@@ -498,17 +503,17 @@ namespace ps {
 
 		vkCmdBindDescriptorSets(commandBuffer, VK_PIPELINE_BIND_POINT_GRAPHICS, pipelineLayout, 0, 1, &descriptorSets[currentFrame], 0, nullptr);
 		
+		PushConstant pushConstant;
+
 		int i;
 		for (i = 0; i < gameObjects.size(); i++) {
 			if (i == 0) {
-				glm::mat4 transform = glm::translate(glm::mat4(1.0f), glm::vec3(0.0f, 0.0f, 0.0f));
 				vkCmdBindDescriptorSets(commandBuffer, VK_PIPELINE_BIND_POINT_GRAPHICS, pipelineLayout, 1, 1, &textureImages[i]->descriptorSet, 0, nullptr);
-				vkCmdPushConstants(commandBuffer, pipelineLayout, VK_SHADER_STAGE_VERTEX_BIT, 0, sizeof(glm::mat4), &transform);
+				vkCmdPushConstants(commandBuffer, pipelineLayout, VK_SHADER_STAGE_VERTEX_BIT, 0, sizeof(glm::mat4), &pushConstant);
 				modelLoaders[i]->Render(commandBuffer);
 			}
 			else {
-				glm::mat4 transform = glm::translate(glm::mat4(1.0f), glm::vec3(0.0f, 0.0f, 0.0f));
-				vkCmdPushConstants(commandBuffer, pipelineLayout, VK_SHADER_STAGE_VERTEX_BIT, 0, sizeof(glm::mat4), &transform);
+				vkCmdPushConstants(commandBuffer, pipelineLayout, VK_SHADER_STAGE_VERTEX_BIT, 0, sizeof(glm::mat4), &pushConstant);
 				vkCmdBindDescriptorSets(commandBuffer, VK_PIPELINE_BIND_POINT_GRAPHICS, pipelineLayout, 1, 1, &textureImages[i]->descriptorSet, 0, nullptr);
 				modelLoaders[i]->Render(commandBuffer);
 			}

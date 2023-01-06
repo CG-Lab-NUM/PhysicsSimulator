@@ -1,5 +1,6 @@
 #pragma once
 #include "PS_Helper.hpp"
+#include "PS_BufferHandler.hpp"
 
 namespace ps {
 	class PS_TextureHandler : PS_Helper {
