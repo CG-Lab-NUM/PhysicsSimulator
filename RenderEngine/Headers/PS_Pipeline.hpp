@@ -36,9 +36,6 @@ namespace ps {
 		VkDescriptorSetLayout uniformDescriptorSetLayout;
 		VkDescriptorSetLayout textureDescriptorSetLayout;
 
-		std::vector<VkBuffer> uniformBuffers;
-		std::vector<VkDeviceMemory> uniformBuffersMemory;
-
 		std::vector<VkDescriptorSet> descriptorSets;
 
 	private:
