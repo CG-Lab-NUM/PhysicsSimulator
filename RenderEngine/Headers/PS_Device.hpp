@@ -18,9 +18,9 @@ namespace ps {
 
 	class PS_Device {
 	public:
-		PS_Device(PS_Window *psWindow);
-		~PS_Device();
+		PS_Device(PS_Window* psWindow);
 
+		void cleanup();
 		void createInstance();
 		void setupDebugMessenger();
 		void pickPhysicalDevice();
@@ -47,13 +47,12 @@ namespace ps {
 		VkInstance instance{};
 		VkDevice device{};
 		VkPhysicalDevice physicalDevice = VK_NULL_HANDLE;
+		VkPhysicalDeviceProperties properties;
 		VkSampleCountFlagBits msaaSamples = VK_SAMPLE_COUNT_1_BIT;
 		VkDebugUtilsMessengerEXT debugMessenger{};
 
 		VkQueue presentQueue{};
 		VkQueue graphicsQueue{};
 		VkCommandPool commandPool{};
-
-	private:
 	};
 }

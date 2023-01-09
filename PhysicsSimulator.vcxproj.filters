@@ -18,7 +18,7 @@
     <ClCompile Include="main.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="RenderEngine\Source\PS_App.cpp">
+    <ClCompile Include="RenderEngine\Source\PS_Renderer.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="RenderEngine\Source\PS_Window.cpp">
@@ -48,18 +48,36 @@
     <ClCompile Include="GameEngine\Source\PS_GameMesh.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="RenderEngine\Source\PS_TextureImage.cpp">
+    <ClCompile Include="Handlers\Source\PS_TextureHandler.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="RenderEngine\Source\PS_ModelLoader.cpp">
+    <ClCompile Include="Handlers\Source\PS_ModelHandler.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="GameEngine\Source\PS_GameCamera.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Handlers\Source\PS_KeyboardHandler.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Handlers\Source\PS_MouseHandler.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Handlers\Source\PS_FileHandler.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="RenderEngine\Source\PS_RenderGeneric.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Handlers\Source\PS_BufferHandler.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="Libraries\imgui\backends\imgui_impl_vulkan_but_better.h">
+    <ClInclude Include="Libraries\imgui\backends\imgui_impl_vulkan_but_betters.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="RenderEngine\Headers\PS_App.hpp">
+    <ClInclude Include="RenderEngine\Headers\PS_Renderer.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="RenderEngine\Headers\PS_EngineGeneric.hpp">
@@ -80,7 +98,7 @@
     <ClInclude Include="RenderEngine\Headers\PS_Helper.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="RenderEngine\Headers\PS_Colors.hpp">
+    <ClInclude Include="Handlers\Headers\PS_ColorHandler.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="GameEngine\Headers\PS_GameGeneric.hpp">
@@ -98,10 +116,25 @@
     <ClInclude Include="GameEngine\Headers\PS_GameMesh.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="RenderEngine\Headers\PS_TextureImage.hpp">
+    <ClInclude Include="Handlers\Headers\PS_TextureHandler.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="RenderEngine\Headers\PS_ModelLoader.hpp">
+    <ClInclude Include="Handlers\Headers\PS_ModelHandler.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="GameEngine\Headers\PS_GameCamera.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Handlers\Headers\PS_KeyboardHandler.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Handlers\Headers\PS_MouseHandler.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Handlers\Headers\PS_FileHandler.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Handlers\Headers\PS_BufferHandler.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

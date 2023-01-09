@@ -1,12 +1,13 @@
 #pragma once
-#include "PS_EngineGeneric.hpp"
+#include "PS_RenderGeneric.hpp"
+#include "PS_KeyboardHandler.hpp"
+#include "PS_MouseHandler.hpp"
 
 namespace ps {
 	class PS_Window {
 	public:
 		PS_Window();
 		PS_Window(uint32_t w, uint32_t h, std::string windowTitle);
-		~PS_Window();
 
 		VkSurfaceKHR getSurface() {
 			return surface;
@@ -15,8 +16,8 @@ namespace ps {
 			return window;
 		}
 
+		void cleanup();
 		void createSurface(VkInstance instance);
-
 		bool framebufferResized = false;
 
 	private:
@@ -27,5 +28,6 @@ namespace ps {
 		
 		uint32_t WIDTH = 1024;
 		uint32_t HEIGHT = 768;
+
 	};
 }

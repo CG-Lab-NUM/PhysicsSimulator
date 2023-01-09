@@ -1,4 +1,5 @@
-#include "PS_EngineGeneric.hpp"
+#pragma once
+#include "PS_RenderGeneric.hpp"
 
 namespace ps {
 	class PS_GameMesh {
