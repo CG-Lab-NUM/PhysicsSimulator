@@ -1,6 +1,7 @@
 #include "PS_Pipeline.hpp"
 #include <chrono>
 #include <numeric>
+#include <memory>
 
 namespace ps {
 
@@ -37,7 +38,6 @@ namespace ps {
 			textureImages[i]->Load(gameObjects[i]);
 		}
 
-		createCommandBuffers();
 		createCommandBuffers();
 		createSyncObjects();
 	}
@@ -295,16 +295,44 @@ namespace ps {
 	}
 
 	void PS_Pipeline::createUniformBuffers() {
-
-
 		VkDeviceSize bufferSize = sizeof(UniformBufferObject);
 
-		uniformBuffers.resize(MAX_FRAMES_IN_FLIGHT);
-		uniformBuffersMemory.resize(MAX_FRAMES_IN_FLIGHT);
+		uboBuffers.resize(MAX_FRAMES_IN_FLIGHT);
 
 		for (size_t i = 0; i < MAX_FRAMES_IN_FLIGHT; i++) {
-			createBuffer(bufferSize, VK_BUFFER_USAGE_UNIFORM_BUFFER_BIT, VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT | VK_MEMORY_PROPERTY_HOST_COHERENT_BIT, uniformBuffers[i], uniformBuffersMemory[i]);
+			uboBuffers[i] = std::make_unique<PS_BufferHandler>(
+				psDevice,
+				sizeof(UniformBufferObject),
+				1,
+				VK_BUFFER_USAGE_UNIFORM_BUFFER_BIT | VK_BUFFER_USAGE_TRANSFER_DST_BIT,
+				VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT | VK_MEMORY_PROPERTY_HOST_COHERENT_BIT
+				);
 		}
+	}
+
+	void PS_Pipeline::updateUniformBuffer(uint32_t currentImage) {
+		static auto startTime = std::chrono::high_resolution_clock::now();
+
+		auto currentTime = std::chrono::high_resolution_clock::now();
+		float time = std::chrono::duration<float, std::chrono::seconds::period>(currentTime - startTime).count();
+
+		UniformBufferObject ubo{};
+		glm::highp_mat4 model = glm::mat4(1.0f);
+		glm::highp_mat4 view = glm::lookAt(gameCamera->getEye(), gameCamera->getCenter(), gameCamera->getUp());
+		glm::highp_mat4 proj = glm::perspective(glm::radians(45.0f), psSwapChain->swapChainExtent.width / (float)psSwapChain->swapChainExtent.height, 1.0f, 100.0f);
+		proj[1][1] *= -1;
+		ubo.transform = proj * view * model;
+
+		PS_BufferHandler uniformBuffer{
+			psDevice,
+			sizeof(ubo),
+			1,
+			VK_BUFFER_USAGE_TRANSFER_SRC_BIT,
+			VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT | VK_MEMORY_PROPERTY_HOST_COHERENT_BIT
+		};
+		uniformBuffer.map();
+		uniformBuffer.writeToBuffer((void*)&ubo);
+		copyBuffer(uniformBuffer.getBuffer(), uboBuffers[currentImage]->getBuffer(), sizeof(UniformBufferObject));
 	}
 
 	void PS_Pipeline::createDescriptorPool() {
@@ -341,7 +369,7 @@ namespace ps {
 
 		for (size_t i = 0; i < MAX_FRAMES_IN_FLIGHT; i++) {
 			VkDescriptorBufferInfo bufferInfo{};
-			bufferInfo.buffer = uniformBuffers[i];
+			bufferInfo.buffer = uboBuffers[i]->getBuffer();
 			bufferInfo.offset = 0;
 			bufferInfo.range = sizeof(UniformBufferObject);
 
@@ -423,25 +451,6 @@ namespace ps {
 		}
 
 		currentFrame = (currentFrame + 1) % MAX_FRAMES_IN_FLIGHT;
-	}
-
-	void PS_Pipeline::updateUniformBuffer(uint32_t currentImage) {
-		static auto startTime = std::chrono::high_resolution_clock::now();
-
-		auto currentTime = std::chrono::high_resolution_clock::now();
-		float time = std::chrono::duration<float, std::chrono::seconds::period>(currentTime - startTime).count();
-
-		UniformBufferObject ubo{};
-		glm::highp_mat4 model = glm::mat4(1.0f);
-		glm::highp_mat4 view = glm::lookAt(gameCamera->getEye(), gameCamera->getCenter(), gameCamera->getUp());
-		glm::highp_mat4 proj = glm::perspective(glm::radians(45.0f), psSwapChain->swapChainExtent.width / (float)psSwapChain->swapChainExtent.height, 1.0f, 50.0f);
-		proj[1][1] *= -1;
-		ubo.transform = proj * view * model; // Order Matters
-
-		void* data;
-		vkMapMemory(psDevice->device, uniformBuffersMemory[currentImage], 0, sizeof(ubo), 0, &data);
-		memcpy(data, &ubo, sizeof(ubo));
-		vkUnmapMemory(psDevice->device, uniformBuffersMemory[currentImage]);
 	}
 
 	void PS_Pipeline::recordCommandBuffer(VkCommandBuffer commandBuffer, uint32_t imageIndex) {
@@ -549,12 +558,6 @@ namespace ps {
 		vkDestroyPipeline(psDevice->device, graphicsPipeline, nullptr);
 		vkDestroyPipelineLayout(psDevice->device, pipelineLayout, nullptr);
 		vkDestroyRenderPass(psDevice->device, renderPass, nullptr);
-
-		for (size_t i = 0; i < MAX_FRAMES_IN_FLIGHT; i++) {
-			vkDestroyBuffer(psDevice->device, uniformBuffers[i], nullptr);
-			vkFreeMemory(psDevice->device, uniformBuffersMemory[i], nullptr);
-		}
-
 		vkDestroyDescriptorPool(psDevice->device, descriptorPool, nullptr);
 
 		for (int i = 0; i < textureImages.size(); i++) {
