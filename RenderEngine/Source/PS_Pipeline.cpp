@@ -4,14 +4,20 @@
 #include <memory>
 
 namespace ps {
-	PS_Pipeline::PS_Pipeline(PS_Window* window, PS_Device *device, PS_SwapChain *chain, std::vector<PS_GameObject*> objects, PS_GameCamera *camera) : PS_Allocator(device) {
+	PS_Pipeline::PS_Pipeline(
+		PS_Window* window, 
+		PS_Device *device, 
+		PS_SwapChain *chain, 
+		std::vector<PS_GameObject*> objects,
+		PS_GameCamera *camera) : PS_Allocator(device) {
 		psWindow = window;
 		psDevice = device;
 		psSwapChain = chain;
 		gameObjects = objects;
 		gameCamera = camera;
 		psRenderPass = new PS_RenderPass(psDevice, psSwapChain);
-		psDescriptorSets = new PS_DescriptorSet(psDevice, MAX_FRAMES_IN_FLIGHT, gameObjects.size());
+		uiRenderPass = new PS_RenderPass(psDevice, psSwapChain);
+		psDescriptorSets = new PS_DescriptorSet(psDevice, MAX_FRAMES_IN_FLIGHT, static_cast<uint32_t>(gameObjects.size()));
 		psDescriptorSets->createLayout({
 			0,
 			VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER,
@@ -34,7 +40,8 @@ namespace ps {
 		createUniformBuffers();
 		psDescriptorSets->createPool();
 		psDescriptorSets->createSets(&uniformBuffers);
-		renderGameObjects();
+		widget = new UI_Widget(psDevice);
+		loadGameObjects();
 		createCommandBuffers();
 		createSyncObjects();
 	}
@@ -156,7 +163,6 @@ namespace ps {
 		vertShader.destroy();
 		fragShader.destroy();
 	}
-
 	void PS_Pipeline::createUniformBuffers() {
 		VkDeviceSize bufferSize = sizeof(UniformBufferObject);
 		uniformBuffers.resize(MAX_FRAMES_IN_FLIGHT);
@@ -170,7 +176,6 @@ namespace ps {
 			);
 		}
 	}
-
 	void PS_Pipeline::updateUniformBuffer(uint32_t currentImage) {
 		static auto startTime = std::chrono::high_resolution_clock::now();
 
@@ -197,10 +202,20 @@ namespace ps {
 	}
 
 	void PS_Pipeline::drawFrame() {
-		gameCamera->tick();
-		vkWaitForFences(psDevice->device, 1, &inFlightFences[currentFrame], VK_TRUE, UINT64_MAX);
 		uint32_t imageIndex;
-		VkResult result = vkAcquireNextImageKHR(psDevice->device, psSwapChain->swapChain, UINT64_MAX, imageAvailableSemaphores[currentFrame], VK_NULL_HANDLE, &imageIndex);
+		VkResult result;
+		VkSemaphore waitSemaphores[] = { imageAvailableSemaphores[currentFrame] };
+		VkPipelineStageFlags waitStages[] = { VK_PIPELINE_STAGE_COLOR_ATTACHMENT_OUTPUT_BIT };
+		VkSemaphore signalSemaphores[] = { renderFinishedSemaphores[currentFrame] };
+		VkSubmitInfo submitInfo{
+			VK_STRUCTURE_TYPE_SUBMIT_INFO,
+			nullptr,
+			1, waitSemaphores, waitStages,
+			1, &commandBuffers[currentFrame],
+			1, signalSemaphores
+		};
+		vkWaitForFences(psDevice->device, 1, &inFlightFences[currentFrame], VK_TRUE, UINT64_MAX);
+		result = vkAcquireNextImageKHR(psDevice->device, psSwapChain->swapChain, UINT64_MAX, imageAvailableSemaphores[currentFrame], VK_NULL_HANDLE, &imageIndex);
 		if (result == VK_ERROR_OUT_OF_DATE_KHR) {
 			psSwapChain->recreateSwapChain(psRenderPass->getRenderPass());
 			return;
@@ -208,25 +223,10 @@ namespace ps {
 		else if (result != VK_SUCCESS && result != VK_SUBOPTIMAL_KHR) {
 			throw std::runtime_error("failed to acquire swap chain image!");
 		}
-
 		updateUniformBuffer(currentFrame);
 		recordCommandBuffer(commandBuffers[currentFrame], imageIndex);
 		vkResetFences(psDevice->device, 1, &inFlightFences[currentFrame]);
 
-		VkSemaphore waitSemaphores[] = { imageAvailableSemaphores[currentFrame] };
-		VkPipelineStageFlags waitStages[] = { VK_PIPELINE_STAGE_COLOR_ATTACHMENT_OUTPUT_BIT };
-		VkSemaphore signalSemaphores[] = { renderFinishedSemaphores[currentFrame] };
-		VkSubmitInfo submitInfo{
-			VK_STRUCTURE_TYPE_SUBMIT_INFO,
-			nullptr,
-			1,
-			waitSemaphores,
-			waitStages,
-			1,
-			&commandBuffers[currentFrame],
-			1,
-			signalSemaphores
-		};
 
 		if (vkQueueSubmit(psDevice->graphicsQueue, 1, &submitInfo, inFlightFences[currentFrame]) != VK_SUCCESS) {
 			throw std::runtime_error("failed to submit draw command buffer!");
@@ -236,13 +236,12 @@ namespace ps {
 		VkPresentInfoKHR presentInfo{
 			VK_STRUCTURE_TYPE_PRESENT_INFO_KHR,
 			nullptr,
-			1,
-			signalSemaphores,
-			1,
-			swapChains,
+			1, signalSemaphores,
+			1, swapChains,
 			&imageIndex,
 			&result
 		};
+
 		result = vkQueuePresentKHR(psDevice->presentQueue, &presentInfo);
 		if (result == VK_ERROR_OUT_OF_DATE_KHR || result == VK_SUBOPTIMAL_KHR || psWindow->framebufferResized) {
 			psWindow->framebufferResized = false;
@@ -254,18 +253,16 @@ namespace ps {
 
 		currentFrame = (currentFrame + 1) % MAX_FRAMES_IN_FLIGHT;
 	}
-
 	void PS_Pipeline::recordCommandBuffer(VkCommandBuffer commandBuffer, uint32_t imageIndex) {
 		VkCommandBufferBeginInfo beginInfo{};
 		beginInfo.sType = VK_STRUCTURE_TYPE_COMMAND_BUFFER_BEGIN_INFO;
-		beginInfo.flags = VK_COMMAND_BUFFER_USAGE_ONE_TIME_SUBMIT_BIT;
+		beginInfo.flags = VK_COMMAND_BUFFER_USAGE_RENDER_PASS_CONTINUE_BIT;
 
 		if (vkBeginCommandBuffer(commandBuffer, &beginInfo) != VK_SUCCESS) {
 			throw std::runtime_error("failed to begin recording command buffer!");
 		}
-
 		std::array<VkClearValue, 2> clearValues{};
-		clearValues[0].color = { {1.0f, 1.0f, 1.0f, 1.0f} };
+		clearValues[0].color = { {1.0f, 1.0f, 0.0f, 0.5f} };
 		clearValues[1].depthStencil = { 1.0f, 0 };
 
 		VkRenderPassBeginInfo renderPassInfo{
@@ -280,43 +277,18 @@ namespace ps {
 
 		vkCmdBeginRenderPass(commandBuffer, &renderPassInfo, VK_SUBPASS_CONTENTS_INLINE);
 		vkCmdBindPipeline(commandBuffer, VK_PIPELINE_BIND_POINT_GRAPHICS, graphicsPipeline);
-
-		VkViewport viewport{
-			0.0f, // x
-			0.0f, // y
-			(float)psSwapChain->swapChainExtent.width,
-			(float)psSwapChain->swapChainExtent.height,
-			0.0f, // Min Depth
-			1.0f // Max Depth
-		};
-		VkRect2D scissor{ 
-			{0, 0}, // Offset
-			psSwapChain->swapChainExtent // Extent
-		};
-		vkCmdSetViewport(commandBuffer, 0, 1, &viewport);
-		vkCmdSetScissor(commandBuffer, 0, 1, &scissor);
+		createViewport(commandBuffer);
 		vkCmdBindDescriptorSets(commandBuffer, VK_PIPELINE_BIND_POINT_GRAPHICS, pipelineLayout, 0, 1, psDescriptorSets->getSetReference(currentFrame), 0, nullptr);
 		
-		PushConstant pushConstant;
-		for (int i = 0; i < gameObjects.size(); i++) {
-			if (i == 0) {
-				vkCmdBindDescriptorSets(commandBuffer, VK_PIPELINE_BIND_POINT_GRAPHICS, pipelineLayout, 1, 1, &textureImages[i]->descriptorSet, 0, nullptr);
-				vkCmdPushConstants(commandBuffer, pipelineLayout, VK_SHADER_STAGE_VERTEX_BIT, 0, sizeof(pushConstant), &pushConstant);
-				modelLoaders[i]->Render(commandBuffer);
-			}
-			else {
-				vkCmdPushConstants(commandBuffer, pipelineLayout, VK_SHADER_STAGE_VERTEX_BIT, 0, sizeof(pushConstant), &pushConstant);
-				vkCmdBindDescriptorSets(commandBuffer, VK_PIPELINE_BIND_POINT_GRAPHICS, pipelineLayout, 1, 1, &textureImages[i]->descriptorSet, 0, nullptr);
-				modelLoaders[i]->Render(commandBuffer);
-			}
-		}
+		renderGameObjects(commandBuffer);
+
+		widget->renderWidget(commandBuffer);
 
 		vkCmdEndRenderPass(commandBuffer);
 		if (vkEndCommandBuffer(commandBuffer) != VK_SUCCESS) {
 			throw std::runtime_error("failed to record command buffer!");
 		}
 	}
-
 	void PS_Pipeline::createCommandBuffers() {
 		commandBuffers.resize(MAX_FRAMES_IN_FLIGHT);
 
@@ -330,7 +302,6 @@ namespace ps {
 			throw std::runtime_error("failed to allocate command buffers!");
 		}
 	}
-
 	void PS_Pipeline::createSyncObjects() {
 		imageAvailableSemaphores.resize(MAX_FRAMES_IN_FLIGHT);
 		renderFinishedSemaphores.resize(MAX_FRAMES_IN_FLIGHT);
@@ -351,8 +322,23 @@ namespace ps {
 			}
 		}
 	}
-
-	void PS_Pipeline::renderGameObjects() {
+	void PS_Pipeline::createViewport(VkCommandBuffer commandBuffer) {
+		VkViewport viewport{
+			0.0f, // x
+			0.0f, // y
+			(float)psSwapChain->swapChainExtent.width,
+			(float)psSwapChain->swapChainExtent.height,
+			0.0f, // Min Depth
+			1.0f // Max Depth
+		};
+		VkRect2D scissor{
+			{0, 0}, // Offset
+			psSwapChain->swapChainExtent // Extent
+		};
+		vkCmdSetViewport(commandBuffer, 0, 1, &viewport);
+		vkCmdSetScissor(commandBuffer, 0, 1, &scissor);
+	}
+	void PS_Pipeline::loadGameObjects() {
 		for (int i = 0; i < gameObjects.size(); i++) {
 			PS_ModelHandler* Model = new PS_ModelHandler(psDevice);
 			modelLoaders.push_back(Model);
@@ -361,6 +347,14 @@ namespace ps {
 			PS_TextureHandler* Texture = new PS_TextureHandler(psDevice, psDescriptorSets->getPoolReference(), psDescriptorSets->getSetLayoutReference(1));
 			textureImages.push_back(Texture);
 			textureImages[i]->Load(gameObjects[i]);
+		}
+	}
+	void PS_Pipeline::renderGameObjects(VkCommandBuffer commandBuffer) {
+		PushConstant pushConstant;
+		for (int i = 0; i < gameObjects.size(); i++) {
+			vkCmdBindDescriptorSets(commandBuffer, VK_PIPELINE_BIND_POINT_GRAPHICS, pipelineLayout, 1, 1, &textureImages[i]->descriptorSet, 0, nullptr);
+			vkCmdPushConstants(commandBuffer, pipelineLayout, VK_SHADER_STAGE_VERTEX_BIT, 0, sizeof(pushConstant), &pushConstant);
+			modelLoaders[i]->Render(commandBuffer);
 		}
 	}
 }
