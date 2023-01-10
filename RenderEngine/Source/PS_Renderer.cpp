@@ -17,7 +17,7 @@ namespace ps {
 
 	void PS_Renderer::cleanup() {
 		psSwapChain.cleanup();
-        psPipeline->cleanup();
+        //psPipeline->cleanup();
 		psDevice.cleanup();
 		psWindow.cleanup();
 	}

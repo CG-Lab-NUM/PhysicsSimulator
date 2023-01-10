@@ -3,7 +3,7 @@
 #include <tiny_obj_loader.h>
 
 namespace ps {
-	PS_ModelHandler::PS_ModelHandler(PS_Device* device) : PS_Helper(device) {
+	PS_ModelHandler::PS_ModelHandler(PS_Device* device) : PS_Allocator(device) {
 		this->psDevice = device;
 	}
 

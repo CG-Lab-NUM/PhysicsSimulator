@@ -4,7 +4,7 @@
 #include <stb_image.h>
 
 namespace ps {
-	PS_TextureHandler::PS_TextureHandler(PS_Device* psDevice, VkDescriptorPool* descriptorPool, VkDescriptorSetLayout* textureDescriptorSetLayout) : PS_Helper(psDevice) {
+	PS_TextureHandler::PS_TextureHandler(PS_Device* psDevice, VkDescriptorPool* descriptorPool, VkDescriptorSetLayout* textureDescriptorSetLayout) : PS_Allocator(psDevice) {
 		this->psDevice = psDevice;
 		this->descriptorPool = descriptorPool;
 		this->textureDescriptorSetLayout = textureDescriptorSetLayout;
@@ -36,7 +36,6 @@ namespace ps {
 		transitionImageLayout(textureImage, VK_FORMAT_R8G8B8A8_SRGB, VK_IMAGE_LAYOUT_UNDEFINED, VK_IMAGE_LAYOUT_TRANSFER_DST_OPTIMAL, mipLevels);
 		copyBufferToImage(stagingBuffer.getBuffer(), textureImage, static_cast<uint32_t>(texWidth), static_cast<uint32_t>(texHeight));
 		//transitioned to VK_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL while generating mipmaps
-
 
 		generateMipmaps(textureImage, VK_FORMAT_R8G8B8A8_SRGB, texWidth, texHeight, mipLevels);
 	}
