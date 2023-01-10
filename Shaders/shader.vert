@@ -16,7 +16,7 @@ layout(location = 3) in vec3 inNormal;
 
 layout(location = 0) out vec3 fragColor;
 layout(location = 1) out vec2 fragTexCoord;
-layout(location = 2) out float fragLightIntensity;
+layout(location = 2) out vec3 fragLightDirection;
 
 const vec3 DIRECTION_TO_LIGHT = normalize(vec3(1.0, -3.0, -1.0));
 
@@ -28,5 +28,6 @@ void main() {
 
     fragColor = inColor * lightIntensity;
     fragTexCoord = inTexCoord;
-    fragLightIntensity = lightIntensity;
+    fragLightDirection = DIRECTION_TO_LIGHT;
+    //fragLightIntensity = lightIntensity;
 }
