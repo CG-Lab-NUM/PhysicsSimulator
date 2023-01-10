@@ -157,6 +157,7 @@
     <ClCompile Include="GameEngine\Source\PS_GameMesh.cpp" />
     <ClCompile Include="GameEngine\Source\PS_GameObject.cpp" />
     <ClCompile Include="main.cpp" />
+    <ClCompile Include="UI\Source\UI_Widget.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="GameEngine\Headers\PS_GameCamera.hpp" />
@@ -183,8 +184,7 @@
     <ClInclude Include="GameEngine\Headers\PS_GameMesh.hpp" />
     <ClInclude Include="GameEngine\Headers\PS_GameObject.hpp" />
     <ClInclude Include="Libraries\imgui\backends\imgui_impl_vulkan_but_betters.h" />
-    <ClInclude Include="UI\Headers\UI_Screen.hpp" />
-    <ClInclude Include="UI\Source\UI_Screen.cpp" />
+    <ClInclude Include="UI\Headers\UI_Widget.hpp" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Shader\shader.frag" />

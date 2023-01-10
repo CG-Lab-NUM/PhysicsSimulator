@@ -81,6 +81,9 @@
     <ClCompile Include="RenderEngine\Source\PS_Descriptor.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="UI\Source\UI_Widget.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Libraries\imgui\backends\imgui_impl_vulkan_but_betters.h">
@@ -146,12 +149,6 @@
     <ClInclude Include="Handlers\Headers\PS_BufferHandler.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="UI\Headers\UI_Screen.hpp">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="UI\Source\UI_Screen.cpp">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="RenderEngine\Headers\PS_RenderPass.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
@@ -159,6 +156,9 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="RenderEngine\Headers\PS_Descriptor.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="UI\Headers\UI_Widget.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

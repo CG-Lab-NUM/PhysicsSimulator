@@ -5,35 +5,38 @@
 #include "PS_RenderPass.hpp"
 #include "PS_Shader.hpp"
 #include "PS_Descriptor.hpp"
+#include "UI_Widget.hpp"
 
 namespace ps {
 	class PS_Pipeline : public PS_Allocator {
 	public:
 		PS_Pipeline(PS_Window *window, PS_Device *device, PS_SwapChain *chain, std::vector<PS_GameObject*> objects, PS_GameCamera* camera);
 
-		void createGraphicsPipeline();
-		void createUniformBuffers();
-		void createCommandBuffers();
-		void createSyncObjects();
 		void drawFrame();
 		void updateUniformBuffer(uint32_t currentImage);
 		void recordCommandBuffer(VkCommandBuffer commandBuffer, uint32_t imageIndex);
-		void renderGameObjects();
 
 		uint32_t MAX_FRAMES_IN_FLIGHT = 2;
-
 		VkPipelineLayout pipelineLayout;
 		VkPipeline graphicsPipeline;
 
 	private:
+		void createGraphicsPipeline();
+		void createUniformBuffers();
+		void createCommandBuffers();
+		void createSyncObjects();
+		void createViewport(VkCommandBuffer commandBuffer);
+		void renderGameObjects(VkCommandBuffer commandBuffer);
+		void loadGameObjects();
 
 		PS_Window* psWindow;
 		PS_Device* psDevice;
 		PS_SwapChain *psSwapChain;
 		PS_RenderPass *psRenderPass;
+		PS_RenderPass* uiRenderPass;
 		PS_DescriptorSet* psDescriptorSets;
-		PS_GameObject *gameObject;
 		PS_GameCamera *gameCamera;
+		UI_Widget* widget;
 
 		std::vector<VkCommandBuffer> commandBuffers;
 		std::vector<PS_GameObject*> gameObjects;

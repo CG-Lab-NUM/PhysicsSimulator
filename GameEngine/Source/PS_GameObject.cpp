@@ -31,6 +31,10 @@ namespace ps {
 		isBasicShape = false;
 	}
 
+	void PS_GameObject::tick() {
+
+	}
+
 	void PS_GameObject::setLocation(glm::vec3 newLocation) {
 		location = newLocation;
 	}
