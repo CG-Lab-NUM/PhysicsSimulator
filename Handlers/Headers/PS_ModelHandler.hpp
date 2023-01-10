@@ -1,10 +1,10 @@
 #pragma once
-#include "PS_Helper.hpp"
+#include "PS_Allocator.hpp"
 #include "PS_BufferHandler.hpp"
 #include <memory>
 
 namespace ps {
-	class PS_ModelHandler : PS_Helper {
+	class PS_ModelHandler : PS_Allocator {
 	public:
 		PS_ModelHandler(PS_Device* device);
 		void Load(PS_GameObject* object);

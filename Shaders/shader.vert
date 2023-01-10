@@ -27,6 +27,6 @@ void main() {
     float lightIntensity = dot(normalWorldSpace, DIRECTION_TO_LIGHT);
 
     fragColor = inColor * lightIntensity;
-    fragTexCoord = inTexCoord * lightIntensity;
+    fragTexCoord = inTexCoord;
     fragLightIntensity = lightIntensity;
 }

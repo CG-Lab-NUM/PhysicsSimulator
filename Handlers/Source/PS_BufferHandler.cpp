@@ -13,7 +13,7 @@ namespace ps {
     PS_BufferHandler::PS_BufferHandler(PS_Device* device, VkDeviceSize instanceSize, uint32_t instanceCount,
         VkBufferUsageFlags usageFlags, VkMemoryPropertyFlags memoryPropertyFlags, VkDeviceSize minOffsetAlignment) {
         psDevice = device;
-        psHelper = new PS_Helper(device);
+        psHelper = new PS_Allocator(device);
         this->instanceSize = instanceSize;
         this->instanceCount = instanceCount;
         this->usageFlags = usageFlags;

@@ -4,175 +4,52 @@
 #include <memory>
 
 namespace ps {
-
-	PS_Pipeline::PS_Pipeline(PS_Window* window, PS_Device *device, PS_SwapChain *chain, std::vector<PS_GameObject*> objects, PS_GameCamera *camera) : PS_Helper(device) {
+	PS_Pipeline::PS_Pipeline(PS_Window* window, PS_Device *device, PS_SwapChain *chain, std::vector<PS_GameObject*> objects, PS_GameCamera *camera) : PS_Allocator(device) {
 		psWindow = window;
 		psDevice = device;
 		psSwapChain = chain;
 		gameObjects = objects;
 		gameCamera = camera;
-
-		createRenderPass();
-		createDescriptorSetLayout();
+		psRenderPass = new PS_RenderPass(psDevice, psSwapChain);
+		psDescriptorSets = new PS_DescriptorSet(psDevice, MAX_FRAMES_IN_FLIGHT, gameObjects.size());
+		psDescriptorSets->createLayout({
+			0,
+			VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER,
+			1,
+			VK_SHADER_STAGE_VERTEX_BIT,
+			nullptr
+		});
+		psDescriptorSets->createLayout({
+			0,
+			VK_DESCRIPTOR_TYPE_COMBINED_IMAGE_SAMPLER,
+			1,
+			VK_SHADER_STAGE_FRAGMENT_BIT,
+			nullptr
+		});
 		createGraphicsPipeline();
 		psDevice->createCommandPool();
 		psSwapChain->createColorResources();
 		psSwapChain->createDepthResources();
-		psSwapChain->createFramebuffers(renderPass);
-
-
-		int i;
-		for (i = 0; i < gameObjects.size(); i++) {
-			PS_ModelHandler *Model = new PS_ModelHandler(psDevice);
-			modelLoaders.push_back(Model);
-			PS_TextureHandler *Texture = new PS_TextureHandler(psDevice, &descriptorPool, &textureDescriptorSetLayout);
-			textureImages.push_back(Texture);
-			Model->Load(gameObjects[i]);
-		}
-
+		psSwapChain->createFramebuffers(psRenderPass->getRenderPass());
 		createUniformBuffers();
-		createDescriptorPool();
-		createDescriptorSets();
-
-		for (i = 0; i < gameObjects.size(); i++) {
-			textureImages[i]->Load(gameObjects[i]);
-		}
-
+		psDescriptorSets->createPool();
+		psDescriptorSets->createSets(&uniformBuffers);
+		renderGameObjects();
 		createCommandBuffers();
 		createSyncObjects();
 	}
 
-	void PS_Pipeline::createRenderPass() {
-		VkAttachmentDescription colorAttachment{};
-		colorAttachment.format = psSwapChain->swapChainImageFormat;
-		colorAttachment.samples = psDevice->msaaSamples;
-		colorAttachment.loadOp = VK_ATTACHMENT_LOAD_OP_CLEAR;
-		colorAttachment.storeOp = VK_ATTACHMENT_STORE_OP_STORE;
-		colorAttachment.stencilLoadOp = VK_ATTACHMENT_LOAD_OP_DONT_CARE;
-		colorAttachment.stencilStoreOp = VK_ATTACHMENT_STORE_OP_DONT_CARE;
-		colorAttachment.initialLayout = VK_IMAGE_LAYOUT_UNDEFINED;
-		colorAttachment.finalLayout = VK_IMAGE_LAYOUT_COLOR_ATTACHMENT_OPTIMAL;
-
-		VkAttachmentDescription depthAttachment{};
-		depthAttachment.format = psSwapChain->findDepthFormat();
-		depthAttachment.samples = psDevice->msaaSamples;
-		depthAttachment.loadOp = VK_ATTACHMENT_LOAD_OP_CLEAR;
-		depthAttachment.storeOp = VK_ATTACHMENT_STORE_OP_DONT_CARE;
-		depthAttachment.stencilLoadOp = VK_ATTACHMENT_LOAD_OP_DONT_CARE;
-		depthAttachment.stencilStoreOp = VK_ATTACHMENT_STORE_OP_DONT_CARE;
-		depthAttachment.initialLayout = VK_IMAGE_LAYOUT_UNDEFINED;
-		depthAttachment.finalLayout = VK_IMAGE_LAYOUT_DEPTH_STENCIL_ATTACHMENT_OPTIMAL;
-
-		VkAttachmentDescription colorAttachmentResolve{};
-		colorAttachmentResolve.format = psSwapChain->swapChainImageFormat;
-		colorAttachmentResolve.samples = VK_SAMPLE_COUNT_1_BIT;
-		colorAttachmentResolve.loadOp = VK_ATTACHMENT_LOAD_OP_DONT_CARE;
-		colorAttachmentResolve.storeOp = VK_ATTACHMENT_STORE_OP_STORE;
-		colorAttachmentResolve.stencilLoadOp = VK_ATTACHMENT_LOAD_OP_DONT_CARE;
-		colorAttachmentResolve.stencilStoreOp = VK_ATTACHMENT_STORE_OP_DONT_CARE;
-		colorAttachmentResolve.initialLayout = VK_IMAGE_LAYOUT_UNDEFINED;
-		colorAttachmentResolve.finalLayout = VK_IMAGE_LAYOUT_PRESENT_SRC_KHR;
-
-		VkAttachmentReference colorAttachmentRef{};
-		colorAttachmentRef.attachment = 0;
-		colorAttachmentRef.layout = VK_IMAGE_LAYOUT_COLOR_ATTACHMENT_OPTIMAL;
-
-		VkAttachmentReference depthAttachmentRef{};
-		depthAttachmentRef.attachment = 1;
-		depthAttachmentRef.layout = VK_IMAGE_LAYOUT_DEPTH_STENCIL_ATTACHMENT_OPTIMAL;
-
-		VkAttachmentReference colorAttachmentResolveRef{};
-		colorAttachmentResolveRef.attachment = 2;
-		colorAttachmentResolveRef.layout = VK_IMAGE_LAYOUT_COLOR_ATTACHMENT_OPTIMAL;
-
-		VkSubpassDescription subpass{};
-		subpass.pipelineBindPoint = VK_PIPELINE_BIND_POINT_GRAPHICS;
-		subpass.colorAttachmentCount = 1;
-		subpass.pColorAttachments = &colorAttachmentRef;
-		subpass.pDepthStencilAttachment = &depthAttachmentRef;
-		subpass.pResolveAttachments = &colorAttachmentResolveRef;
-
-		VkSubpassDependency dependency{};
-		dependency.srcSubpass = VK_SUBPASS_EXTERNAL;
-		dependency.dstSubpass = 0;
-		dependency.srcStageMask = VK_PIPELINE_STAGE_COLOR_ATTACHMENT_OUTPUT_BIT | VK_PIPELINE_STAGE_EARLY_FRAGMENT_TESTS_BIT;
-		dependency.srcAccessMask = 0;
-		dependency.dstStageMask = VK_PIPELINE_STAGE_COLOR_ATTACHMENT_OUTPUT_BIT | VK_PIPELINE_STAGE_EARLY_FRAGMENT_TESTS_BIT;
-		dependency.dstAccessMask = VK_ACCESS_COLOR_ATTACHMENT_WRITE_BIT | VK_ACCESS_DEPTH_STENCIL_ATTACHMENT_WRITE_BIT;
-
-		std::array<VkAttachmentDescription, 3> attachments = { colorAttachment, depthAttachment, colorAttachmentResolve };
-		VkRenderPassCreateInfo renderPassInfo{};
-		renderPassInfo.sType = VK_STRUCTURE_TYPE_RENDER_PASS_CREATE_INFO;
-		renderPassInfo.attachmentCount = static_cast<uint32_t>(attachments.size());
-		renderPassInfo.pAttachments = attachments.data();
-		renderPassInfo.subpassCount = 1;
-		renderPassInfo.pSubpasses = &subpass;
-		renderPassInfo.dependencyCount = 1;
-		renderPassInfo.pDependencies = &dependency;
-
-		if (vkCreateRenderPass(psDevice->device, &renderPassInfo, nullptr, &renderPass) != VK_SUCCESS) {
-			throw std::runtime_error("failed to create render pass!");
-		}
-	}
-
-	void PS_Pipeline::createDescriptorSetLayout() {
-		VkDescriptorSetLayoutBinding uboLayoutBinding{};
-		uboLayoutBinding.binding = 0;
-		uboLayoutBinding.descriptorCount = 1;
-		uboLayoutBinding.descriptorType = VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER;
-		uboLayoutBinding.pImmutableSamplers = nullptr;
-		uboLayoutBinding.stageFlags = VK_SHADER_STAGE_VERTEX_BIT;
-
-		VkDescriptorSetLayoutBinding samplerLayoutBinding{};
-		samplerLayoutBinding.binding = 0;
-		samplerLayoutBinding.descriptorCount = 1;
-		samplerLayoutBinding.descriptorType = VK_DESCRIPTOR_TYPE_COMBINED_IMAGE_SAMPLER;
-		samplerLayoutBinding.pImmutableSamplers = nullptr;
-		samplerLayoutBinding.stageFlags = VK_SHADER_STAGE_FRAGMENT_BIT;
-
-		VkDescriptorSetLayoutCreateInfo layoutInfo{};
-		layoutInfo.sType = VK_STRUCTURE_TYPE_DESCRIPTOR_SET_LAYOUT_CREATE_INFO;
-		layoutInfo.bindingCount = 1;
-		layoutInfo.pBindings = &uboLayoutBinding;
-
-		if (vkCreateDescriptorSetLayout(psDevice->device, &layoutInfo, nullptr, &uniformDescriptorSetLayout) != VK_SUCCESS) {
-			throw std::runtime_error("failed to create uniform descriptor set layout!");
-		}
-
-		layoutInfo.pBindings = &samplerLayoutBinding;
-
-		if (vkCreateDescriptorSetLayout(psDevice->device, &layoutInfo, nullptr, &textureDescriptorSetLayout) != VK_SUCCESS) {
-			throw std::runtime_error("failed to create texture descriptor set layout!");
-		}
-	}
-
 	void PS_Pipeline::createGraphicsPipeline() {
-		auto vertShaderCode = PS_FileHandler::readFile("Shaders/vert.spv");
-		auto fragShaderCode = PS_FileHandler::readFile("Shaders/frag.spv");
+		// Shader
+		PS_Shader vertShader{ psDevice, "Shaders/vert.spv", VERTEX_SHADER };
+		PS_Shader fragShader{ psDevice, "Shaders/frag.spv", FRAGMENT_SHADER };
+		VkPipelineShaderStageCreateInfo shaderStages[] = { vertShader.getShaderCreateInfo(), fragShader.getShaderCreateInfo()};
 
-		VkShaderModule vertShaderModule = createShaderModule(vertShaderCode);
-		VkShaderModule fragShaderModule = createShaderModule(fragShaderCode);
-
-		VkPipelineShaderStageCreateInfo vertShaderStageInfo{};
-		vertShaderStageInfo.sType = VK_STRUCTURE_TYPE_PIPELINE_SHADER_STAGE_CREATE_INFO;
-		vertShaderStageInfo.stage = VK_SHADER_STAGE_VERTEX_BIT;
-		vertShaderStageInfo.module = vertShaderModule;
-		vertShaderStageInfo.pName = "main";
-
-		VkPipelineShaderStageCreateInfo fragShaderStageInfo{};
-		fragShaderStageInfo.sType = VK_STRUCTURE_TYPE_PIPELINE_SHADER_STAGE_CREATE_INFO;
-		fragShaderStageInfo.stage = VK_SHADER_STAGE_FRAGMENT_BIT;
-		fragShaderStageInfo.module = fragShaderModule;
-		fragShaderStageInfo.pName = "main";
-
-		VkPipelineShaderStageCreateInfo shaderStages[] = { vertShaderStageInfo, fragShaderStageInfo };
-
+		// Vertex
 		VkPipelineVertexInputStateCreateInfo vertexInputInfo{};
 		vertexInputInfo.sType = VK_STRUCTURE_TYPE_PIPELINE_VERTEX_INPUT_STATE_CREATE_INFO;
-
 		auto bindingDescription = Vertex::getBindingDescription();
 		auto attributeDescriptions = Vertex::getAttributeDescriptions();
-
 		vertexInputInfo.vertexBindingDescriptionCount = 1;
 		vertexInputInfo.vertexAttributeDescriptionCount = static_cast<uint32_t>(attributeDescriptions.size());
 		vertexInputInfo.pVertexBindingDescriptions = &bindingDescription;
@@ -182,7 +59,7 @@ namespace ps {
 		inputAssembly.sType = VK_STRUCTURE_TYPE_PIPELINE_INPUT_ASSEMBLY_STATE_CREATE_INFO;
 		inputAssembly.topology = VK_PRIMITIVE_TOPOLOGY_TRIANGLE_LIST;
 		inputAssembly.primitiveRestartEnable = VK_FALSE;
-
+		
 		VkPipelineViewportStateCreateInfo viewportState{};
 		viewportState.sType = VK_STRUCTURE_TYPE_PIPELINE_VIEWPORT_STATE_CREATE_INFO;
 		viewportState.viewportCount = 1;
@@ -235,19 +112,19 @@ namespace ps {
 		dynamicState.dynamicStateCount = static_cast<uint32_t>(dynamicStates.size());
 		dynamicState.pDynamicStates = dynamicStates.data();
 
-		VkDescriptorSetLayout SetLayouts[] = { uniformDescriptorSetLayout, textureDescriptorSetLayout };
-
 		VkPushConstantRange psRange;
 		psRange.offset = 0;
 		psRange.size = sizeof(PushConstant);
 		psRange.stageFlags = VK_SHADER_STAGE_VERTEX_BIT;
-
-		//std::vector<VkDescriptorSetLayout> descriptorSetLayouts{ globalSetLayout };
+		VkDescriptorSetLayout setLayouts[] = {
+			psDescriptorSets->getSetLayout(0), 
+			psDescriptorSets->getSetLayout(1) 
+		};
 
 		VkPipelineLayoutCreateInfo pipelineLayoutInfo{};
 		pipelineLayoutInfo.sType = VK_STRUCTURE_TYPE_PIPELINE_LAYOUT_CREATE_INFO;
 		pipelineLayoutInfo.setLayoutCount = 2;
-		pipelineLayoutInfo.pSetLayouts = SetLayouts;
+		pipelineLayoutInfo.pSetLayouts = setLayouts;
 		pipelineLayoutInfo.pushConstantRangeCount = 1;
 		pipelineLayoutInfo.pPushConstantRanges = &psRange;
 
@@ -268,7 +145,7 @@ namespace ps {
 		pipelineInfo.pColorBlendState = &colorBlending;
 		pipelineInfo.pDynamicState = &dynamicState;
 		pipelineInfo.layout = pipelineLayout;
-		pipelineInfo.renderPass = renderPass;
+		pipelineInfo.renderPass = psRenderPass->getRenderPass();
 		pipelineInfo.subpass = 0;
 		pipelineInfo.basePipelineHandle = VK_NULL_HANDLE;
 
@@ -276,37 +153,21 @@ namespace ps {
 			throw std::runtime_error("failed to create graphics pipeline!");
 		}
 
-		vkDestroyShaderModule(psDevice->device, fragShaderModule, nullptr);
-		vkDestroyShaderModule(psDevice->device, vertShaderModule, nullptr);
-	}
-
-	VkShaderModule PS_Pipeline::createShaderModule(const std::vector<char>& code) {
-		VkShaderModuleCreateInfo createInfo{};
-		createInfo.sType = VK_STRUCTURE_TYPE_SHADER_MODULE_CREATE_INFO;
-		createInfo.codeSize = code.size();
-		createInfo.pCode = reinterpret_cast<const uint32_t*>(code.data());
-
-		VkShaderModule shaderModule;
-		if (vkCreateShaderModule(psDevice->device, &createInfo, nullptr, &shaderModule) != VK_SUCCESS) {
-			throw std::runtime_error("failed to create shader module!");
-		}
-
-		return shaderModule;
+		vertShader.destroy();
+		fragShader.destroy();
 	}
 
 	void PS_Pipeline::createUniformBuffers() {
 		VkDeviceSize bufferSize = sizeof(UniformBufferObject);
-
-		uboBuffers.resize(MAX_FRAMES_IN_FLIGHT);
-
+		uniformBuffers.resize(MAX_FRAMES_IN_FLIGHT);
 		for (size_t i = 0; i < MAX_FRAMES_IN_FLIGHT; i++) {
-			uboBuffers[i] = std::make_unique<PS_BufferHandler>(
+			uniformBuffers[i] = std::make_unique<PS_BufferHandler>(
 				psDevice,
 				sizeof(UniformBufferObject),
 				1,
 				VK_BUFFER_USAGE_UNIFORM_BUFFER_BIT | VK_BUFFER_USAGE_TRANSFER_DST_BIT,
 				VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT | VK_MEMORY_PROPERTY_HOST_COHERENT_BIT
-				);
+			);
 		}
 	}
 
@@ -332,71 +193,16 @@ namespace ps {
 		};
 		uniformBuffer.map();
 		uniformBuffer.writeToBuffer((void*)&ubo);
-		copyBuffer(uniformBuffer.getBuffer(), uboBuffers[currentImage]->getBuffer(), sizeof(UniformBufferObject));
+		copyBuffer(uniformBuffer.getBuffer(), uniformBuffers[currentImage]->getBuffer(), sizeof(UniformBufferObject));
 	}
-
-	void PS_Pipeline::createDescriptorPool() {
-		std::array<VkDescriptorPoolSize, 2> poolSizes{};
-		poolSizes[0].type = VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER;
-		poolSizes[0].descriptorCount = static_cast<uint32_t>(MAX_FRAMES_IN_FLIGHT);
-		poolSizes[1].type = VK_DESCRIPTOR_TYPE_COMBINED_IMAGE_SAMPLER;
-		poolSizes[1].descriptorCount = static_cast<uint32_t>(gameObjects.size());
-
-		VkDescriptorPoolCreateInfo poolInfo{};
-		poolInfo.sType = VK_STRUCTURE_TYPE_DESCRIPTOR_POOL_CREATE_INFO;
-		poolInfo.flags = VK_DESCRIPTOR_POOL_CREATE_FREE_DESCRIPTOR_SET_BIT;
-		poolInfo.poolSizeCount = static_cast<uint32_t>(poolSizes.size());
-		poolInfo.pPoolSizes = poolSizes.data();
-		poolInfo.maxSets = static_cast<uint32_t>(MAX_FRAMES_IN_FLIGHT) + static_cast<uint32_t>(gameObjects.size());
-
-		if (vkCreateDescriptorPool(psDevice->device, &poolInfo, nullptr, &descriptorPool) != VK_SUCCESS) {
-			throw std::runtime_error("failed to create descriptor pool!");
-		}
-	}
-
-	void PS_Pipeline::createDescriptorSets() {
-		std::vector<VkDescriptorSetLayout> layouts(MAX_FRAMES_IN_FLIGHT, uniformDescriptorSetLayout);
-		VkDescriptorSetAllocateInfo allocInfo{};
-		allocInfo.sType = VK_STRUCTURE_TYPE_DESCRIPTOR_SET_ALLOCATE_INFO;
-		allocInfo.descriptorPool = descriptorPool;
-		allocInfo.descriptorSetCount = static_cast<uint32_t>(MAX_FRAMES_IN_FLIGHT);
-		allocInfo.pSetLayouts = layouts.data();
-
-		descriptorSets.resize(MAX_FRAMES_IN_FLIGHT);
-		if (vkAllocateDescriptorSets(psDevice->device, &allocInfo, descriptorSets.data()) != VK_SUCCESS) {
-			throw std::runtime_error("failed to allocate descriptor sets!");
-		}
-
-		for (size_t i = 0; i < MAX_FRAMES_IN_FLIGHT; i++) {
-			VkDescriptorBufferInfo bufferInfo{};
-			bufferInfo.buffer = uboBuffers[i]->getBuffer();
-			bufferInfo.offset = 0;
-			bufferInfo.range = sizeof(UniformBufferObject);
-
-			VkWriteDescriptorSet descriptorWrite{};
-			descriptorWrite.sType = VK_STRUCTURE_TYPE_WRITE_DESCRIPTOR_SET;
-			descriptorWrite.dstSet = descriptorSets[i];
-			descriptorWrite.dstBinding = 0;
-			descriptorWrite.dstArrayElement = 0;
-			descriptorWrite.descriptorType = VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER;
-			descriptorWrite.descriptorCount = 1;
-			descriptorWrite.pBufferInfo = &bufferInfo;
-
-			vkUpdateDescriptorSets(psDevice->device, 1, &descriptorWrite, 0, nullptr);
-		}
-	}
-
 
 	void PS_Pipeline::drawFrame() {
 		gameCamera->tick();
-
 		vkWaitForFences(psDevice->device, 1, &inFlightFences[currentFrame], VK_TRUE, UINT64_MAX);
-
 		uint32_t imageIndex;
 		VkResult result = vkAcquireNextImageKHR(psDevice->device, psSwapChain->swapChain, UINT64_MAX, imageAvailableSemaphores[currentFrame], VK_NULL_HANDLE, &imageIndex);
-
 		if (result == VK_ERROR_OUT_OF_DATE_KHR) {
-			psSwapChain->recreateSwapChain(renderPass);
+			psSwapChain->recreateSwapChain(psRenderPass->getRenderPass());
 			return;
 		}
 		else if (result != VK_SUCCESS && result != VK_SUBOPTIMAL_KHR) {
@@ -405,46 +211,42 @@ namespace ps {
 
 		updateUniformBuffer(currentFrame);
 		recordCommandBuffer(commandBuffers[currentFrame], imageIndex);
-		
-
 		vkResetFences(psDevice->device, 1, &inFlightFences[currentFrame]);
-
-		VkSubmitInfo submitInfo{};
-		submitInfo.sType = VK_STRUCTURE_TYPE_SUBMIT_INFO;
 
 		VkSemaphore waitSemaphores[] = { imageAvailableSemaphores[currentFrame] };
 		VkPipelineStageFlags waitStages[] = { VK_PIPELINE_STAGE_COLOR_ATTACHMENT_OUTPUT_BIT };
-		submitInfo.waitSemaphoreCount = 1;
-		submitInfo.pWaitSemaphores = waitSemaphores;
-		submitInfo.pWaitDstStageMask = waitStages;
-
-		submitInfo.commandBufferCount = 1;
-		submitInfo.pCommandBuffers = &commandBuffers[currentFrame];
-
 		VkSemaphore signalSemaphores[] = { renderFinishedSemaphores[currentFrame] };
-		submitInfo.signalSemaphoreCount = 1;
-		submitInfo.pSignalSemaphores = signalSemaphores;
+		VkSubmitInfo submitInfo{
+			VK_STRUCTURE_TYPE_SUBMIT_INFO,
+			nullptr,
+			1,
+			waitSemaphores,
+			waitStages,
+			1,
+			&commandBuffers[currentFrame],
+			1,
+			signalSemaphores
+		};
 
 		if (vkQueueSubmit(psDevice->graphicsQueue, 1, &submitInfo, inFlightFences[currentFrame]) != VK_SUCCESS) {
 			throw std::runtime_error("failed to submit draw command buffer!");
 		}
 
-		VkPresentInfoKHR presentInfo{};
-		presentInfo.sType = VK_STRUCTURE_TYPE_PRESENT_INFO_KHR;
-
-		presentInfo.waitSemaphoreCount = 1;
-		presentInfo.pWaitSemaphores = signalSemaphores;
-
 		VkSwapchainKHR swapChains[] = { psSwapChain->swapChain };
-		presentInfo.swapchainCount = 1;
-		presentInfo.pSwapchains = swapChains;
-
-		presentInfo.pImageIndices = &imageIndex;
-		
+		VkPresentInfoKHR presentInfo{
+			VK_STRUCTURE_TYPE_PRESENT_INFO_KHR,
+			nullptr,
+			1,
+			signalSemaphores,
+			1,
+			swapChains,
+			&imageIndex,
+			&result
+		};
 		result = vkQueuePresentKHR(psDevice->presentQueue, &presentInfo);
 		if (result == VK_ERROR_OUT_OF_DATE_KHR || result == VK_SUBOPTIMAL_KHR || psWindow->framebufferResized) {
 			psWindow->framebufferResized = false;
-			psSwapChain->recreateSwapChain(renderPass);
+			psSwapChain->recreateSwapChain(psRenderPass->getRenderPass());
 		}
 		else if (result != VK_SUCCESS) {
 			throw std::runtime_error("failed to present swap chain image!");
@@ -462,44 +264,41 @@ namespace ps {
 			throw std::runtime_error("failed to begin recording command buffer!");
 		}
 
-		VkRenderPassBeginInfo renderPassInfo{};
-		renderPassInfo.sType = VK_STRUCTURE_TYPE_RENDER_PASS_BEGIN_INFO;
-		renderPassInfo.renderPass = renderPass;
-		renderPassInfo.framebuffer = psSwapChain->swapChainFramebuffers[imageIndex];
-		renderPassInfo.renderArea.offset = { 0, 0 };
-		renderPassInfo.renderArea.extent = psSwapChain->swapChainExtent;
-
 		std::array<VkClearValue, 2> clearValues{};
-		clearValues[0].color = { {0.0f, 0.0f, 0.0f, 1.0f} };
+		clearValues[0].color = { {1.0f, 1.0f, 1.0f, 1.0f} };
 		clearValues[1].depthStencil = { 1.0f, 0 };
 
-		renderPassInfo.clearValueCount = static_cast<uint32_t>(clearValues.size());
-		renderPassInfo.pClearValues = clearValues.data();
+		VkRenderPassBeginInfo renderPassInfo{
+			VK_STRUCTURE_TYPE_RENDER_PASS_BEGIN_INFO,
+			nullptr,
+			psRenderPass->getRenderPass(),
+			psSwapChain->swapChainFramebuffers[imageIndex],
+			{{0,0}, psSwapChain->swapChainExtent},
+			static_cast<uint32_t>(clearValues.size()),
+			clearValues.data()
+		};
 
 		vkCmdBeginRenderPass(commandBuffer, &renderPassInfo, VK_SUBPASS_CONTENTS_INLINE);
-
 		vkCmdBindPipeline(commandBuffer, VK_PIPELINE_BIND_POINT_GRAPHICS, graphicsPipeline);
 
-		VkViewport viewport{};
-		viewport.x = 0.0f;
-		viewport.y = 0.0f;
-		viewport.width = (float)psSwapChain->swapChainExtent.width;
-		viewport.height = (float)psSwapChain->swapChainExtent.height;
-		viewport.minDepth = 0.0f;
-		viewport.maxDepth = 1.0f;
+		VkViewport viewport{
+			0.0f, // x
+			0.0f, // y
+			(float)psSwapChain->swapChainExtent.width,
+			(float)psSwapChain->swapChainExtent.height,
+			0.0f, // Min Depth
+			1.0f // Max Depth
+		};
+		VkRect2D scissor{ 
+			{0, 0}, // Offset
+			psSwapChain->swapChainExtent // Extent
+		};
 		vkCmdSetViewport(commandBuffer, 0, 1, &viewport);
-
-		VkRect2D scissor{};
-		scissor.offset = { 0, 0 };
-		scissor.extent = psSwapChain->swapChainExtent;
 		vkCmdSetScissor(commandBuffer, 0, 1, &scissor);
-
-		vkCmdBindDescriptorSets(commandBuffer, VK_PIPELINE_BIND_POINT_GRAPHICS, pipelineLayout, 0, 1, &descriptorSets[currentFrame], 0, nullptr);
+		vkCmdBindDescriptorSets(commandBuffer, VK_PIPELINE_BIND_POINT_GRAPHICS, pipelineLayout, 0, 1, psDescriptorSets->getSetReference(currentFrame), 0, nullptr);
 		
 		PushConstant pushConstant;
-
-		int i;
-		for (i = 0; i < gameObjects.size(); i++) {
+		for (int i = 0; i < gameObjects.size(); i++) {
 			if (i == 0) {
 				vkCmdBindDescriptorSets(commandBuffer, VK_PIPELINE_BIND_POINT_GRAPHICS, pipelineLayout, 1, 1, &textureImages[i]->descriptorSet, 0, nullptr);
 				vkCmdPushConstants(commandBuffer, pipelineLayout, VK_SHADER_STAGE_VERTEX_BIT, 0, sizeof(pushConstant), &pushConstant);
@@ -513,7 +312,6 @@ namespace ps {
 		}
 
 		vkCmdEndRenderPass(commandBuffer);
-
 		if (vkEndCommandBuffer(commandBuffer) != VK_SUCCESS) {
 			throw std::runtime_error("failed to record command buffer!");
 		}
@@ -554,26 +352,15 @@ namespace ps {
 		}
 	}
 
-	void PS_Pipeline::cleanup() {
-		vkDestroyPipeline(psDevice->device, graphicsPipeline, nullptr);
-		vkDestroyPipelineLayout(psDevice->device, pipelineLayout, nullptr);
-		vkDestroyRenderPass(psDevice->device, renderPass, nullptr);
-		vkDestroyDescriptorPool(psDevice->device, descriptorPool, nullptr);
+	void PS_Pipeline::renderGameObjects() {
+		for (int i = 0; i < gameObjects.size(); i++) {
+			PS_ModelHandler* Model = new PS_ModelHandler(psDevice);
+			modelLoaders.push_back(Model);
+			Model->Load(gameObjects[i]);
 
-		for (int i = 0; i < textureImages.size(); i++) {
-			vkDestroySampler(psDevice->device, textureImages[i]->getTextureSampler(), nullptr);
-			vkDestroyImageView(psDevice->device, textureImages[i]->getTextureImageView(), nullptr);
-			vkDestroyImage(psDevice->device, textureImages[i]->getTextureImage(), nullptr);
-			vkFreeMemory(psDevice->device, textureImages[i]->getTextureImageMemory(), nullptr);
-		}
-
-		vkDestroyDescriptorSetLayout(psDevice->device, uniformDescriptorSetLayout, nullptr);
-		vkDestroyDescriptorSetLayout(psDevice->device, textureDescriptorSetLayout, nullptr);
-
-		for (size_t i = 0; i < MAX_FRAMES_IN_FLIGHT; i++) {
-			vkDestroySemaphore(psDevice->device, renderFinishedSemaphores[i], nullptr);
-			vkDestroySemaphore(psDevice->device, imageAvailableSemaphores[i], nullptr);
-			vkDestroyFence(psDevice->device, inFlightFences[i], nullptr);
+			PS_TextureHandler* Texture = new PS_TextureHandler(psDevice, psDescriptorSets->getPoolReference(), psDescriptorSets->getSetLayoutReference(1));
+			textureImages.push_back(Texture);
+			textureImages[i]->Load(gameObjects[i]);
 		}
 	}
 }

@@ -1,9 +1,9 @@
 #pragma once
-#include "PS_Helper.hpp"
+#include "PS_Allocator.hpp"
 #include "PS_BufferHandler.hpp"
 
 namespace ps {
-	class PS_TextureHandler : PS_Helper {
+	class PS_TextureHandler : PS_Allocator {
 	public:
 		PS_TextureHandler(PS_Device* psDevice, VkDescriptorPool* descriptorPool, VkDescriptorSetLayout* textureDescriptorSetLayout);
 		void Load(PS_GameObject* object);
