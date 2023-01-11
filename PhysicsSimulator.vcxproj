@@ -184,6 +184,7 @@
     <ClInclude Include="GameEngine\Headers\PS_GameMesh.hpp" />
     <ClInclude Include="GameEngine\Headers\PS_GameObject.hpp" />
     <ClInclude Include="Libraries\imgui\backends\imgui_impl_vulkan_but_betters.h" />
+    <ClInclude Include="UI\Headers\UI_Generic.hpp" />
     <ClInclude Include="UI\Headers\UI_Widget.hpp" />
   </ItemGroup>
   <ItemGroup>
