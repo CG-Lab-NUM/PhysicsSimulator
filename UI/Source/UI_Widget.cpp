@@ -1,8 +1,9 @@
 #include "UI_Widget.hpp"
 
 namespace ps {
-	UI_Widget::UI_Widget(PS_Device* device) : PS_Allocator(device) {
+	UI_Widget::UI_Widget(PS_Device* device, PS_GameCamera *camera) : PS_Allocator(device) {
 		psDevice = device;
+		gameCamera = camera;
 		this->vertices = vertices;
 		this->indices = indices;
 		createWidget();
@@ -11,16 +12,28 @@ namespace ps {
 	}
 
 	void UI_Widget::createWidget() {
+		GeometrySquare object;
+		object.x = 0;
+		object.y = 0;
+		object.height = 100;
+		object.width = 100;
+		renderComponent = object;
+		
 		Vertex topLeft, topRight, bottomLeft, bottomRight;
 		topLeft.pos = { 0, 0, 0 };
 		topRight.pos = { 50.f, 0, 0 };
-		bottomLeft.pos = { 50.f, 50.f, 0 };
-		bottomRight.pos = { 0, 50.f, 0 };
+		bottomLeft.pos = { 50.f, 0, 50 };
+		bottomRight.pos = { 0, 0, 50};
 
 		topLeft.color = { 1.0f, 0.0f, 0.0f };
 		topRight.color = { 1.0f, 0.0f, 0.0f };
 		bottomLeft.color = { 1.0f, 0.0f, 0.0f };
 		bottomRight.color = { 1.0f, 0.0f, 0.0f };
+
+		topLeft.type = 1;
+		topRight.type = 1;
+		bottomLeft.type = 1;
+		bottomRight.type = 1;
 
 		vertices.push_back(topLeft);
 		vertices.push_back(topRight);
@@ -88,5 +101,18 @@ namespace ps {
 			);
 
 		copyBuffer(stagingBuffer.getBuffer(), indexBuffer->getBuffer(), bufferSize);
+	}
+
+	void UI_Widget::renderWidget(VkCommandBuffer commandBuffer) {
+		translateGeometry();
+		VkBuffer vertexBuffers[] = { vertexBuffer->getBuffer() };
+		VkDeviceSize offsets[] = { 0 };
+		vkCmdBindVertexBuffers(commandBuffer, 0, 1, vertexBuffers, offsets);
+		vkCmdBindIndexBuffer(commandBuffer, indexBuffer->getBuffer(), 0, VK_INDEX_TYPE_UINT32);
+		vkCmdDrawIndexed(commandBuffer, static_cast<uint32_t>(indices.size()), 1, 0, 0, 0);
+	}
+
+	void UI_Widget::translateGeometry() {
+
 	}
 }

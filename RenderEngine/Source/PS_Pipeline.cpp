@@ -9,12 +9,16 @@ namespace ps {
 		PS_Device *device, 
 		PS_SwapChain *chain, 
 		std::vector<PS_GameObject*> objects,
-		PS_GameCamera *camera) : PS_Allocator(device) {
+		PS_GameCamera *camera,
+		std::string vertexShader,
+		std::string fragmentShader) : PS_Allocator(device) {
 		psWindow = window;
 		psDevice = device;
 		psSwapChain = chain;
 		gameObjects = objects;
 		gameCamera = camera;
+		vertexShaderPath = vertexShader;
+		fragmentShaderPath = fragmentShader;
 		psRenderPass = new PS_RenderPass(psDevice, psSwapChain);
 		uiRenderPass = new PS_RenderPass(psDevice, psSwapChain);
 		psDescriptorSets = new PS_DescriptorSet(psDevice, MAX_FRAMES_IN_FLIGHT, static_cast<uint32_t>(gameObjects.size()));
@@ -40,7 +44,7 @@ namespace ps {
 		createUniformBuffers();
 		psDescriptorSets->createPool();
 		psDescriptorSets->createSets(&uniformBuffers);
-		widget = new UI_Widget(psDevice);
+		widget = new UI_Widget(psDevice, gameCamera);
 		loadGameObjects();
 		createCommandBuffers();
 		createSyncObjects();
@@ -48,8 +52,8 @@ namespace ps {
 
 	void PS_Pipeline::createGraphicsPipeline() {
 		// Shader
-		PS_Shader vertShader{ psDevice, "Shaders/vert.spv", VERTEX_SHADER };
-		PS_Shader fragShader{ psDevice, "Shaders/frag.spv", FRAGMENT_SHADER };
+		PS_Shader vertShader{ psDevice, vertexShaderPath, VERTEX_SHADER };
+		PS_Shader fragShader{ psDevice, fragmentShaderPath, FRAGMENT_SHADER };
 		VkPipelineShaderStageCreateInfo shaderStages[] = { vertShader.getShaderCreateInfo(), fragShader.getShaderCreateInfo()};
 
 		// Vertex

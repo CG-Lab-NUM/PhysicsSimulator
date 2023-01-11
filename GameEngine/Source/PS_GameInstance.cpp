@@ -4,7 +4,6 @@
 #include <iostream>
 #include <stdexcept>
 
-
 namespace ps {
 	int PS_GameInstance::startInstance() {
 		ps::PS_Renderer app{ &gameLevel };

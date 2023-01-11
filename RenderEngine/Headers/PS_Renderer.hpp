@@ -16,7 +16,8 @@ namespace ps {
 		PS_Window psWindow{ 1024, 768, "CustomTitle" };
 		PS_Device psDevice{ &psWindow };
 		PS_SwapChain psSwapChain{ &psDevice, &psWindow };
-		PS_Pipeline *psPipeline;
+		PS_Pipeline *litPipeline;
+		PS_Pipeline *unlitPipeline;
 		PS_GameLevel *gameLevel;
 		std::vector<PS_GameObject*> gameObjects;
 	};

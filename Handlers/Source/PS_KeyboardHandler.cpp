@@ -28,7 +28,7 @@ namespace ps {
 		if (!numbersEnabled) {
 			return;
 		}
-		for (int i = 0; i <= 9; i++) {
+		for (int i = 48; i <= 57; i++) {
 			if (key == i and action == GLFW_PRESS) {
 				currentKeyboard[i] = true;
 			}

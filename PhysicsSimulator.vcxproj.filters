@@ -161,9 +161,14 @@
     <ClInclude Include="UI\Headers\UI_Widget.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="UI\Headers\UI_Generic.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <None Include="Shader\shader.vert" />
     <None Include="Shader\shader.frag" />
+    <None Include="Shaders\unlit_shader.vert" />
+    <None Include="Shaders\unlit_shader.frag" />
   </ItemGroup>
 </Project>

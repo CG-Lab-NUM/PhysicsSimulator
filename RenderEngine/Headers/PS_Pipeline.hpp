@@ -10,7 +10,8 @@
 namespace ps {
 	class PS_Pipeline : public PS_Allocator {
 	public:
-		PS_Pipeline(PS_Window *window, PS_Device *device, PS_SwapChain *chain, std::vector<PS_GameObject*> objects, PS_GameCamera* camera);
+		PS_Pipeline(PS_Window *window, PS_Device *device, PS_SwapChain *chain, 
+			std::vector<PS_GameObject*> objects, PS_GameCamera* camera, std::string vertexShader, std::string fragmentShader);
 
 		void drawFrame();
 		void updateUniformBuffer(uint32_t currentImage);
@@ -37,6 +38,9 @@ namespace ps {
 		PS_DescriptorSet* psDescriptorSets;
 		PS_GameCamera *gameCamera;
 		UI_Widget* widget;
+
+		std::string vertexShaderPath;
+		std::string fragmentShaderPath;
 
 		std::vector<VkCommandBuffer> commandBuffers;
 		std::vector<PS_GameObject*> gameObjects;
