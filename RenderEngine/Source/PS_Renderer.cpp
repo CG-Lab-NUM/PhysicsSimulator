@@ -4,19 +4,26 @@ namespace ps {
 	PS_Renderer::PS_Renderer(PS_GameLevel* level) {
 		gameLevel = level;
 		gameObjects = gameLevel->getGameObjects();
-		psPipeline = new PS_Pipeline(&psWindow, &psDevice, &psSwapChain, gameObjects, gameLevel->getCamera());
+		unlitPipeline = new PS_Pipeline(&psWindow, &psDevice, &psSwapChain, gameObjects, gameLevel->getCamera(), "Shaders/unlit_vert.spv", "Shaders/unlit_frag.spv");
+		litPipeline = new PS_Pipeline(&psWindow, &psDevice, &psSwapChain, gameObjects, gameLevel->getCamera(), "Shaders/lit_vert.spv", "Shaders/lit_frag.spv");
 	}
 
 	void PS_Renderer::mainLoop() {
 		while (!glfwWindowShouldClose(psWindow.getWindow())) {
 			glfwPollEvents();
-			psPipeline->drawFrame();
+			if (gameLevel->getPipeline() == LIT_PIPELINE) {
+				litPipeline->drawFrame();
+			}
+			else {
+				unlitPipeline->drawFrame();
+			}
 			tick();
 		}
 		vkDeviceWaitIdle(psDevice.device);
 	}
 
 	void PS_Renderer::tick() {
+		gameLevel->tick();
 		gameLevel->getCamera()->tick();
 		for (int i = 0; i < gameObjects.size(); i++) {
 			gameObjects[i]->tick();

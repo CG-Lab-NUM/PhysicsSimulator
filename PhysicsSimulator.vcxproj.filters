@@ -168,5 +168,7 @@
   <ItemGroup>
     <None Include="Shader\shader.vert" />
     <None Include="Shader\shader.frag" />
+    <None Include="Shaders\unlit_shader.vert" />
+    <None Include="Shaders\unlit_shader.frag" />
   </ItemGroup>
 </Project>

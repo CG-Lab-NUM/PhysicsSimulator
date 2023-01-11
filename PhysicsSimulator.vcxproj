@@ -188,6 +188,8 @@
     <ClInclude Include="UI\Headers\UI_Widget.hpp" />
   </ItemGroup>
   <ItemGroup>
+    <None Include="Shaders\unlit_shader.frag" />
+    <None Include="Shaders\unlit_shader.vert" />
     <None Include="Shader\shader.frag" />
     <None Include="Shader\shader.vert" />
   </ItemGroup>

@@ -20,19 +20,15 @@ layout(location = 1) out vec2 fragTexCoord;
 layout(location = 2) out vec3 fragLightDirection;
 
 const vec3 DIRECTION_TO_LIGHT = normalize(vec3(1.0, -3.0, -1.0));
+const vec3 LIGHT_COLOR = vec3(1, 0.5, 0);
 
 void main() {
-    if(type == 1) {
-        gl_Position = vec4(inPosition, 0.5);
-    } else {
-        gl_Position = ubo.transform * vec4(inPosition, 1.0);
-    }
+    gl_Position = ubo.transform * vec4(inPosition, 1.0);
 
     vec3 normalWorldSpace = normalize(mat3(push.modelMatrix) * inNormal);
     float lightIntensity = dot(normalWorldSpace, DIRECTION_TO_LIGHT);
 
-    fragColor = inColor * lightIntensity;
+    fragColor = inColor * lightIntensity * LIGHT_COLOR;
     fragTexCoord = inTexCoord;
     fragLightDirection = DIRECTION_TO_LIGHT;
-    //fragLightIntensity = lightIntensity;
 }
