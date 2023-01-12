@@ -26,10 +26,10 @@ namespace ps {
 		bottomLeft.pos = { 50.f, 0, 50 };
 		bottomRight.pos = { 0, 0, 50 };
 
-		topLeft.color = { 1.0f, 1.0f, 1.0f };
-		topRight.color = { 1.0f, 1.0f, 1.0f };
-		bottomLeft.color = { 1.0f, 1.0f, 1.0f };
-		bottomRight.color = { 1.0f, 1.0f, 1.0f };
+		topLeft.color = { 1.0f, 1.0f, 1.0f, 1 };
+		topRight.color = { 1.0f, 1.0f, 1.0f, 1 };
+		bottomLeft.color = { 1.0f, 1.0f, 1.0f, 1 };
+		bottomRight.color = { 1.0f, 1.0f, 1.0f, 1 };
 
 		topLeft.type = 1;
 		topRight.type = 1;

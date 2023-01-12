@@ -26,6 +26,7 @@ namespace ps {
 				gameObject->setModel(elem["model_path"]);
 				gameObject->setTexture(elem["texture_path"]);
 				gameObject->setName(elem["name"]);
+				gameObject->setAlpha(elem["alpha"]);
 				gameObjects.push_back(gameObject);
 			}
 		}

@@ -14,16 +14,27 @@
       "location": [ 0, 0, 0 ],
       "rotation": [ 0, 0, 0 ],
       "scale": [ 1, 1, 1 ],
+      "alpha": 1.0,
       "model_path": "Content/Meshes/StingSword.obj",
       "texture_path": "Content/Textures/StingSword/StingSword_Base_Color.png"
     },
-
     {
       "type": "GameObject",
       "name": "Floor",
       "location": [ 0, 0, 0 ],
       "rotation": [ 0, 0, 0 ],
       "scale": [ 1, 1, 1 ],
+      "alpha": 0.5,
+      "model_path": "Content/Meshes/Cube.obj",
+      "texture_path": "Content/Textures/StingSword/StingSword_Base_Color.png"
+    },
+    {
+      "type": "GameObject",
+      "name": "Floor",
+      "location": [ 5, -5, 0 ],
+      "rotation": [ 0, 0, 0 ],
+      "scale": [ 1, 1, 1 ],
+      "alpha": 1,
       "model_path": "Content/Meshes/Cube.obj",
       "texture_path": "Content/Textures/StingSword/StingSword_Base_Color.png"
     }
