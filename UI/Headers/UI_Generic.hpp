@@ -1,3 +1,4 @@
+#pragma once
 namespace ps {
 	struct GeometryObject2D {
 		float x;

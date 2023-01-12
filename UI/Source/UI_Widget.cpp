@@ -127,8 +127,6 @@ namespace ps {
 		renderComponent.x = center[0];
 		renderComponent.y = center[1];
 
-
-
 		vertices[0].pos = { renderComponent.x, renderComponent.y, center[2] };
 		vertices[1].pos = { renderComponent.x + h * y[0], renderComponent.y + h * y[1], center[2] + h * y[2] };
 		vertices[2].pos = { renderComponent.x + ((-w) * x[0] + renderComponent.height * y[0]), renderComponent.y + ((-w)*x[1] + h * y[1]), center[2] + ((-w) * x[2] + h * y[2]) };

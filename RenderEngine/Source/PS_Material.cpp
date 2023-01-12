@@ -1,8 +1,7 @@
 #include "PS_Material.hpp"
 
 namespace ps {
-	PS_Material::PS_Material(MaterialComponent newBaseColor) {
-		baseColor = newBaseColor;
+	PS_Material::PS_Material() {
 		baseColor.isTexture = false;
 		metallic.isTexture = false;
 		specular.isTexture = false;
