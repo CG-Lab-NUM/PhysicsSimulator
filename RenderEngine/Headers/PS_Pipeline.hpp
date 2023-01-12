@@ -6,6 +6,7 @@
 #include "PS_Shader.hpp"
 #include "PS_Descriptor.hpp"
 #include "UI_Widget.hpp"
+#include "PS_ColorHandler.hpp"
 
 namespace ps {
 	class PS_Pipeline : public PS_Allocator {
