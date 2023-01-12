@@ -2,6 +2,7 @@
 #include "PS_GameGeneric.hpp"
 #include "PS_GameMesh.hpp"
 #include "PS_FileHandler.hpp"
+#include "PS_Material.hpp"
 
 namespace ps {
 	class PS_GameObject : protected PS_GameMesh {
@@ -45,6 +46,8 @@ namespace ps {
 		std::string modelPath;
 		std::string texturePath;
 		std::string objectName;
+
+		PS_Material material;
 
 		float alpha;
 		bool isBasicShape;

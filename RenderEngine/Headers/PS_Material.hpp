@@ -10,7 +10,7 @@ namespace ps {
 
 	class PS_Material {
 	public:
-		PS_Material(MaterialComponent newBaseColor);
+		PS_Material();
 		void setColor(MaterialComponent newColor);
 		void setMetallic(MaterialComponent newColor);
 		void setSpecular(MaterialComponent newColor);
