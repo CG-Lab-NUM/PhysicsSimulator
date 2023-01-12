@@ -193,7 +193,7 @@ namespace ps {
 		UniformBufferObject ubo{};
 		glm::highp_mat4 model = glm::mat4(1.0f);
 		glm::highp_mat4 view = glm::lookAt(gameCamera->getEye(), gameCamera->getCenter(), gameCamera->getUp());
-		glm::highp_mat4 proj = glm::perspective(glm::radians(45.0f), psSwapChain->swapChainExtent.width / (float)psSwapChain->swapChainExtent.height, 1.0f, 100.0f);
+		glm::highp_mat4 proj = glm::perspective(gameCamera->getFovy(), psSwapChain->swapChainExtent.width / (float)psSwapChain->swapChainExtent.height, 1.0f, 100.0f);
 		proj[1][1] *= -1;
 		ubo.transform = proj * view * model;
 		ubo.lightColor = glm::vec4(pointLight.getLightColor(), 1);
@@ -272,8 +272,9 @@ namespace ps {
 		if (vkBeginCommandBuffer(commandBuffer, &beginInfo) != VK_SUCCESS) {
 			throw std::runtime_error("failed to begin recording command buffer!");
 		}
+		glm::vec clearColor = PS_ColorHandler::makeColor("330D56");
 		std::array<VkClearValue, 2> clearValues{};
-		clearValues[0].color = { {0.0f, 0.0f, 0.0f, 0.5f} };
+		clearValues[0].color = { {clearColor.x, clearColor.y, clearColor.z, 1} };
 		clearValues[1].depthStencil = { 1.0f, 0 };
 
 		VkRenderPassBeginInfo renderPassInfo{

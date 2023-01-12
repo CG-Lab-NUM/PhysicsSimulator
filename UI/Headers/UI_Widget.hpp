@@ -21,6 +21,6 @@ namespace ps {
 
 		PS_Device* psDevice;
 		PS_GameCamera* gameCamera;
-		GeometrySquare renderComponent;
+		GeometryObject2D renderComponent;
 	};
 }

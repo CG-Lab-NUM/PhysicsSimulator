@@ -6,6 +6,7 @@
 namespace ps {
 	PS_GameCamera::PS_GameCamera() {
 		setRotation({ 0.0f, 0.0f, 1.0f });
+		fovy = 60;
 	}
 
 	glm::vec3 PS_GameCamera::getEye() {
