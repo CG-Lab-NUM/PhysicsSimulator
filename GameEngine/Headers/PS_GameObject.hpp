@@ -17,6 +17,7 @@ namespace ps {
 		void setTexture(std::string newTexturePath);
 		void setName(std::string newName);
 		void setIsBasicShape(bool newBool, std::vector<Vertex> newVertices);
+		void tick();
 
 		glm::vec3 getLocation();
 		glm::vec3 getRotation();

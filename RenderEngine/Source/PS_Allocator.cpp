@@ -1,11 +1,11 @@
-#include "PS_Helper.hpp"
+#include "PS_Allocator.hpp"
 
 namespace ps {
-	PS_Helper::PS_Helper(PS_Device* psDevice) {
+	PS_Allocator::PS_Allocator(PS_Device* psDevice) {
 		this->psDevice = psDevice;
 	}
 
-	void PS_Helper::createBuffer(VkDeviceSize size, VkBufferUsageFlags usage, VkMemoryPropertyFlags properties, VkBuffer& buffer, VkDeviceMemory& bufferMemory) {
+	void PS_Allocator::createBuffer(VkDeviceSize size, VkBufferUsageFlags usage, VkMemoryPropertyFlags properties, VkBuffer& buffer, VkDeviceMemory& bufferMemory) {
 		VkBufferCreateInfo bufferInfo{};
 		bufferInfo.sType = VK_STRUCTURE_TYPE_BUFFER_CREATE_INFO;
 		bufferInfo.size = size;
@@ -31,7 +31,7 @@ namespace ps {
 		vkBindBufferMemory(psDevice->device, buffer, bufferMemory, 0);
 	}
 
-	VkCommandBuffer PS_Helper::beginSingleTimeCommands() {
+	VkCommandBuffer PS_Allocator::beginSingleTimeCommands() {
 		VkCommandBufferAllocateInfo allocInfo{};
 		allocInfo.sType = VK_STRUCTURE_TYPE_COMMAND_BUFFER_ALLOCATE_INFO;
 		allocInfo.level = VK_COMMAND_BUFFER_LEVEL_PRIMARY;
@@ -50,7 +50,7 @@ namespace ps {
 		return commandBuffer;
 	}
 
-	void PS_Helper::endSingleTimeCommands(VkCommandBuffer commandBuffer) {
+	void PS_Allocator::endSingleTimeCommands(VkCommandBuffer commandBuffer) {
 		vkEndCommandBuffer(commandBuffer);
 
 		VkSubmitInfo submitInfo{};
@@ -64,7 +64,7 @@ namespace ps {
 		vkFreeCommandBuffers(psDevice->device, psDevice->commandPool, 1, &commandBuffer);
 	}
 
-	void PS_Helper::copyBuffer(VkBuffer srcBuffer, VkBuffer dstBuffer, VkDeviceSize size) {
+	void PS_Allocator::copyBuffer(VkBuffer srcBuffer, VkBuffer dstBuffer, VkDeviceSize size) {
 		VkCommandBuffer commandBuffer = beginSingleTimeCommands();
 
 		VkBufferCopy copyRegion{};
@@ -74,7 +74,7 @@ namespace ps {
 		endSingleTimeCommands(commandBuffer);
 	}
 
-	uint32_t PS_Helper::findMemoryType(uint32_t typeFilter, VkMemoryPropertyFlags properties) {
+	uint32_t PS_Allocator::findMemoryType(uint32_t typeFilter, VkMemoryPropertyFlags properties) {
 		VkPhysicalDeviceMemoryProperties memProperties;
 		vkGetPhysicalDeviceMemoryProperties(psDevice->physicalDevice, &memProperties);
 
@@ -87,7 +87,7 @@ namespace ps {
 		throw std::runtime_error("failed to find suitable memory type!");
 	}
 
-	VkImageView PS_Helper::createImageView(VkImage image, VkFormat format, VkImageAspectFlags aspectFlags, uint32_t mipLevels) {
+	VkImageView PS_Allocator::createImageView(VkImage image, VkFormat format, VkImageAspectFlags aspectFlags, uint32_t mipLevels) {
 		VkImageViewCreateInfo viewInfo{};
 		viewInfo.sType = VK_STRUCTURE_TYPE_IMAGE_VIEW_CREATE_INFO;
 		viewInfo.image = image;
@@ -107,7 +107,7 @@ namespace ps {
 		return imageView;
 	}
 
-	void PS_Helper::createImage(uint32_t width, uint32_t height, uint32_t mipLevels, VkSampleCountFlagBits numSamples, VkFormat format, VkImageTiling tiling, VkImageUsageFlags usage, VkMemoryPropertyFlags properties, VkImage& image, VkDeviceMemory& imageMemory) {
+	void PS_Allocator::createImage(uint32_t width, uint32_t height, uint32_t mipLevels, VkSampleCountFlagBits numSamples, VkFormat format, VkImageTiling tiling, VkImageUsageFlags usage, VkMemoryPropertyFlags properties, VkImage& image, VkDeviceMemory& imageMemory) {
 		VkImageCreateInfo imageInfo{};
 		imageInfo.sType = VK_STRUCTURE_TYPE_IMAGE_CREATE_INFO;
 		imageInfo.imageType = VK_IMAGE_TYPE_2D;
@@ -142,7 +142,7 @@ namespace ps {
 		vkBindImageMemory(psDevice->device, image, imageMemory, 0);
 	}
 
-	void PS_Helper::transitionImageLayout(VkImage image, VkFormat format, VkImageLayout oldLayout, VkImageLayout newLayout, uint32_t mipLevels) {
+	void PS_Allocator::transitionImageLayout(VkImage image, VkFormat format, VkImageLayout oldLayout, VkImageLayout newLayout, uint32_t mipLevels) {
 		VkCommandBuffer commandBuffer = beginSingleTimeCommands();
 
 		VkImageMemoryBarrier barrier{};
@@ -191,7 +191,7 @@ namespace ps {
 		endSingleTimeCommands(commandBuffer);
 	}
 
-	void PS_Helper::copyBufferToImage(VkBuffer buffer, VkImage image, uint32_t width, uint32_t height) {
+	void PS_Allocator::copyBufferToImage(VkBuffer buffer, VkImage image, uint32_t width, uint32_t height) {
 		VkCommandBuffer commandBuffer = beginSingleTimeCommands();
 
 		VkBufferImageCopy region{};

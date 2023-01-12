@@ -38,4 +38,18 @@ namespace ps {
 		vector.z = data[field][2];
 		return vector;
 	}
+
+	void PS_GameLevel::tick() {
+		switchPipeline();
+	}
+
+	void PS_GameLevel::switchPipeline() {
+		PS_KeyboardHandler::setNumberEnabled(true);
+		if (PS_KeyboardHandler::isPressed('1')) {
+			currentPipeline = UNLIT_PIPELINE;
+		}
+		else if (PS_KeyboardHandler::isPressed('2')) {
+			currentPipeline = LIT_PIPELINE;
+		}
+	}
 }

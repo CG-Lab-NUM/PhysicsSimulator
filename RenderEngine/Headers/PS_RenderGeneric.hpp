@@ -55,6 +55,7 @@ namespace ps {
 		glm::vec3 color;
 		glm::vec3 normal;
 		glm::vec2 texCoord;
+		glm::int16 type;
 
 		static VkVertexInputBindingDescription getBindingDescription();
 		static std::vector<VkVertexInputAttributeDescription> getAttributeDescriptions();

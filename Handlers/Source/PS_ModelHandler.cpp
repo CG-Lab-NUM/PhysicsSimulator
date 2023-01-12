@@ -3,7 +3,7 @@
 #include <tiny_obj_loader.h>
 
 namespace ps {
-	PS_ModelHandler::PS_ModelHandler(PS_Device* device) : PS_Helper(device) {
+	PS_ModelHandler::PS_ModelHandler(PS_Device* device) : PS_Allocator(device) {
 		this->psDevice = device;
 	}
 
@@ -131,9 +131,7 @@ namespace ps {
 		VkBuffer vertexBuffers[] = { vertexBuffer->getBuffer()};
 		VkDeviceSize offsets[] = { 0 };
 		vkCmdBindVertexBuffers(commandBuffer, 0, 1, vertexBuffers, offsets);
-
 		vkCmdBindIndexBuffer(commandBuffer, indexBuffer->getBuffer(), 0, VK_INDEX_TYPE_UINT32);
-
 		vkCmdDrawIndexed(commandBuffer, static_cast<uint32_t>(indices.size()), 1, 0, 0, 0);
 	}
 }

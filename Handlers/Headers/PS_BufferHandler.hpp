@@ -1,6 +1,6 @@
 #pragma once
 #include "PS_Device.hpp"
-#include "PS_Helper.hpp"
+#include "PS_Allocator.hpp"
 
 namespace ps {
     class PS_BufferHandler {
@@ -40,7 +40,7 @@ namespace ps {
         static VkDeviceSize getAlignment(VkDeviceSize instanceSize, VkDeviceSize minOffsetAlignment);
 
         PS_Device *psDevice;
-        PS_Helper *psHelper;
+        PS_Allocator *psHelper;
         void* mapped = nullptr;
         VkBuffer buffer = VK_NULL_HANDLE;
         VkDeviceMemory memory = VK_NULL_HANDLE;

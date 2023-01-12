@@ -33,7 +33,7 @@
     <ClCompile Include="RenderEngine\Source\PS_Pipeline.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="RenderEngine\Source\PS_Helper.cpp">
+    <ClCompile Include="RenderEngine\Source\PS_Allocator.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="GameEngine\Source\PS_GameObject.cpp">
@@ -72,6 +72,18 @@
     <ClCompile Include="Handlers\Source\PS_BufferHandler.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="RenderEngine\Source\PS_RenderPass.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="RenderEngine\Source\PS_Shader.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="RenderEngine\Source\PS_Descriptor.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="UI\Source\UI_Widget.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Libraries\imgui\backends\imgui_impl_vulkan_but_betters.h">
@@ -95,7 +107,7 @@
     <ClInclude Include="RenderEngine\Headers\PS_Pipeline.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="RenderEngine\Headers\PS_Helper.hpp">
+    <ClInclude Include="RenderEngine\Headers\PS_Allocator.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="Handlers\Headers\PS_ColorHandler.hpp">
@@ -137,9 +149,26 @@
     <ClInclude Include="Handlers\Headers\PS_BufferHandler.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="RenderEngine\Headers\PS_RenderPass.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="RenderEngine\Headers\PS_Shader.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="RenderEngine\Headers\PS_Descriptor.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="UI\Headers\UI_Widget.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="UI\Headers\UI_Generic.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <None Include="Shader\shader.vert" />
     <None Include="Shader\shader.frag" />
+    <None Include="Shaders\unlit_shader.vert" />
+    <None Include="Shaders\unlit_shader.frag" />
   </ItemGroup>
 </Project>
