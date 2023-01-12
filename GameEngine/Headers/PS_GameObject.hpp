@@ -16,6 +16,7 @@ namespace ps {
 		void setModel(std::string newModelPath);
 		void setTexture(std::string newTexturePath);
 		void setName(std::string newName);
+		void setAlpha(float newAlpha);
 		void setIsBasicShape(bool newBool, std::vector<Vertex> newVertices);
 		void tick();
 
@@ -30,6 +31,7 @@ namespace ps {
 		std::string getName();
 		std::vector<Vertex> getVertices();
 		bool getIsBasicShape();
+		float getAlpha();
 
 	private:
 		glm::vec3 location;
@@ -44,6 +46,7 @@ namespace ps {
 		std::string texturePath;
 		std::string objectName;
 
+		float alpha;
 		bool isBasicShape;
 	};
 }

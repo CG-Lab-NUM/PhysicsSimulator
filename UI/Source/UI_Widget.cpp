@@ -20,15 +20,15 @@ namespace ps {
 		renderComponent = object;
 		
 		Vertex topLeft, topRight, bottomLeft, bottomRight;
-		topLeft.pos = { 0, 0, 0 };
-		topRight.pos = { 50.f, 0, 0 };
-		bottomLeft.pos = { 50.f, 0, 50 };
-		bottomRight.pos = { 0, 0, 50};
+		topLeft.pos = { -50, -5, 0 };
+		topRight.pos = { 50.f, -5, 0 };
+		bottomLeft.pos = { 50.f, -5, 50 };
+		bottomRight.pos = { -50.0f, -5, 50};
 
-		topLeft.color = { 1.0f, 0.0f, 0.0f };
-		topRight.color = { 1.0f, 0.0f, 0.0f };
-		bottomLeft.color = { 1.0f, 0.0f, 0.0f };
-		bottomRight.color = { 1.0f, 0.0f, 0.0f };
+		topLeft.color = { 1.0f, 0.0f, 0.0f, 0.5f };
+		topRight.color = { 1.0f, 0.0f, 0.0f, 0.5f };
+		bottomLeft.color = { 1.0f, 0.0f, 0.0f, 0.5f };
+		bottomRight.color = { 1.0f, 0.0f, 0.0f, 0.5f };
 
 		topLeft.type = 1;
 		topRight.type = 1;

@@ -13,7 +13,7 @@ namespace ps {
             temp = temp + center;
             Vertex vertex;
             vertex.pos = temp;
-            vertex.color = { 1.0f, 1.0f, 1.0f };
+            //vertex.color = { 1.0f, 1.0f, 1.0f };
             vertex.texCoord = { 0.0f, 0.0f };
             vertices.push_back(vertex);
         }

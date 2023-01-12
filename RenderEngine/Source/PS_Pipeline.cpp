@@ -12,6 +12,7 @@ namespace ps {
 		PS_GameCamera *camera,
 		std::string vertexShader,
 		std::string fragmentShader) : PS_Allocator(device) {
+		
 		psWindow = window;
 		psDevice = device;
 		psSwapChain = chain;
@@ -186,12 +187,18 @@ namespace ps {
 		auto currentTime = std::chrono::high_resolution_clock::now();
 		float time = std::chrono::duration<float, std::chrono::seconds::period>(currentTime - startTime).count();
 
+		pointLight.setLocation({5, -8, 0});
+		pointLight.setLightColor({1, 0, 0});
+
 		UniformBufferObject ubo{};
 		glm::highp_mat4 model = glm::mat4(1.0f);
 		glm::highp_mat4 view = glm::lookAt(gameCamera->getEye(), gameCamera->getCenter(), gameCamera->getUp());
 		glm::highp_mat4 proj = glm::perspective(glm::radians(45.0f), psSwapChain->swapChainExtent.width / (float)psSwapChain->swapChainExtent.height, 1.0f, 100.0f);
 		proj[1][1] *= -1;
 		ubo.transform = proj * view * model;
+		ubo.lightColor = glm::vec4(pointLight.getLightColor(), 1);
+		ubo.lightPosition = pointLight.getLocation();
+		ubo.ambientLightColor = glm::vec4(1, 1, 1, 1);
 
 		PS_BufferHandler uniformBuffer{
 			psDevice,
@@ -266,7 +273,7 @@ namespace ps {
 			throw std::runtime_error("failed to begin recording command buffer!");
 		}
 		std::array<VkClearValue, 2> clearValues{};
-		clearValues[0].color = { {1.0f, 1.0f, 0.0f, 0.5f} };
+		clearValues[0].color = { {0.0f, 0.0f, 0.0f, 0.5f} };
 		clearValues[1].depthStencil = { 1.0f, 0 };
 
 		VkRenderPassBeginInfo renderPassInfo{

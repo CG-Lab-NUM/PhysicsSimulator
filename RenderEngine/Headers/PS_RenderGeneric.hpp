@@ -37,6 +37,9 @@ namespace ps {
 
 	struct UniformBufferObject {
 		alignas(16) glm::mat4 transform;
+		alignas(16) glm::vec4 ambientLightColor;
+		alignas(16) glm::vec3 lightPosition;
+		alignas(16) glm::vec4 lightColor;
 	};
 
 	struct PushConstant {
@@ -52,7 +55,7 @@ namespace ps {
 
 	struct Vertex {
 		glm::vec3 pos;
-		glm::vec3 color;
+		glm::vec4 color;
 		glm::vec3 normal;
 		glm::vec2 texCoord;
 		glm::int16 type;

@@ -73,6 +73,9 @@ namespace ps {
 		std::vector<Vertex> tempVertices;
 		vertices = tempVertices;
 	}
+	void PS_GameObject::setAlpha(float newAlpha) {
+		alpha = newAlpha;
+	}
 
 	glm::vec3 PS_GameObject::getLocation() {
 		return location;
@@ -91,6 +94,9 @@ namespace ps {
 	}
 	bool PS_GameObject::getIsBasicShape() {
 		return isBasicShape;
+	}
+	float PS_GameObject::getAlpha() {
+		return alpha;
 	}
 	std::vector<Vertex> PS_GameObject::getVertices() {
 		return vertices;

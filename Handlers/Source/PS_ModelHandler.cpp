@@ -33,6 +33,7 @@ namespace ps {
 						attrib.colors[3 * index.vertex_index + 0],
 						attrib.colors[3 * index.vertex_index + 1],
 						attrib.colors[3 * index.vertex_index + 2],
+						object->getAlpha()
 					};
 				}
 				if (index.normal_index >= 0) {

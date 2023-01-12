@@ -2,6 +2,9 @@
 
 layout(set = 0, binding = 0) uniform UniformBufferObject {
     mat4 transform;
+    vec4 ambientLightColor;
+    vec3 lightPosition;
+    vec4 lightColor;
 } ubo;
 
 layout(push_constant) uniform Push {
@@ -13,22 +16,16 @@ layout(location = 0) in vec3 inPosition;
 layout(location = 1) in vec3 inColor;
 layout(location = 2) in vec2 inTexCoord;
 layout(location = 3) in vec3 inNormal;
-layout(location = 4) in int type;
 
-layout(location = 0) out vec3 fragColor;
+layout(location = 0) out vec4 fragColor;
 layout(location = 1) out vec2 fragTexCoord;
-layout(location = 2) out vec3 fragLightDirection;
-
-const vec3 DIRECTION_TO_LIGHT = normalize(vec3(1.0, -3.0, -1.0));
-const vec3 LIGHT_COLOR = vec3(1, 0.5, 0);
 
 void main() {
-    gl_Position = ubo.transform * vec4(inPosition, 1.0);
-
-    vec3 normalWorldSpace = normalize(mat3(push.modelMatrix) * inNormal);
-    float lightIntensity = dot(normalWorldSpace, DIRECTION_TO_LIGHT);
-
-    fragColor = inColor * lightIntensity * LIGHT_COLOR;
+    vec3 norm = vec3(normalize(push.normalMatrix * vec4(inNormal, 0)));
+    vec3 lightDir = normalize(ubo.lightPosition - vec3(push.modelMatrix * vec4(inPosition, 0)));
+    float diff = max(dot(norm, lightDir), 0);
+    fragColor = (diff * ubo.lightColor) + vec4(inColor, 0);
     fragTexCoord = inTexCoord;
-    fragLightDirection = DIRECTION_TO_LIGHT;
+
+     gl_Position = ubo.transform * vec4(inPosition, 1.0);
 }

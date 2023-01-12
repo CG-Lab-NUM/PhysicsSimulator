@@ -15,7 +15,11 @@ namespace ps {
 		GLFWwindow* getWindow() {
 			return window;
 		}
-
+		
+		void setSize(int width, int height) {
+			WIDTH = width;
+			HEIGHT = height;
+		}
 		void cleanup();
 		void createSurface(VkInstance instance);
 		bool framebufferResized = false;
@@ -28,6 +32,5 @@ namespace ps {
 		
 		uint32_t WIDTH = 1024;
 		uint32_t HEIGHT = 768;
-
 	};
 }

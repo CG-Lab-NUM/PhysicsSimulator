@@ -5,6 +5,7 @@
 #include "PS_RenderPass.hpp"
 #include "PS_Shader.hpp"
 #include "PS_Descriptor.hpp"
+#include "PS_Light.hpp"
 #include "UI_Widget.hpp"
 
 namespace ps {
@@ -37,6 +38,7 @@ namespace ps {
 		PS_RenderPass* uiRenderPass;
 		PS_DescriptorSet* psDescriptorSets;
 		PS_GameCamera *gameCamera;
+		PS_Light pointLight;
 		UI_Widget* widget;
 
 		std::string vertexShaderPath;
