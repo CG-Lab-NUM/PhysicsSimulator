@@ -47,7 +47,7 @@ namespace ps {
 		std::string texturePath;
 		std::string objectName;
 
-		PS_Material material;
+		//PS_Material material;
 
 		float alpha;
 		bool isBasicShape;

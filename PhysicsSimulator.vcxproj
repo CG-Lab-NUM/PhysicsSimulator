@@ -168,8 +168,8 @@
     <ClInclude Include="Handlers\Headers\PS_FileHandler.hpp" />
     <ClInclude Include="Handlers\Headers\PS_KeyboardHandler.hpp" />
     <ClInclude Include="Handlers\Headers\PS_MouseHandler.hpp" />
-    <ClInclude Include="RenderEngine\Headers\PS_Material.hpp" />
     <ClInclude Include="RenderEngine\Headers\PS_Descriptor.hpp" />
+    <ClInclude Include="RenderEngine\Headers\PS_Material.hpp" />
     <ClInclude Include="RenderEngine\Headers\PS_Renderer.hpp" />
     <ClInclude Include="Handlers\Headers\PS_ColorHandler.hpp" />
     <ClInclude Include="RenderEngine\Headers\PS_Device.hpp" />

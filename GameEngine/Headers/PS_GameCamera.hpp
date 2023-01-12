@@ -1,4 +1,5 @@
 #pragma once
+#pragma once
 #include "PS_GameObject.hpp"
 #include "PS_Window.hpp"
 

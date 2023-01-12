@@ -1,10 +1,10 @@
 #pragma once
-#include "PS_TextureHandler.hpp"
+#include "PS_RenderGeneric.hpp"
 
 namespace ps {
 	struct MaterialComponent {
 		glm::vec3 color;
-		PS_TextureHandler *texture;
+		std::string texturePath;
 		bool isTexture;
 	};
 
