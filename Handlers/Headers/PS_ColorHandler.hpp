@@ -7,7 +7,7 @@
 namespace ps {
 	class PS_ColorHandler {
 	public:
-		glm::vec3 makeColor(std::string hex) {
+		static glm::vec3 makeColor(std::string hex) {
 			std::string temp = "";
 			for (int i = 0; i < 2; i++) {
 				temp += hex[i];

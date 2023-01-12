@@ -12,38 +12,41 @@ namespace ps {
 	}
 
 	void UI_Widget::createWidget() {
-		GeometrySquare object;
+		GeometryObject2D object;
 		object.x = 0;
 		object.y = 0;
 		object.height = 100;
 		object.width = 100;
 		renderComponent = object;
 		
+
 		Vertex topLeft, topRight, bottomLeft, bottomRight;
 		topLeft.pos = { 0, 0, 0 };
 		topRight.pos = { 50.f, 0, 0 };
 		bottomLeft.pos = { 50.f, 0, 50 };
-		bottomRight.pos = { 0, 0, 50};
+		bottomRight.pos = { 0, 0, 50 };
 
-		topLeft.color = { 1.0f, 0.0f, 0.0f };
-		topRight.color = { 1.0f, 0.0f, 0.0f };
-		bottomLeft.color = { 1.0f, 0.0f, 0.0f };
-		bottomRight.color = { 1.0f, 0.0f, 0.0f };
+		topLeft.color = { 1.0f, 1.0f, 1.0f };
+		topRight.color = { 1.0f, 1.0f, 1.0f };
+		bottomLeft.color = { 1.0f, 1.0f, 1.0f };
+		bottomRight.color = { 1.0f, 1.0f, 1.0f };
 
 		topLeft.type = 1;
 		topRight.type = 1;
 		bottomLeft.type = 1;
 		bottomRight.type = 1;
 
+		vertices.push_back(bottomLeft);
 		vertices.push_back(topLeft);
 		vertices.push_back(topRight);
-		vertices.push_back(bottomLeft);
 		vertices.push_back(bottomRight);
 		indices.push_back(0);
 		indices.push_back(1);
 		indices.push_back(2);
+		indices.push_back(2);
 		indices.push_back(3);
 		indices.push_back(0);
+		translateGeometry();
 	}
 
 	void UI_Widget::createVertexBuffer() {
@@ -113,6 +116,26 @@ namespace ps {
 	}
 
 	void UI_Widget::translateGeometry() {
+		glm::vec3 center, x, y, z; 
+		float h = renderComponent.height; 
+		float w = renderComponent.width;
+		center = (gameCamera->getEye() + 10.0f * gameCamera->getForwardVector());
+		y = gameCamera->getUpVector();
+		x = gameCamera->getForwardVector();
+		x = (-1.0f) * (glm::cross(y, x));
+		z = gameCamera->getForwardVector();
+		renderComponent.x = center[0];
+		renderComponent.y = center[1];
 
+
+
+		vertices[0].pos = { renderComponent.x, renderComponent.y, center[2] };
+		vertices[1].pos = { renderComponent.x + h * y[0], renderComponent.y + h * y[1], center[2] + h * y[2] };
+		vertices[2].pos = { renderComponent.x + ((-w) * x[0] + renderComponent.height * y[0]), renderComponent.y + ((-w)*x[1] + h * y[1]), center[2] + ((-w) * x[2] + h * y[2]) };
+		vertices[3].pos = { renderComponent.x + (-w) * x[0], renderComponent.y + (-w) * x[1], center[2] + (-w) * x[2] };
+		
+		
+		std::cout << "center: "<< vertices[0].pos.x << " " << vertices[0].pos.y << " " << vertices[0].pos.z << std::endl;
+		std::cout << "camera center: " << gameCamera->getEye()[0] << " " << gameCamera->getEye()[1] << " " << gameCamera->getEye()[2] << std::endl;
 	}
 }
