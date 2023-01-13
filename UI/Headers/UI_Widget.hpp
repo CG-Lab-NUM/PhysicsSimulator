@@ -13,6 +13,8 @@ namespace ps {
 		void createVertexBuffer();
 		void createIndexBuffer();
 		void translateGeometry();
+		
+		void printVector(std::string label, glm::vec3 pos);
 
 		std::vector<Vertex> vertices;
 		std::vector<uint32_t> indices;
