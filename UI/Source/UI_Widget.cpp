@@ -136,10 +136,10 @@ namespace ps {
 		vertices[2].pos = { center[0] + 10, center[1] + 10, center[2] };
 		vertices[3].pos = { center[0] + 10, center[1], center[2] };
 
-		printVector("1", vertices[0].pos);
-		printVector("2", vertices[1].pos);
-		printVector("3", vertices[2].pos);
-		printVector("4", vertices[3].pos);
+		//printVector("1", vertices[0].pos);
+		//printVector("2", vertices[1].pos);
+		//printVector("3", vertices[2].pos);
+		//printVector("4", vertices[3].pos);
 		/*vertices[1].pos = { center[0] + h * y[0], center[1] + h * y[1], center[2] + h * y[2] };
 		vertices[2].pos = { center[0] + ((-w) * x[0] + h * y[0]), center[1] + ((-w)*x[1] + h * y[1]), center[2] + ((-w) * x[2] + h * y[2]) };
 		vertices[3].pos = { center[0] + (-w) * x[0], center[1] + (-w) * x[1], center[2] + (-w) * x[2] };*/

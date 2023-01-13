@@ -12,7 +12,14 @@ namespace ps {
 		PS_GameCamera *camera,
 		std::string vertexShader,
 		std::string fragmentShader) : PS_Allocator(device) {
-		
+
+		pointLight.setLocation({ 5, -8, 0 });
+		pointLight.setLightColor({ 1, 0, 0 });
+		pointLight2.setLocation({ 5, -4, 0 });
+		pointLight2.setLightColor({ 0, 1, 0 });
+		pointLights.push_back(pointLight);
+		pointLights.push_back(pointLight2);
+
 		psWindow = window;
 		psDevice = device;
 		psSwapChain = chain;
@@ -195,8 +202,6 @@ namespace ps {
 		auto currentTime = std::chrono::high_resolution_clock::now();
 		float time = std::chrono::duration<float, std::chrono::seconds::period>(currentTime - startTime).count();
 
-		pointLight.setLocation({5, -8, 0});
-		pointLight.setLightColor({1, 0, 0});
 
 		UniformBufferObject ubo{};
 		glm::highp_mat4 model = glm::mat4(1.0f);
@@ -387,10 +392,10 @@ namespace ps {
 			vkCmdPushConstants(commandBuffer, pipelineLayout, VK_SHADER_STAGE_VERTEX_BIT, 0, sizeof(vertexPushConstant), &vertexPushConstant);
 			if (gameObjects[i]->getMaterial().getColor().isTexture) {
 				vkCmdBindDescriptorSets(commandBuffer, VK_PIPELINE_BIND_POINT_GRAPHICS, pipelineLayout, 1, 1, &textureImages[i]->descriptorSet, 0, nullptr);
-				modelLoaders[i]->Render(commandBuffer);
+				modelLoaders[i]->Render(commandBuffer, pointLights);
 			}
 			else {
-				modelLoaders[i]->Render(commandBuffer);
+				modelLoaders[i]->Render(commandBuffer, pointLights);
 			}
 		}
 	}
