@@ -45,7 +45,7 @@ namespace ps {
 		createUniformBuffers();
 		psDescriptorSets->createPool();
 		psDescriptorSets->createSets(&uniformBuffers);
-		widget = new UI_Widget(psDevice, gameCamera);
+		widget = new UI_Widget(psDevice, gameCamera, psWindow);
 		loadGameObjects();
 		createCommandBuffers();
 		createSyncObjects();
