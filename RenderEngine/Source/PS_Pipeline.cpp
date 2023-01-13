@@ -124,21 +124,29 @@ namespace ps {
 		dynamicState.dynamicStateCount = static_cast<uint32_t>(dynamicStates.size());
 		dynamicState.pDynamicStates = dynamicStates.data();
 
-		VkPushConstantRange psRange;
-		psRange.offset = 0;
-		psRange.size = sizeof(PushConstant);
-		psRange.stageFlags = VK_SHADER_STAGE_VERTEX_BIT;
+		VkPushConstantRange vertexPushConstantRange;
+		vertexPushConstantRange.offset = 0;
+		vertexPushConstantRange.size = sizeof(PushConstant);
+		vertexPushConstantRange.stageFlags = VK_SHADER_STAGE_VERTEX_BIT;
+
+		//VkPushConstantRange fragmentPushConstantRange;
+		//fragmentPushConstantRange.offset = sizeof(PushConstant);
+		//fragmentPushConstantRange.size = sizeof(FragmentPushConstant);
+		//fragmentPushConstantRange.stageFlags = VK_SHADER_STAGE_FRAGMENT_BIT;
+
 		VkDescriptorSetLayout setLayouts[] = {
 			psDescriptorSets->getSetLayout(0), 
 			psDescriptorSets->getSetLayout(1) 
 		};
+
+		VkPushConstantRange pushConstantRange[] = { vertexPushConstantRange };
 
 		VkPipelineLayoutCreateInfo pipelineLayoutInfo{};
 		pipelineLayoutInfo.sType = VK_STRUCTURE_TYPE_PIPELINE_LAYOUT_CREATE_INFO;
 		pipelineLayoutInfo.setLayoutCount = 2;
 		pipelineLayoutInfo.pSetLayouts = setLayouts;
 		pipelineLayoutInfo.pushConstantRangeCount = 1;
-		pipelineLayoutInfo.pPushConstantRanges = &psRange;
+		pipelineLayoutInfo.pPushConstantRanges = pushConstantRange;
 
 		if (vkCreatePipelineLayout(psDevice->device, &pipelineLayoutInfo, nullptr, &pipelineLayout) != VK_SUCCESS) {
 			throw std::runtime_error("failed to create pipeline layout!");
@@ -351,21 +359,39 @@ namespace ps {
 	}
 	void PS_Pipeline::loadGameObjects() {
 		for (int i = 0; i < gameObjects.size(); i++) {
-			PS_ModelHandler* Model = new PS_ModelHandler(psDevice);
-			modelLoaders.push_back(Model);
-			Model->Load(gameObjects[i]);
+			PS_Material material = gameObjects[i]->getMaterial();
+			MaterialComponent baseColor = material.getColor();
+			if (baseColor.isTexture) {
+				PS_TextureHandler* Texture = new PS_TextureHandler(psDevice, psDescriptorSets->getPoolReference(), psDescriptorSets->getSetLayoutReference(1));
+				textureImages.push_back(Texture);
+				textureImages[i]->Load(baseColor.texturePath);
 
-			PS_TextureHandler* Texture = new PS_TextureHandler(psDevice, psDescriptorSets->getPoolReference(), psDescriptorSets->getSetLayoutReference(1));
-			textureImages.push_back(Texture);
-			textureImages[i]->Load(gameObjects[i]);
+				PS_ModelHandler* Model = new PS_ModelHandler(psDevice);
+				modelLoaders.push_back(Model);
+				Model->Load(gameObjects[i]);
+				//std::cout << "Color : " << baseColor.color.x << " " << baseColor.color.y << " " << baseColor.color.z << "\n";
+			}
+			else {
+				PS_ModelHandler* Model = new PS_ModelHandler(psDevice);
+				modelLoaders.push_back(Model);
+				Model->Load(gameObjects[i], baseColor.color);
+				std::cout << "Color : " << baseColor.color.x << " " << baseColor.color.y << " " << baseColor.color.z << "\n";
+			}
 		}
+		noTexture = new PS_TextureHandler(psDevice, psDescriptorSets->getPoolReference(), psDescriptorSets->getSetLayoutReference(1));
+		noTexture->LoadNoTexture();
 	}
 	void PS_Pipeline::renderGameObjects(VkCommandBuffer commandBuffer) {
-		PushConstant pushConstant;
+		PushConstant vertexPushConstant;
 		for (int i = 0; i < gameObjects.size(); i++) {
-			vkCmdBindDescriptorSets(commandBuffer, VK_PIPELINE_BIND_POINT_GRAPHICS, pipelineLayout, 1, 1, &textureImages[i]->descriptorSet, 0, nullptr);
-			vkCmdPushConstants(commandBuffer, pipelineLayout, VK_SHADER_STAGE_VERTEX_BIT, 0, sizeof(pushConstant), &pushConstant);
-			modelLoaders[i]->Render(commandBuffer);
+			vkCmdPushConstants(commandBuffer, pipelineLayout, VK_SHADER_STAGE_VERTEX_BIT, 0, sizeof(vertexPushConstant), &vertexPushConstant);
+			if (gameObjects[i]->getMaterial().getColor().isTexture) {
+				vkCmdBindDescriptorSets(commandBuffer, VK_PIPELINE_BIND_POINT_GRAPHICS, pipelineLayout, 1, 1, &textureImages[i]->descriptorSet, 0, nullptr);
+				modelLoaders[i]->Render(commandBuffer);
+			}
+			else {
+				modelLoaders[i]->Render(commandBuffer);
+			}
 		}
 	}
 }

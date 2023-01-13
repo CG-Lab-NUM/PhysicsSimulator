@@ -8,6 +8,7 @@ namespace ps {
 	public:
 		PS_ModelHandler(PS_Device* device);
 		void Load(PS_GameObject* object);
+		void Load(PS_GameObject* object, glm::vec3 color);
 		void Destroy();
 		void Render(VkCommandBuffer commandBuffer);
 		void setDevice(PS_Device* device) {
@@ -24,5 +25,8 @@ namespace ps {
 		void loadModel(PS_GameObject* object);
 		void createVertexBuffer();
 		void createIndexBuffer();
+
+		bool isTexture = true;
+		glm::vec3 color;
 	};
 }

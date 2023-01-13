@@ -15,7 +15,7 @@ namespace ps {
 		void setRotation(glm::vec3 newRotation);
 		void setScale(glm::vec3 newScale);
 		void setModel(std::string newModelPath);
-		void setTexture(std::string newTexturePath);
+		void setMaterial(PS_Material newMaterial);
 		void setName(std::string newName);
 		void setAlpha(float newAlpha);
 		void setIsBasicShape(bool newBool, std::vector<Vertex> newVertices);
@@ -28,7 +28,7 @@ namespace ps {
 		glm::vec3 getRightVector();
 		glm::vec3 getUpVector();
 		std::string getModel();
-		std::string getTexture();
+		PS_Material getMaterial();
 		std::string getName();
 		std::vector<Vertex> getVertices();
 		bool getIsBasicShape();
@@ -44,10 +44,8 @@ namespace ps {
 		glm::vec3 upVector;
 
 		std::string modelPath;
-		std::string texturePath;
 		std::string objectName;
-
-		//PS_Material material;
+		PS_Material material;
 
 		float alpha;
 		bool isBasicShape;

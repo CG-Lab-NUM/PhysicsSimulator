@@ -40,6 +40,7 @@ namespace ps {
 		PS_DescriptorSet* psDescriptorSets;
 		PS_GameCamera *gameCamera;
 		PS_Light pointLight;
+		PS_TextureHandler *noTexture;
 		UI_Widget* widget;
 
 		std::string vertexShaderPath;
