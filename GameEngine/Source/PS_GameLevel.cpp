@@ -19,14 +19,26 @@ namespace ps {
 				setCamera(camera);
 			}
 			else if (elem["type"] == "GameObject") {
-				PS_GameObject *gameObject = new PS_GameObject();
+				PS_GameObject* gameObject = new PS_GameObject();
 				gameObject->setLocation(get3DVector(elem, "location"));
 				gameObject->setRotation(get3DVector(elem, "rotation"));
 				gameObject->setScale(get3DVector(elem, "scale"));
 				gameObject->setModel(elem["model_path"]);
-				gameObject->setTexture(elem["texture_path"]);
 				gameObject->setName(elem["name"]);
 				gameObject->setAlpha(elem["alpha"]);
+
+				PS_Material material;
+				MaterialComponent baseColor;
+				if (elem["material"]["isTexture"]) {
+					baseColor.isTexture = true;
+					baseColor.texturePath = elem["material"]["baseColor"];
+				}
+				else {
+					baseColor.isTexture = false;
+					baseColor.color = get3DVector(elem["material"], "baseColor");
+				}
+				material.setColor(baseColor);
+				gameObject->setMaterial(material);
 				gameObjects.push_back(gameObject);
 			}
 		}
