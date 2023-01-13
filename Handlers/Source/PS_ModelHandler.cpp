@@ -44,7 +44,7 @@ namespace ps {
 						}
 					}
 					else {
-						vertex.color = glm::vec4(color, 1);
+						vertex.color = color;
 						if (index.texcoord_index >= 0) {
 							vertex.texCoord = { -1, -1 };
 						}
@@ -135,7 +135,7 @@ namespace ps {
 
 	void PS_ModelHandler::Load(PS_GameObject* object, glm::vec3 color) {
 		isTexture = false;
-		this->color = color;
+		this->color = glm::vec4(color, 1);
 		loadModel(object);
 		createVertexBuffer();
 		createIndexBuffer();
@@ -145,7 +145,7 @@ namespace ps {
 
 	}
 
-	void PS_ModelHandler::Render(VkCommandBuffer commandBuffer){
+	void PS_ModelHandler::Render(VkCommandBuffer commandBuffer, std::vector<PS_Light> lights) {
 		VkBuffer vertexBuffers[] = { vertexBuffer->getBuffer()};
 		VkDeviceSize offsets[] = { 0 };
 		vkCmdBindVertexBuffers(commandBuffer, 0, 1, vertexBuffers, offsets);

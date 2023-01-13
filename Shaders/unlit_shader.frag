@@ -8,13 +8,10 @@ layout(location = 2) in float fragTextured;
 
 layout(location = 0) out vec4 outColor;
 
-
 void main() {
-    //if(fragTextured == 0) {
-    //    vec3 texColor = texture(texSampler, fragTexCoord).rgb;
-    //    vec3 tempColor = fragColor.rgb;
-    //    outColor = vec4(tempColor * texColor, fragColor.a);
-    //} else {
+    if(fragTexCoord.x < 0) {
         outColor = fragColor;
-    //}
+    } else {
+        outColor = texture(texSampler, fragTexCoord);
+    }
 }
