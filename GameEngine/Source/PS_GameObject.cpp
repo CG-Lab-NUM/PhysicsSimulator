@@ -1,7 +1,6 @@
 #include "PS_GameObject.hpp"
 
 #define NO_MESH "Content/Meshes/Cube.obj"
-#define NO_TEXTURE "Content/Textures/Basic/None.png"
 
 namespace ps {
 	PS_GameObject::PS_GameObject() {
@@ -9,7 +8,6 @@ namespace ps {
 		setRotation({ 0, 0, 0 });
 		setScale({ 1, 1, 1 });
 		setModel(NO_MESH);
-		setTexture(NO_TEXTURE);
 		isBasicShape = false;
 	}
 
@@ -19,7 +17,6 @@ namespace ps {
 		setScale({ 1, 1, 1 });
 		isBasicShape = true;
 		makeCube(location, 1);
-		setTexture(NO_TEXTURE);
 	}
 
 	PS_GameObject::PS_GameObject(glm::vec3 newLocation, glm::vec3 newRotation, glm::vec3 newScale) {
@@ -27,7 +24,6 @@ namespace ps {
 		setRotation(newRotation);
 		setScale(newScale);
 		setModel(NO_MESH);
-		setTexture(NO_TEXTURE);
 		isBasicShape = false;
 	}
 
@@ -58,8 +54,8 @@ namespace ps {
 	void PS_GameObject::setModel(std::string newModelPath) {
 		modelPath = PS_FileHandler::makeAbsolute(newModelPath);
 	}
-	void PS_GameObject::setTexture(std::string newTexturePath) {
-		texturePath = PS_FileHandler::makeAbsolute(newTexturePath);
+	void PS_GameObject::setMaterial(PS_Material newMaterial) {
+		material = newMaterial;
 	}
 	void PS_GameObject::setName(std::string newName) {
 		objectName = newName;
@@ -89,8 +85,8 @@ namespace ps {
 	std::string PS_GameObject::getModel() {
 		return modelPath;
 	}
-	std::string PS_GameObject::getTexture() {
-		return texturePath;
+	PS_Material PS_GameObject::getMaterial() {
+		return material;
 	}
 	bool PS_GameObject::getIsBasicShape() {
 		return isBasicShape;

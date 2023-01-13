@@ -10,12 +10,12 @@ namespace ps {
 		this->textureDescriptorSetLayout = textureDescriptorSetLayout;
 	}
 
-	void PS_TextureHandler::createTextureImage(PS_GameObject* object) {
+	void PS_TextureHandler::createTextureImage() {
 		int texWidth, texHeight, texChannels;
-		stbi_uc* pixels = stbi_load(object->getTexture().c_str(), &texWidth, &texHeight, &texChannels, STBI_rgb_alpha);
+		stbi_uc* pixels = stbi_load(texturePath.c_str(), &texWidth, &texHeight, &texChannels, STBI_rgb_alpha);
 		VkDeviceSize imageSize = texWidth * texHeight * 4;
 		mipLevels = static_cast<uint32_t>(std::floor(std::log2(std::max(texWidth, texHeight)))) + 1;
-		std::cout << "Loaded Texture: " << object->getTexture().c_str() << std::endl;
+		std::cout << "Loaded Texture: " << texturePath << std::endl;
 		if (!pixels) {
 			throw std::runtime_error("failed to load texture image!");
 		}
@@ -201,9 +201,18 @@ namespace ps {
 		vkFreeDescriptorSets(psDevice->device, *descriptorPool, 1, &descriptorSet);
 	}
 
-	void PS_TextureHandler::Load(PS_GameObject* object)
+	void PS_TextureHandler::Load(std::string texturePath)
 	{
-		createTextureImage(object);
+		this->texturePath = texturePath;
+		createTextureImage();
+		createTextureImageView();
+		createTextureSampler();
+		createTextureDescriptorSet();
+	}
+
+	void PS_TextureHandler::LoadNoTexture() {
+		texturePath = PS_FileHandler::makeAbsolute("Content/Textures/Basic/NoTexture.png");
+		createTextureImage();
 		createTextureImageView();
 		createTextureSampler();
 		createTextureDescriptorSet();

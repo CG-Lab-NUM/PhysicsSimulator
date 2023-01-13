@@ -31,11 +31,6 @@ namespace ps {
 		bottomLeft.color = { 1.0f, 1.0f, 1.0f, 1 };
 		bottomRight.color = { 1.0f, 1.0f, 1.0f, 1 };
 
-		topLeft.type = 1;
-		topRight.type = 1;
-		bottomLeft.type = 1;
-		bottomRight.type = 1;
-
 		vertices.push_back(bottomLeft);
 		vertices.push_back(topLeft);
 		vertices.push_back(topRight);
@@ -133,7 +128,7 @@ namespace ps {
 		vertices[3].pos = { renderComponent.x + (-w) * x[0], renderComponent.y + (-w) * x[1], center[2] + (-w) * x[2] };
 		
 		
-		std::cout << "center: "<< vertices[0].pos.x << " " << vertices[0].pos.y << " " << vertices[0].pos.z << std::endl;
-		std::cout << "camera center: " << gameCamera->getEye()[0] << " " << gameCamera->getEye()[1] << " " << gameCamera->getEye()[2] << std::endl;
+		/*std::cout << "center: "<< vertices[0].pos.x << " " << vertices[0].pos.y << " " << vertices[0].pos.z << std::endl;
+		std::cout << "camera center: " << gameCamera->getEye()[0] << " " << gameCamera->getEye()[1] << " " << gameCamera->getEye()[2] << std::endl;*/
 	}
 }
