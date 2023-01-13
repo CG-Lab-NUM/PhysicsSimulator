@@ -10,6 +10,7 @@ namespace ps {
 
 	void PS_Renderer::mainLoop() {
 		while (!glfwWindowShouldClose(psWindow.getWindow())) {
+			tick();
 			glfwPollEvents();
 			if (gameLevel->getPipeline() == LIT_PIPELINE) {
 				litPipeline->drawFrame();
@@ -17,7 +18,6 @@ namespace ps {
 			else {
 				unlitPipeline->drawFrame();
 			}
-			tick();
 		}
 		vkDeviceWaitIdle(psDevice.device);
 	}

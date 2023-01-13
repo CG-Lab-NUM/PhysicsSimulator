@@ -21,10 +21,10 @@ namespace ps {
 		
 
 		Vertex topLeft, topRight, bottomLeft, bottomRight;
-		topLeft.pos = { 0, 0, 0 };
-		topRight.pos = { 50.f, 0, 0 };
-		bottomLeft.pos = { 50.f, 0, 50 };
-		bottomRight.pos = { 0, 0, 50 };
+		//topLeft.pos = { 0, 0, 0 };
+		//topRight.pos = { 50.f, 0, 0 };
+		//bottomLeft.pos = { 50.f, 0, 50 };
+		//bottomRight.pos = { 0, 0, 50 };
 
 		topLeft.color = { 1.0f, 1.0f, 1.0f, 1 };
 		topRight.color = { 1.0f, 1.0f, 1.0f, 1 };
@@ -48,7 +48,7 @@ namespace ps {
 		uint32_t vertexCount = static_cast<uint32_t>(vertices.size());
 		VkDeviceSize bufferSize = sizeof(vertices[0]) * vertexCount;
 		uint32_t vertexSize = sizeof(vertices[0]);
-
+		
 		PS_BufferHandler stagingBuffer{
 			psDevice,
 			vertexSize,
@@ -103,6 +103,8 @@ namespace ps {
 
 	void UI_Widget::renderWidget(VkCommandBuffer commandBuffer) {
 		translateGeometry();
+		createVertexBuffer();
+		createIndexBuffer();
 		VkBuffer vertexBuffers[] = { vertexBuffer->getBuffer() };
 		VkDeviceSize offsets[] = { 0 };
 		vkCmdBindVertexBuffers(commandBuffer, 0, 1, vertexBuffers, offsets);
@@ -114,21 +116,69 @@ namespace ps {
 		glm::vec3 center, x, y, z; 
 		float h = renderComponent.height; 
 		float w = renderComponent.width;
-		center = (gameCamera->getEye() + 10.0f * gameCamera->getForwardVector());
+		center = gameCamera->getCenter();
 		y = gameCamera->getUpVector();
 		x = gameCamera->getForwardVector();
 		x = (-1.0f) * (glm::cross(y, x));
 		z = gameCamera->getForwardVector();
-		renderComponent.x = center[0];
-		renderComponent.y = center[1];
+		/*center[0] = center[0];
+		center[1] = center[1];*/
 
-		vertices[0].pos = { renderComponent.x, renderComponent.y, center[2] };
-		vertices[1].pos = { renderComponent.x + h * y[0], renderComponent.y + h * y[1], center[2] + h * y[2] };
-		vertices[2].pos = { renderComponent.x + ((-w) * x[0] + renderComponent.height * y[0]), renderComponent.y + ((-w)*x[1] + h * y[1]), center[2] + ((-w) * x[2] + h * y[2]) };
-		vertices[3].pos = { renderComponent.x + (-w) * x[0], renderComponent.y + (-w) * x[1], center[2] + (-w) * x[2] };
+		/*vertices[0].pos = {center[0], center[1], center[2]};
+		vertices[1].pos = { center[0], center[1], center[2] };
+		vertices[2].pos = { center[0], center[1], center[2] };
+		vertices[3].pos = { center[0], center[1], center[2] };*/
 		
+		//std::cout << center.x << " " << center.y << std::endl;
+
+		vertices[0].pos = { center[0], center[1], center[2] };
+		vertices[1].pos = { center[0], center[1] + 10, center[2] };
+		vertices[2].pos = { center[0] + 10, center[1] + 10, center[2] };
+		vertices[3].pos = { center[0] + 10, center[1], center[2] };
+
+		printVector("1", vertices[0].pos);
+		printVector("2", vertices[1].pos);
+		printVector("3", vertices[2].pos);
+		printVector("4", vertices[3].pos);
+		/*vertices[1].pos = { center[0] + h * y[0], center[1] + h * y[1], center[2] + h * y[2] };
+		vertices[2].pos = { center[0] + ((-w) * x[0] + h * y[0]), center[1] + ((-w)*x[1] + h * y[1]), center[2] + ((-w) * x[2] + h * y[2]) };
+		vertices[3].pos = { center[0] + (-w) * x[0], center[1] + (-w) * x[1], center[2] + (-w) * x[2] };*/
 		
 		/*std::cout << "center: "<< vertices[0].pos.x << " " << vertices[0].pos.y << " " << vertices[0].pos.z << std::endl;
 		std::cout << "camera center: " << gameCamera->getEye()[0] << " " << gameCamera->getEye()[1] << " " << gameCamera->getEye()[2] << std::endl;*/
 	}
+
+	void UI_Widget::printVector(std::string label, glm::vec3 pos) {
+		std::cout << label << ": " << pos.x << " " << pos.y << " " << pos.z << std::endl;
+	}
 }
+
+/*
+
+
+1: 16.4147 -8.00105 -14.0225
+2: 16.4147 1.99895 -14.0225
+3: 26.4147 1.99895 -14.0225
+4: 26.4147 -8.00105 -14.0225
+
+1: 15.8673 -8.27456 -14.0347
+2: 15.8673 1.72544 -14.0347
+3: 25.8673 1.72544 -14.0347
+
+
+1: 15.8673 -8.27456 -14.0347
+2: 15.8673 1.72544 -14.0347
+3: 25.8673 1.72544 -14.0347
+4: 25.8673 -8.27456 -14.0347
+
+1: 15.8673 -8.27456 -14.0347
+2: 15.8673 1.72544 -14.0347
+3: 25.8673 1.72544 -14.0347
+4: 25.8673 -8.27456 -14.0347
+
+1: 15.8673 -8.27456 -14.0347
+2: 15.8673 1.72544 -14.0347
+3: 25.8673 1.72544 -14.0347
+4: 25.8673 -8.27456 -14.0347
+
+*/
