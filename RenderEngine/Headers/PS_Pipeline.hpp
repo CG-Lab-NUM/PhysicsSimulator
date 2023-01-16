@@ -13,7 +13,8 @@ namespace ps {
 	class PS_Pipeline : public PS_Allocator {
 	public:
 		PS_Pipeline(PS_Window *window, PS_Device *device, PS_SwapChain *chain, 
-			std::vector<PS_GameObject*> objects, PS_GameCamera* camera, std::string vertexShader, std::string fragmentShader);
+			std::vector<PS_GameObject*> objects, std::vector<PS_Light*> lights, 
+			PS_GameCamera* camera, std::string vertexShader, std::string fragmentShader);
 
 		void drawFrame();
 		void updateUniformBuffer(uint32_t currentImage);
@@ -29,8 +30,9 @@ namespace ps {
 		void createCommandBuffers();
 		void createSyncObjects();
 		void createViewport(VkCommandBuffer commandBuffer);
-		void renderGameObjects(VkCommandBuffer commandBuffer);
 		void loadGameObjects();
+		void loadLights();
+		void renderGameObjects(VkCommandBuffer commandBuffer);
 
 		PS_Window* psWindow;
 		PS_Device* psDevice;
@@ -39,19 +41,18 @@ namespace ps {
 		PS_RenderPass* uiRenderPass;
 		PS_DescriptorSet* psDescriptorSets;
 		PS_GameCamera *gameCamera;
-		PS_Light pointLight;
-		PS_Light pointLight2;
 		PS_TextureHandler *noTexture;
 		UI_Widget* widget;
 
-		std::vector<PS_Light> pointLights;
+		std::vector<PS_Light*> pointLights;
 
 		std::string vertexShaderPath;
 		std::string fragmentShaderPath;
 
 		std::vector<VkCommandBuffer> commandBuffers;
 		std::vector<PS_GameObject*> gameObjects;
-		std::vector<PS_ModelHandler*> modelLoaders;
+		std::vector<PS_ModelHandler*> objectModels;
+		std::vector<PS_ModelHandler*> lightModels;
 		std::vector<PS_TextureHandler*> textureImages;
 		std::vector<std::unique_ptr<PS_BufferHandler>> uniformBuffers;
 

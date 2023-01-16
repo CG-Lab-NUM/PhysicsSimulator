@@ -68,6 +68,51 @@ namespace ps {
 		}
 	}
 
+	void PS_ModelHandler::loadModel(PS_Light* object) {
+		std::unordered_map<Vertex, uint32_t> uniqueVertices{};
+		tinyobj::attrib_t attrib;
+		std::vector<tinyobj::shape_t> shapes;
+		std::vector<tinyobj::material_t> materials;
+		std::string warn, err;
+
+		if (!tinyobj::LoadObj(&attrib, &shapes, &materials, &warn, &err, object->getModel().c_str())) {
+			throw std::runtime_error(warn + err);
+		}
+		std::cout << "Light Loaded Model:" << object->getModel() << std::endl;
+
+		for (const auto& shape : shapes) {
+			for (const auto& index : shape.mesh.indices) {
+				Vertex vertex{};
+
+				if (index.vertex_index >= 0) {
+					vertex.pos = {
+						(attrib.vertices[3 * index.vertex_index + 0] + object->getLocation()[0]) * object->getScale()[0],
+						(attrib.vertices[3 * index.vertex_index + 1] + object->getLocation()[1]) * object->getScale()[1],
+						(attrib.vertices[3 * index.vertex_index + 2] + object->getLocation()[2]) * object->getScale()[2],
+					};
+					vertex.color = { color.x, color.y, color.z, -1 };
+					if (index.texcoord_index >= 0) {
+						vertex.texCoord = { -1, -1 };
+					}
+				}
+				if (index.normal_index >= 0) {
+					vertex.normal = {
+						attrib.normals[3 * index.normal_index + 0],
+						attrib.normals[3 * index.normal_index + 1],
+						attrib.normals[3 * index.normal_index + 2],
+					};
+				}
+
+				if (uniqueVertices.count(vertex) == 0) {
+					uniqueVertices[vertex] = static_cast<uint32_t>(vertices.size());
+					vertices.push_back(vertex);
+				}
+
+				indices.push_back(uniqueVertices[vertex]);
+			}
+		}
+	}
+
 	void PS_ModelHandler::createVertexBuffer() {
 		uint32_t vertexCount = static_cast<uint32_t>(vertices.size());
 		VkDeviceSize bufferSize = sizeof(vertices[0]) * vertexCount;
@@ -140,12 +185,19 @@ namespace ps {
 		createVertexBuffer();
 		createIndexBuffer();
 	}
+	void PS_ModelHandler::Load(PS_Light* object, glm::vec3 color) {
+		isTexture = false;
+		this->color = glm::vec4(color, 1);
+		loadModel(object);
+		createVertexBuffer();
+		createIndexBuffer();
+	}
 
 	void PS_ModelHandler::Destroy() {
 
 	}
 
-	void PS_ModelHandler::Render(VkCommandBuffer commandBuffer, std::vector<PS_Light> lights) {
+	void PS_ModelHandler::Render(VkCommandBuffer commandBuffer) {
 		VkBuffer vertexBuffers[] = { vertexBuffer->getBuffer()};
 		VkDeviceSize offsets[] = { 0 };
 		vkCmdBindVertexBuffers(commandBuffer, 0, 1, vertexBuffers, offsets);

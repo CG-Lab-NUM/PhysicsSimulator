@@ -1,10 +1,15 @@
 #version 450
 
+struct PointLight {
+    vec4 position;
+    vec4 color;
+};
+
 layout(set = 0, binding = 0) uniform UniformBufferObject {
     mat4 transform;
     vec4 ambientLightColor;
-    vec3 lightPosition;
-    vec4 lightColor;
+    PointLight pointLights[10];
+    int numLights;
 } ubo;
 
 layout(push_constant) uniform Push {
@@ -21,11 +26,19 @@ layout(location = 0) out vec4 fragColor;
 layout(location = 1) out vec2 fragTexCoord;
 
 void main() {
-    vec3 norm = vec3(normalize(push.normalMatrix * vec4(inNormal, 0)));
-    vec3 lightDir = normalize(ubo.lightPosition - vec3(push.modelMatrix * vec4(inPosition, 0)));
-    float diff = max(dot(norm, lightDir), 0);
-
-    fragColor = (diff * ubo.lightColor) + inColor;
+    if(inColor.w > -1) {
+        vec3 norm = normalize(mat3(push.modelMatrix) * inNormal);
+        vec3 totalLights = vec3(0);
+        for(int i = 0; i < ubo.numLights; i++) {
+            PointLight light = ubo.pointLights[i];
+            vec3 lightDir = normalize(light.position.xyz - vec3(push.modelMatrix * vec4(inPosition, 1)));
+            float diff = max(dot(norm, lightDir), 0);
+            totalLights += diff * light.color.xyz;
+        }
+        fragColor = vec4(totalLights * inColor.xyz, 0);
+    } else {
+        fragColor = vec4(inColor.rgb, 1);
+    }
     fragTexCoord = inTexCoord;
     gl_Position = ubo.transform * vec4(inPosition, 1.0);
 }
