@@ -210,7 +210,7 @@ namespace ps {
 		proj[1][1] *= -1;
 		ubo.transform = proj * view * model;
 		ubo.lightColor = glm::vec4(pointLight.getLightColor(), 1);
-		ubo.lightPosition = pointLight.getLocation();
+		ubo.lightPosition = pointLight.getLocation()      ;
 		ubo.ambientLightColor = glm::vec4(1, 1, 1, 1);
 
 		PS_BufferHandler uniformBuffer{
