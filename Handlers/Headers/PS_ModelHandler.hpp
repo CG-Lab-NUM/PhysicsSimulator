@@ -10,8 +10,9 @@ namespace ps {
 		PS_ModelHandler(PS_Device* device);
 		void Load(PS_GameObject* object);
 		void Load(PS_GameObject* object, glm::vec3 color);
+		void Load(PS_Light* object, glm::vec3 color);
 		void Destroy();
-		void Render(VkCommandBuffer commandBuffer, std::vector<PS_Light> lights);
+		void Render(VkCommandBuffer commandBuffer);
 		void setDevice(PS_Device* device) {
 			this->psDevice = device;
 		}
@@ -24,6 +25,7 @@ namespace ps {
 
 	private:
 		void loadModel(PS_GameObject* object);
+		void loadModel(PS_Light* object);
 		void createVertexBuffer();
 		void createIndexBuffer();
 

@@ -11,20 +11,24 @@ namespace ps {
 		isBasicShape = false;
 	}
 
-	PS_GameObject::PS_GameObject(bool isBasicObject, std::string shape) {
-		setLocation({ 0, 0, 0 });
-		setRotation({ 0, 0, 0 });
-		setScale({ 1, 1, 1 });
-		isBasicShape = true;
-		makeCube(location, 1);
-	}
-
 	PS_GameObject::PS_GameObject(glm::vec3 newLocation, glm::vec3 newRotation, glm::vec3 newScale) {
 		setLocation(newLocation);
 		setRotation(newRotation);
 		setScale(newScale);
 		setModel(NO_MESH);
 		isBasicShape = false;
+	}
+
+	PS_GameObject::PS_GameObject(glm::vec3 newLocation, glm::vec3 newRotation, glm::vec3 newScale, GeometryObject3D shape) : PS_GameMesh{ shape } {
+		setLocation(newLocation);
+		setRotation(newRotation);
+		setScale(newScale);
+		setModel(NO_MESH);
+		isBasicShape = true;
+	}
+
+	PS_GameObject::PS_GameObject(GeometryObject3D shape) : PS_GameMesh{ shape }  {
+		isBasicShape = true;
 	}
 
 	void PS_GameObject::tick() {
@@ -60,17 +64,12 @@ namespace ps {
 	void PS_GameObject::setName(std::string newName) {
 		objectName = newName;
 	}
-	void PS_GameObject::setIsBasicShape(bool newBool, std::vector<Vertex> newVertices) {
-		isBasicShape = newBool;
-		if (isBasicShape == true) {
-			vertices = newVertices;
-			return;
-		}
-		std::vector<Vertex> tempVertices;
-		vertices = tempVertices;
-	}
 	void PS_GameObject::setAlpha(float newAlpha) {
 		alpha = newAlpha;
+	}
+	void PS_GameObject::setGeometryObject(GeometryObject3D shape) {
+		isBasicShape = true;
+		setMeshGeometryObject(shape);
 	}
 
 	glm::vec3 PS_GameObject::getLocation() {
@@ -94,9 +93,6 @@ namespace ps {
 	float PS_GameObject::getAlpha() {
 		return alpha;
 	}
-	std::vector<Vertex> PS_GameObject::getVertices() {
-		return vertices;
-	}
 	std::string PS_GameObject::getName() {
 		return objectName;
 	}
@@ -108,5 +104,8 @@ namespace ps {
 	}
 	glm::vec3 PS_GameObject::getUpVector() {
 		return upVector;
+	}
+	GeometryObject3D PS_GameObject::getGeometryObject() {
+		return getMeshGeometryObject();
 	}
 }

@@ -31,8 +31,20 @@
       "model_path": "Content/Meshes/Cube.obj",
       "material": {
         "isTexture": false,
-        "baseColor": [0, 0, 1]
+        "baseColor": [ 0, 0, 1 ]
       }
+    },
+    {
+      "type": "PointLight",
+      "name": "FirstLight",
+      "location": [ 5, -8, 0 ],
+      "color": [ 1, 0, 0 ]
+    },
+    {
+      "type": "PointLight",
+      "name": "SecondLight",
+      "location": [ -5, -8, 0 ],
+      "color": [ 0, 0, 1 ]
     }
   ]
 }

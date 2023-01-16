@@ -4,8 +4,8 @@ namespace ps {
 	PS_Renderer::PS_Renderer(PS_GameLevel* level) {
 		gameLevel = level;
 		gameObjects = gameLevel->getGameObjects();
-		unlitPipeline = new PS_Pipeline(&psWindow, &psDevice, &psSwapChain, gameObjects, gameLevel->getCamera(), "Shaders/unlit_vert.spv", "Shaders/unlit_frag.spv");
-		litPipeline = new PS_Pipeline(&psWindow, &psDevice, &psSwapChain, gameObjects, gameLevel->getCamera(), "Shaders/lit_vert.spv", "Shaders/lit_frag.spv");
+		unlitPipeline = new PS_Pipeline(&psWindow, &psDevice, &psSwapChain, gameObjects, gameLevel->getLights(), gameLevel->getCamera(), "Shaders/unlit_vert.spv", "Shaders/unlit_frag.spv");
+		litPipeline = new PS_Pipeline(&psWindow, &psDevice, &psSwapChain, gameObjects, gameLevel->getLights(), gameLevel->getCamera(), "Shaders/lit_vert.spv", "Shaders/lit_frag.spv");
 	}
 
 	void PS_Renderer::mainLoop() {

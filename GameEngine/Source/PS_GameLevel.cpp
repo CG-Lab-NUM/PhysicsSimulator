@@ -41,6 +41,13 @@ namespace ps {
 				gameObject->setMaterial(material);
 				gameObjects.push_back(gameObject);
 			}
+			else if (elem["type"] == "PointLight") {
+				PS_Light* gameLight = new PS_Light();
+				gameLight->setName(elem["name"]);
+				gameLight->setLocation(get3DVector(elem, "location"));
+				gameLight->setLightColor(get3DVector(elem, "color"));
+				gameLights.push_back(gameLight);
+			}
 		}
 	}
 

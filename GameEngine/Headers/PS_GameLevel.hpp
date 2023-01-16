@@ -1,6 +1,7 @@
 #pragma once
 #include "PS_GameGeneric.hpp"
 #include "PS_GameCamera.hpp"
+#include "PS_Light.hpp"
 #include <fstream>
 #include <nlohmann/json.hpp>
 using json = nlohmann::json;
@@ -32,13 +33,19 @@ namespace ps {
 			return gameObjects;
 		}
 
+		std::vector<PS_Light*> getLights() {
+			return gameLights;
+		}
+
 		PS_GameCamera* getCamera() {
 			return editorCamera;
 		}
+
 	private:
 		void switchPipeline();
 
 		std::vector<PS_GameObject*> gameObjects;
+		std::vector<PS_Light*> gameLights;
 		PS_GameCamera *editorCamera;
 		std::string levelPath;
 		std::string levelName;

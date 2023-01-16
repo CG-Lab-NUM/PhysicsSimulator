@@ -25,6 +25,8 @@
 #include <unordered_map>
 #include <map>
 
+#define MAX_LIGHTS 10
+
 namespace ps {
 	struct QueueFamilyIndices {
 		std::optional<uint32_t> graphicsFamily;
@@ -35,11 +37,16 @@ namespace ps {
 		}
 	};
 
+	struct PointLight {
+		glm::vec4 position;
+		glm::vec4 color;
+	};
+
 	struct UniformBufferObject {
 		alignas(16) glm::mat4 transform;
 		alignas(16) glm::vec4 ambientLightColor;
-		alignas(16) glm::vec3 lightPosition;
-		alignas(16) glm::vec4 lightColor;
+		PointLight pointLights[MAX_LIGHTS];
+		int numLights;
 	};
 
 	struct PushConstant {
@@ -65,6 +72,9 @@ namespace ps {
 		bool operator==(const Vertex& other) const;
 	};
 
+	struct GeometryObject3D {
+		std::vector<Vertex> vertices;
+	};
 }
 
 namespace std {

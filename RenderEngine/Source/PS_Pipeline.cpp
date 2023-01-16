@@ -5,21 +5,14 @@
 
 namespace ps {
 	PS_Pipeline::PS_Pipeline(
-		PS_Window* window, 
-		PS_Device *device, 
-		PS_SwapChain *chain, 
+		PS_Window* window,
+		PS_Device* device,
+		PS_SwapChain* chain,
 		std::vector<PS_GameObject*> objects,
+		std::vector<PS_Light*> lights,
 		PS_GameCamera *camera,
 		std::string vertexShader,
 		std::string fragmentShader) : PS_Allocator(device) {
-
-		pointLight.setLocation({ 5, -8, 0 });
-		pointLight.setLightColor({ 1, 0, 0 });
-		pointLight2.setLocation({ 5, -4, 0 });
-		pointLight2.setLightColor({ 0, 1, 0 });
-		pointLights.push_back(pointLight);
-		pointLights.push_back(pointLight2);
-
 		psWindow = window;
 		psDevice = device;
 		psSwapChain = chain;
@@ -27,6 +20,7 @@ namespace ps {
 		gameCamera = camera;
 		vertexShaderPath = vertexShader;
 		fragmentShaderPath = fragmentShader;
+		pointLights = lights;
 		psRenderPass = new PS_RenderPass(psDevice, psSwapChain);
 		uiRenderPass = new PS_RenderPass(psDevice, psSwapChain);
 		psDescriptorSets = new PS_DescriptorSet(psDevice, MAX_FRAMES_IN_FLIGHT, static_cast<uint32_t>(gameObjects.size()));
@@ -53,6 +47,7 @@ namespace ps {
 		psDescriptorSets->createPool();
 		psDescriptorSets->createSets(&uniformBuffers);
 		widget = new UI_Widget(psDevice, gameCamera, psWindow);
+		loadLights();
 		loadGameObjects();
 		createCommandBuffers();
 		createSyncObjects();
@@ -209,8 +204,19 @@ namespace ps {
 		glm::highp_mat4 proj = glm::perspective(gameCamera->getFovy(), psSwapChain->swapChainExtent.width / (float)psSwapChain->swapChainExtent.height, 1.0f, 100.0f);
 		proj[1][1] *= -1;
 		ubo.transform = proj * view * model;
-		ubo.lightColor = glm::vec4(pointLight.getLightColor(), 1);
-		ubo.lightPosition = pointLight.getLocation();
+		if (pointLights.size() > 10) {
+			ubo.numLights = 10;
+		}
+		else {
+			ubo.numLights = pointLights.size();
+		}
+		for (int i = 0; i < pointLights.size(); i++) {
+			if (i == 10) {
+				break;
+			}
+			ubo.pointLights[i].color = glm::vec4(pointLights[i]->getLightColor(), 1);
+			ubo.pointLights[i].position = glm::vec4(pointLights[i]->getLocation(), 1);
+		}
 		ubo.ambientLightColor = glm::vec4(1, 1, 1, 1);
 
 		PS_BufferHandler uniformBuffer{
@@ -306,7 +312,7 @@ namespace ps {
 		vkCmdBindDescriptorSets(commandBuffer, VK_PIPELINE_BIND_POINT_GRAPHICS, pipelineLayout, 0, 1, psDescriptorSets->getSetReference(currentFrame), 0, nullptr);
 		
 		renderGameObjects(commandBuffer);
-		widget->renderWidget(commandBuffer);
+		//widget->renderWidget(commandBuffer);
 
 		vkCmdEndRenderPass(commandBuffer);
 		if (vkEndCommandBuffer(commandBuffer) != VK_SUCCESS) {
@@ -372,19 +378,25 @@ namespace ps {
 				textureImages[i]->Load(baseColor.texturePath);
 
 				PS_ModelHandler* Model = new PS_ModelHandler(psDevice);
-				modelLoaders.push_back(Model);
+				objectModels.push_back(Model);
 				Model->Load(gameObjects[i]);
 				//std::cout << "Color : " << baseColor.color.x << " " << baseColor.color.y << " " << baseColor.color.z << "\n";
 			}
 			else {
 				PS_ModelHandler* Model = new PS_ModelHandler(psDevice);
-				modelLoaders.push_back(Model);
+				objectModels.push_back(Model);
 				Model->Load(gameObjects[i], baseColor.color);
-				std::cout << "Color : " << baseColor.color.x << " " << baseColor.color.y << " " << baseColor.color.z << "\n";
 			}
 		}
 		noTexture = new PS_TextureHandler(psDevice, psDescriptorSets->getPoolReference(), psDescriptorSets->getSetLayoutReference(1));
 		noTexture->LoadNoTexture();
+	}
+	void PS_Pipeline::loadLights() {
+		for (int i = 0; i < pointLights.size(); i++) {
+			PS_ModelHandler* Model = new PS_ModelHandler(psDevice);
+			lightModels.push_back(Model);
+			Model->Load(pointLights[i], pointLights[i]->getLightColor());
+		}
 	}
 	void PS_Pipeline::renderGameObjects(VkCommandBuffer commandBuffer) {
 		PushConstant vertexPushConstant;
@@ -392,11 +404,15 @@ namespace ps {
 			vkCmdPushConstants(commandBuffer, pipelineLayout, VK_SHADER_STAGE_VERTEX_BIT, 0, sizeof(vertexPushConstant), &vertexPushConstant);
 			if (gameObjects[i]->getMaterial().getColor().isTexture) {
 				vkCmdBindDescriptorSets(commandBuffer, VK_PIPELINE_BIND_POINT_GRAPHICS, pipelineLayout, 1, 1, &textureImages[i]->descriptorSet, 0, nullptr);
-				modelLoaders[i]->Render(commandBuffer, pointLights);
+				objectModels[i]->Render(commandBuffer);
 			}
 			else {
-				modelLoaders[i]->Render(commandBuffer, pointLights);
+				objectModels[i]->Render(commandBuffer);
 			}
+		}
+		for (int i = 0; i < pointLights.size(); i++) {
+			vkCmdPushConstants(commandBuffer, pipelineLayout, VK_SHADER_STAGE_VERTEX_BIT, 0, sizeof(vertexPushConstant), &vertexPushConstant);
+			lightModels[i]->Render(commandBuffer);
 		}
 	}
 }
