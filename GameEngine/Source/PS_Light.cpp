@@ -17,13 +17,13 @@ namespace ps {
 	void PS_Light::setLightColor(glm::vec3 newColor) {
 		lightColor = newColor;
 	}
+	void PS_Light::setIntensity(float newIntensity) {
+		intensity = newIntensity;
+	}
 	glm::vec3 PS_Light::getLightColor() {
 		return lightColor;
 	}
-	void PS_Light::makeDirectionalLight() {
-
-	}
-	void PS_Light::makePointLight() {
-
+	float PS_Light::getIntensity() {
+		return intensity;
 	}
 }
