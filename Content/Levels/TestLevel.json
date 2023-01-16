@@ -31,8 +31,24 @@
       "model_path": "Content/Meshes/Cube.obj",
       "material": {
         "isTexture": false,
-        "baseColor": [0, 0, 1]
+        "baseColor": [ 0.1, 0.1, 1 ]
       }
+    },
+    {
+      "type": "PointLight",
+      "name": "FirstLight",
+      "rotation": [ -3, 0, 0 ],
+      "color": [ 1, 0, 0 ],
+      "intensity": 3,
+      "light_type": "directional"
+    },
+    {
+      "type": "PointLight",
+      "name": "SecondLight",
+      "location": [ -5, -8, 0 ],
+      "color": [ 0, 0, 1 ],
+      "intensity": 1,
+      "light_type": "point"
     }
   ]
 }

@@ -8,8 +8,9 @@ namespace ps {
 	class PS_GameObject : protected PS_GameMesh {
 	public:
 		PS_GameObject();
-		PS_GameObject(bool isBasicObject, std::string shape);
+		PS_GameObject(GeometryObject3D shape);
 		PS_GameObject(glm::vec3 newLocation, glm::vec3 newRotation, glm::vec3 newScale);
+		PS_GameObject(glm::vec3 newLocation, glm::vec3 newRotation, glm::vec3 newScale, GeometryObject3D shape);
 
 		void setLocation(glm::vec3 newLocation);
 		void setRotation(glm::vec3 newRotation);
@@ -18,7 +19,7 @@ namespace ps {
 		void setMaterial(PS_Material newMaterial);
 		void setName(std::string newName);
 		void setAlpha(float newAlpha);
-		void setIsBasicShape(bool newBool, std::vector<Vertex> newVertices);
+		void setGeometryObject(GeometryObject3D shape);
 		void tick();
 
 		glm::vec3 getLocation();
@@ -30,7 +31,8 @@ namespace ps {
 		std::string getModel();
 		PS_Material getMaterial();
 		std::string getName();
-		std::vector<Vertex> getVertices();
+		GeometryObject3D getGeometryObject();
+		//std::vector<Vertex> getVertices();
 		bool getIsBasicShape();
 		float getAlpha();
 
