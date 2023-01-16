@@ -5,7 +5,7 @@
 namespace ps {
 	class UI_Widget : public PS_Allocator {
 	public:
-		UI_Widget(PS_Device* device, PS_GameCamera *camera);
+		UI_Widget(PS_Device* device, PS_GameCamera *camera, PS_Window *window);
 		void renderWidget(VkCommandBuffer commandBuffer);
 
 	private:
@@ -23,6 +23,7 @@ namespace ps {
 
 		PS_Device* psDevice;
 		PS_GameCamera* gameCamera;
+		PS_Window* psWindow;
 		GeometryObject2D renderComponent;
 	};
 }

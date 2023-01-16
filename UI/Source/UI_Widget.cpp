@@ -1,9 +1,10 @@
 #include "UI_Widget.hpp"
 
 namespace ps {
-	UI_Widget::UI_Widget(PS_Device* device, PS_GameCamera *camera) : PS_Allocator(device) {
+	UI_Widget::UI_Widget(PS_Device* device, PS_GameCamera *camera, PS_Window *window) : PS_Allocator(device) {
 		psDevice = device;
 		gameCamera = camera;
+		psWindow = window;
 		this->vertices = vertices;
 		this->indices = indices;
 		createWidget();
@@ -32,16 +33,15 @@ namespace ps {
 		bottomRight.color = { 1.0f, 1.0f, 1.0f, 1 };
 
 		vertices.push_back(bottomLeft);
-		vertices.push_back(topLeft);
-		vertices.push_back(topRight);
 		vertices.push_back(bottomRight);
+		vertices.push_back(topRight);
+		vertices.push_back(topLeft);
 		indices.push_back(0);
-		indices.push_back(1);
-		indices.push_back(2);
-		indices.push_back(2);
 		indices.push_back(3);
+		indices.push_back(2);
+		indices.push_back(2);
+		indices.push_back(1);
 		indices.push_back(0);
-		translateGeometry();
 	}
 
 	void UI_Widget::createVertexBuffer() {
@@ -114,35 +114,23 @@ namespace ps {
 
 	void UI_Widget::translateGeometry() {
 		glm::vec3 center, x, y, z; 
-		float h = renderComponent.height; 
-		float w = renderComponent.width;
-		center = gameCamera->getCenter();
+		center = gameCamera->getEye() + 10.0f * gameCamera->getForwardVector();
 		y = gameCamera->getUpVector();
 		x = gameCamera->getForwardVector();
 		x = (-1.0f) * (glm::cross(y, x));
 		z = gameCamera->getForwardVector();
-		/*center[0] = center[0];
-		center[1] = center[1];*/
 
-		/*vertices[0].pos = {center[0], center[1], center[2]};
-		vertices[1].pos = { center[0], center[1], center[2] };
-		vertices[2].pos = { center[0], center[1], center[2] };
-		vertices[3].pos = { center[0], center[1], center[2] };*/
+		float len =  glm::length(10.0f * gameCamera->getForwardVector());
 		
-		//std::cout << center.x << " " << center.y << std::endl;
+		float h = len / glm::sqrt(3);
+		float w = h * psWindow->getSize()[0]/ psWindow->getSize()[1];
 
-		vertices[0].pos = { center[0], center[1], center[2] };
-		vertices[1].pos = { center[0], center[1] + 10, center[2] };
-		vertices[2].pos = { center[0] + 10, center[1] + 10, center[2] };
-		vertices[3].pos = { center[0] + 10, center[1], center[2] };
+		vertices[0].pos = { center[0] + ((-w) * x[0] + h * y[0]), center[1] + ((-w) * x[1] + h * y[1]), center[2] + ((-w) * x[2] + h * y[2]) };
+		vertices[1].pos = { center[0] + (w * x[0] + h * y[0]), center[1] + (w * x[1] + h * y[1]), center[2] + (w * x[2] + h * y[2]) };
+		vertices[2].pos = { center[0] + (w * x[0] - h * y[0]), center[1] + (w * x[1] - h * y[1]), center[2] + (w * x[2] - h * y[2]) };
+		vertices[3].pos = { center[0] + ((-w) * x[0] - h * y[0]), center[1] + ((-w) * x[1] - h * y[1]), center[2] + ((-w) * x[2] - h * y[2]) };
 
-		//printVector("1", vertices[0].pos);
-		//printVector("2", vertices[1].pos);
-		//printVector("3", vertices[2].pos);
-		//printVector("4", vertices[3].pos);
-		/*vertices[1].pos = { center[0] + h * y[0], center[1] + h * y[1], center[2] + h * y[2] };
-		vertices[2].pos = { center[0] + ((-w) * x[0] + h * y[0]), center[1] + ((-w)*x[1] + h * y[1]), center[2] + ((-w) * x[2] + h * y[2]) };
-		vertices[3].pos = { center[0] + (-w) * x[0], center[1] + (-w) * x[1], center[2] + (-w) * x[2] };*/
+		std::cout << psWindow->getSize()[0] << " " << psWindow->getSize()[1] << std::endl;
 		
 		/*std::cout << "center: "<< vertices[0].pos.x << " " << vertices[0].pos.y << " " << vertices[0].pos.z << std::endl;
 		std::cout << "camera center: " << gameCamera->getEye()[0] << " " << gameCamera->getEye()[1] << " " << gameCamera->getEye()[2] << std::endl;*/
@@ -152,33 +140,3 @@ namespace ps {
 		std::cout << label << ": " << pos.x << " " << pos.y << " " << pos.z << std::endl;
 	}
 }
-
-/*
-
-
-1: 16.4147 -8.00105 -14.0225
-2: 16.4147 1.99895 -14.0225
-3: 26.4147 1.99895 -14.0225
-4: 26.4147 -8.00105 -14.0225
-
-1: 15.8673 -8.27456 -14.0347
-2: 15.8673 1.72544 -14.0347
-3: 25.8673 1.72544 -14.0347
-
-
-1: 15.8673 -8.27456 -14.0347
-2: 15.8673 1.72544 -14.0347
-3: 25.8673 1.72544 -14.0347
-4: 25.8673 -8.27456 -14.0347
-
-1: 15.8673 -8.27456 -14.0347
-2: 15.8673 1.72544 -14.0347
-3: 25.8673 1.72544 -14.0347
-4: 25.8673 -8.27456 -14.0347
-
-1: 15.8673 -8.27456 -14.0347
-2: 15.8673 1.72544 -14.0347
-3: 25.8673 1.72544 -14.0347
-4: 25.8673 -8.27456 -14.0347
-
-*/
