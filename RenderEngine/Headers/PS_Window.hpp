@@ -15,10 +15,12 @@ namespace ps {
 		GLFWwindow* getWindow() {
 			return window;
 		}
+		glm::vec2 getSize();
 		
 		void setSize(int width, int height) {
 			WIDTH = width;
 			HEIGHT = height;
+			glfwSetWindowSize(window, WIDTH, HEIGHT);
 		}
 		void cleanup();
 		void createSurface(VkInstance instance);
@@ -30,7 +32,7 @@ namespace ps {
 		GLFWwindow* window{};
 		VkSurfaceKHR surface{};
 		
-		uint32_t WIDTH = 1024;
-		uint32_t HEIGHT = 768;
+		int WIDTH = 1024;
+		int HEIGHT = 768;
 	};
 }

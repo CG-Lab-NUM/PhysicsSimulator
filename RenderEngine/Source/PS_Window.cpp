@@ -47,4 +47,11 @@ namespace ps {
 			throw std::runtime_error("failed to create window surface!");
 		}
 	}
+	glm::vec2 PS_Window::getSize() {
+		glfwGetWindowSize(window, &WIDTH, &HEIGHT);
+		glm::vec2 size;
+		size.x = WIDTH;
+		size.y = HEIGHT;
+		return size;
+	}
 }
