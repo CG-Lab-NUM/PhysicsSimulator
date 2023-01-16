@@ -8,11 +8,14 @@ namespace ps {
 		PS_Light(glm::vec3 newLocation, glm::vec3 newRotation, glm::vec3 newScale, glm::vec3 newLightColor);
 
 		void setLightColor(glm::vec3 newColor);
-		void makeDirectionalLight();
-		void makePointLight();
+		void setIntensity(float newIntensity);
 		glm::vec3 getLightColor();
+		float getIntensity();
+
+		bool isDirectional;
 
 	private:
 		glm::vec3 lightColor;
+		float intensity;
 	};
 }

@@ -214,8 +214,16 @@ namespace ps {
 			if (i == 10) {
 				break;
 			}
-			ubo.pointLights[i].color = glm::vec4(pointLights[i]->getLightColor(), 1);
-			ubo.pointLights[i].position = glm::vec4(pointLights[i]->getLocation(), 1);
+			if (pointLights[i]->isDirectional) {
+				// Directional Light
+				ubo.pointLights[i].color = glm::vec4(pointLights[i]->getLightColor(), pointLights[i]->getIntensity());
+				ubo.pointLights[i].position = glm::vec4(pointLights[i]->getForwardVector(), 1);
+			}
+			else {
+				// Point Light
+				ubo.pointLights[i].color = glm::vec4(pointLights[i]->getLightColor(), pointLights[i]->getIntensity());
+				ubo.pointLights[i].position = glm::vec4(pointLights[i]->getLocation(), -1);
+			}
 		}
 		ubo.ambientLightColor = glm::vec4(1, 1, 1, 1);
 
@@ -412,7 +420,9 @@ namespace ps {
 		}
 		for (int i = 0; i < pointLights.size(); i++) {
 			vkCmdPushConstants(commandBuffer, pipelineLayout, VK_SHADER_STAGE_VERTEX_BIT, 0, sizeof(vertexPushConstant), &vertexPushConstant);
-			lightModels[i]->Render(commandBuffer);
+			if (!pointLights[i]->isDirectional) {
+				lightModels[i]->Render(commandBuffer);
+			}
 		}
 	}
 }

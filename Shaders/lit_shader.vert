@@ -31,11 +31,16 @@ void main() {
         vec3 totalLights = vec3(0);
         for(int i = 0; i < ubo.numLights; i++) {
             PointLight light = ubo.pointLights[i];
-            vec3 lightDir = normalize(light.position.xyz - vec3(push.modelMatrix * vec4(inPosition, 1)));
-            float diff = max(dot(norm, lightDir), 0);
-            totalLights += diff * light.color.xyz;
+            if(light.position.w > 0) {
+                float diff = max(dot(norm, -light.position.xyz), 0.1);
+                totalLights += diff * light.color.xyz * light.color.w;
+            } else {
+                vec3 lightDir = normalize(light.position.xyz - vec3(push.modelMatrix * vec4(inPosition, 1)));
+                float diff = max(dot(norm, lightDir), 0.1);
+                totalLights += diff * light.color.xyz * light.color.w;
+            }
         }
-        fragColor = vec4(totalLights * inColor.xyz, 0);
+        fragColor = vec4(totalLights * inColor.xyz, inColor.w);
     } else {
         fragColor = vec4(inColor.rgb, 1);
     }
