@@ -35,21 +35,19 @@
       }
     },
     {
-      "type": "PointLight",
+      "type": "DirectionalLight",
       "name": "FirstLight",
       "location": [5, 5, 0],
       "rotation": [ 0, 90, 90 ],
-      "color": [ 1, 0, 0 ],
-      "intensity": 3,
-      "light_type": "directional"
+      "color": [ 1, 1, 1 ],
+      "intensity": 3
     },
     {
       "type": "PointLight",
       "name": "SecondLight",
       "location": [ -5, -8, 0 ],
       "color": [ 0, 0, 1 ],
-      "intensity": 1,
-      "light_type": "point"
+      "intensity": 1
     }
   ]
 }

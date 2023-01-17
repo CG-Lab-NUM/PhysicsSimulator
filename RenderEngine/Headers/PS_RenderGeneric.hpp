@@ -75,6 +75,7 @@ namespace ps {
 
 	struct GeometryObject3D {
 		std::vector<Vertex> vertices;
+		std::vector<uint32_t> indices;
 	};
 }
 
