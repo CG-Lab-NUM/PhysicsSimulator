@@ -59,11 +59,11 @@ namespace ps {
 				}
 
 				if (uniqueVertices.count(vertex) == 0) {
-					uniqueVertices[vertex] = static_cast<uint32_t>(vertices.size());
-					vertices.push_back(vertex);
+					uniqueVertices[vertex] = static_cast<uint32_t>(geometryObject.vertices.size());
+					geometryObject.vertices.push_back(vertex);
 				}
 
-				indices.push_back(uniqueVertices[vertex]);
+				geometryObject.indices.push_back(uniqueVertices[vertex]);
 			}
 		}
 	}
@@ -108,19 +108,19 @@ namespace ps {
 				}
 
 				if (uniqueVertices.count(vertex) == 0) {
-					uniqueVertices[vertex] = static_cast<uint32_t>(vertices.size());
-					vertices.push_back(vertex);
+					uniqueVertices[vertex] = static_cast<uint32_t>(geometryObject.vertices.size());
+					geometryObject.vertices.push_back(vertex);
 				}
 
-				indices.push_back(uniqueVertices[vertex]);
+				geometryObject.indices.push_back(uniqueVertices[vertex]);
 			}
 		}
 	}
 
 	void PS_ModelHandler::createVertexBuffer() {
-		uint32_t vertexCount = static_cast<uint32_t>(vertices.size());
-		VkDeviceSize bufferSize = sizeof(vertices[0]) * vertexCount;
-		uint32_t vertexSize = sizeof(vertices[0]);
+		uint32_t vertexCount = static_cast<uint32_t>(geometryObject.vertices.size());
+		VkDeviceSize bufferSize = sizeof(geometryObject.vertices[0]) * vertexCount;
+		uint32_t vertexSize = sizeof(geometryObject.vertices[0]);
 
 		PS_BufferHandler stagingBuffer{
 			psDevice,
@@ -131,7 +131,7 @@ namespace ps {
 		};
 
 		stagingBuffer.map();
-		stagingBuffer.writeToBuffer((void*) vertices.data());
+		stagingBuffer.writeToBuffer((void*)geometryObject.vertices.data());
 		
 		vertexBuffer = std::make_unique<PS_BufferHandler>(
 			psDevice,
@@ -145,13 +145,13 @@ namespace ps {
 	}
 
 	void PS_ModelHandler::createIndexBuffer() {
-		uint32_t indexCount = static_cast<uint32_t>(indices.size());
+		uint32_t indexCount = static_cast<uint32_t>(geometryObject.indices.size());
 		bool hasIndexBuffer = indexCount > 0;
 		if (!hasIndexBuffer) {
 			return;
 		}
-		VkDeviceSize bufferSize = sizeof(indices[0]) * indices.size();
-		uint32_t indexSize = sizeof(indices[0]);
+		VkDeviceSize bufferSize = sizeof(geometryObject.indices[0]) * geometryObject.indices.size();
+		uint32_t indexSize = sizeof(geometryObject.indices[0]);
 
 		PS_BufferHandler stagingBuffer{
 			psDevice,
@@ -162,7 +162,7 @@ namespace ps {
 		};
 
 		stagingBuffer.map();
-		stagingBuffer.writeToBuffer((void*)indices.data());
+		stagingBuffer.writeToBuffer((void*)geometryObject.indices.data());
 
 		indexBuffer = std::make_unique<PS_BufferHandler>(
 			psDevice,
@@ -206,7 +206,7 @@ namespace ps {
 		VkDeviceSize offsets[] = { 0 };
 		vkCmdBindVertexBuffers(commandBuffer, 0, 1, vertexBuffers, offsets);
 		vkCmdBindIndexBuffer(commandBuffer, indexBuffer->getBuffer(), 0, VK_INDEX_TYPE_UINT32);
-		vkCmdDrawIndexed(commandBuffer, static_cast<uint32_t>(indices.size()), 1, 0, 0, 0);
+		vkCmdDrawIndexed(commandBuffer, static_cast<uint32_t>(geometryObject.indices.size()), 1, 0, 0, 0);
 	}
 
 	glm::vec3 PS_ModelHandler::rotate(glm::vec3 axis, glm::vec3 point, float angle) {

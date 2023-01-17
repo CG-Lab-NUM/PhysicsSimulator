@@ -18,8 +18,9 @@ namespace ps {
 		}
 
 		PS_Device* psDevice;
-		std::vector<Vertex> vertices;
-		std::vector<uint32_t> indices;
+		GeometryObject3D geometryObject;
+		/*std::vector<Vertex> vertices;
+		std::vector<uint32_t> indices;*/
 		std::unique_ptr<PS_BufferHandler> vertexBuffer;
 		std::unique_ptr<PS_BufferHandler> indexBuffer;
 

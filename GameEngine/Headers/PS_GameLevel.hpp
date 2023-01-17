@@ -43,6 +43,9 @@ namespace ps {
 
 	private:
 		void switchPipeline();
+		void readLights(json elem);
+		void readCameras(json elem);
+		void readObjects(json elem);
 
 		std::vector<PS_GameObject*> gameObjects;
 		std::vector<PS_Light*> gameLights;
