@@ -90,6 +90,10 @@ namespace ps {
 						(attrib.vertices[3 * index.vertex_index + 1] + object->getLocation()[1]) * object->getScale()[1],
 						(attrib.vertices[3 * index.vertex_index + 2] + object->getLocation()[2]) * object->getScale()[2],
 					};
+					vertex.pos = rotate(object->getForwardVector(), vertex.pos, object->getRotation().x);
+					vertex.pos = rotate(object->getRightVector(), vertex.pos, object->getRotation().y);
+					vertex.pos = rotate(-object->getUpVector(), vertex.pos, object->getRotation().z);
+
 					vertex.color = { color.x, color.y, color.z, -1 };
 					if (index.texcoord_index >= 0) {
 						vertex.texCoord = { -1, -1 };
@@ -203,5 +207,13 @@ namespace ps {
 		vkCmdBindVertexBuffers(commandBuffer, 0, 1, vertexBuffers, offsets);
 		vkCmdBindIndexBuffer(commandBuffer, indexBuffer->getBuffer(), 0, VK_INDEX_TYPE_UINT32);
 		vkCmdDrawIndexed(commandBuffer, static_cast<uint32_t>(indices.size()), 1, 0, 0, 0);
+	}
+
+	glm::vec3 PS_ModelHandler::rotate(glm::vec3 axis, glm::vec3 point, float angle) {
+		float norm = sqrt(axis.x * axis.x + axis.y * axis.y + axis.z * axis.z);
+		axis = { axis.x / norm, axis.y / norm, axis.z / norm };
+		glm::quat rotation = glm::angleAxis(glm::radians(angle), axis);
+		glm::mat3 rotationMatrix = glm::mat3(rotation);
+		return rotationMatrix * point;
 	}
 }
