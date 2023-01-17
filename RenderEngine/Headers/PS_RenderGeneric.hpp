@@ -52,6 +52,7 @@ namespace ps {
 	struct PushConstant {
 		glm::mat4 modelMatrix{ 1.f };
 		glm::mat4 normalMatrix{ 1.f };
+		glm::mat4 lightMatrix{ 1.f };
 	};
 
 	struct SwapChainSupportDetails {

@@ -37,7 +37,8 @@
     {
       "type": "PointLight",
       "name": "FirstLight",
-      "rotation": [ -3, 0, 0 ],
+      "location": [5, 5, 0],
+      "rotation": [ 0, 90, 90 ],
       "color": [ 1, 0, 0 ],
       "intensity": 3,
       "light_type": "directional"

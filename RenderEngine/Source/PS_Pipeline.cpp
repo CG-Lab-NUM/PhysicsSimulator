@@ -214,7 +214,7 @@ namespace ps {
 			if (i == 10) {
 				break;
 			}
-			if (pointLights[i]->isDirectional) {
+			if (pointLights[i]->getDirectional()) {
 				// Directional Light
 				ubo.pointLights[i].color = glm::vec4(pointLights[i]->getLightColor(), pointLights[i]->getIntensity());
 				ubo.pointLights[i].position = glm::vec4(pointLights[i]->getForwardVector(), 1);
@@ -420,9 +420,7 @@ namespace ps {
 		}
 		for (int i = 0; i < pointLights.size(); i++) {
 			vkCmdPushConstants(commandBuffer, pipelineLayout, VK_SHADER_STAGE_VERTEX_BIT, 0, sizeof(vertexPushConstant), &vertexPushConstant);
-			if (!pointLights[i]->isDirectional) {
-				lightModels[i]->Render(commandBuffer);
-			}
+			lightModels[i]->Render(commandBuffer);
 		}
 	}
 }
