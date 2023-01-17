@@ -164,9 +164,6 @@
     <ClInclude Include="RenderEngine\Headers\PS_Descriptor.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="UI\Headers\UI_Widget.hpp">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="UI\Headers\UI_Generic.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
@@ -174,6 +171,9 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="RenderEngine\Headers\PS_Material.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="UI\Headers\UI_Widget.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

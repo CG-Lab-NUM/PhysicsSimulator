@@ -4,11 +4,10 @@
 #include "PS_MouseHandler.hpp"
 #include "PS_ColorHandler.hpp"
 
-
 namespace ps {
 	class UI_Widget : public PS_Allocator {
 	public:
-		UI_Widget(PS_Device* device, PS_GameCamera *camera, PS_Window *window);
+		UI_Widget(PS_Device* device, PS_GameCamera* camera, PS_Window* window);
 		void renderWidget(VkCommandBuffer commandBuffer);
 
 	private:
@@ -18,7 +17,7 @@ namespace ps {
 		void translateGeometry();
 		void onClick();
 		glm::vec3 translateCoord(glm::vec2 pos);
-		
+
 		void printVector(std::string label, glm::vec3 pos);
 
 		std::vector<Vertex> vertices;
