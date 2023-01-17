@@ -1,6 +1,5 @@
 #include "UI_Widget.hpp"
 
-
 namespace ps {
 	UI_Widget::UI_Widget(PS_Device* device, PS_GameCamera *camera, PS_Window *window) : PS_Allocator(device) {
 		psDevice = device;
@@ -132,7 +131,7 @@ namespace ps {
 		vertices[2].pos = { windowCenter + (width * xWindow - height * yWindow) };
 		vertices[3].pos = { windowCenter + ((-width) * xWindow - height * yWindow) };*/
 
-		//onClick();
+		onClick();
 	}
 
 	void UI_Widget::onClick() {
@@ -148,13 +147,10 @@ namespace ps {
 			glm::vec3 mouseDirection(pos.x * xWindow + pos.y * yWindow);
 			//mouseDirection = glm::normalize(mouseDirection);
 			mouseDirection = normal + mouseDirection;
-			printVector("Mouse direction vec", mouseDirection);
+			//printVector("Mouse direction vec", mouseDirection);
 
 			for (float i = 1.0f; i <= 100.0f; i += 0.01f) {
 				mouseDirection *= i;
-				/*if () {
-
-				}*/
 			}
 
 		}
