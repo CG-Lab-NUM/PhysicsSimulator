@@ -123,9 +123,9 @@ namespace ps {
 		width = height * psWindow->getSize()[0]/ psWindow->getSize()[1];
 
 		vertices[0].pos = { translateCoord({10, 10}) };
-		vertices[1].pos = { translateCoord({1000, 10})};
-		vertices[2].pos = { translateCoord({1000, 500})};
-		vertices[3].pos = { translateCoord({10, 500})};
+		vertices[1].pos = { translateCoord({100, 10})};
+		vertices[2].pos = { translateCoord({100, 50})};
+		vertices[3].pos = { translateCoord({10, 50})};
 
 		/*vertices[0].pos = { windowCenter + ((-width) * xWindow + height * yWindow) };
 		vertices[1].pos = { windowCenter + (width * xWindow + height * yWindow) };
@@ -141,45 +141,32 @@ namespace ps {
 			float h = glm::length(normal) / glm::sqrt(3);
 			float w = h * psWindow->getSize()[0] / psWindow->getSize()[1];
 			glm::vec3 center = gameCamera->getCenter();
-			
-			pos.y = h * (psWindow->getSize()[1] / 2 - pos.y) / (psWindow->getSize()[1] / 2);
-			pos.x = (-1) * (w * (psWindow->getSize()[0] / 2 - pos.x) / (psWindow->getSize()[0] / 2));
 
-			float d;
-			d = glm::dot(normal, center);
-			float zPos = ((-normal[0]) * (center[0] + pos.x) - normal[1] * (center[1] + pos.y) - d) / normal[2];
-			zPos -= center[2];
-			glm::vec3 mousePosition(pos, zPos);//center to mousePosition directional vector
-			//std::cout << "normal vector " << normal[0] << " " << normal[1] << " " << normal[2] << std::endl;
-			//std::cout <<"center to position vector " << mousePosition[0] << " " << mousePosition[1] << " " << mousePosition[2] << std::endl;
-			
-			mousePosition = normal + mousePosition;//camera eye to mouse position directional vector
-			mousePosition = glm::normalize(mousePosition);
-			//std::cout <<"eye to position vector " << mousePosition[0] << " " << mousePosition[1] << " " << mousePosition[2] << std::endl;
+			pos.x = (-1) * (width * (psWindow->getSize()[0] / 2 - pos.x) / (psWindow->getSize()[0] / 2));
+			pos.y = height * (psWindow->getSize()[1] / 2 - pos.y) / (psWindow->getSize()[1] / 2);
+
+			glm::vec3 mouseDirection(pos.x * xWindow + pos.y * yWindow);
+			//mouseDirection = glm::normalize(mouseDirection);
+			mouseDirection = normal + mouseDirection;
+			printVector("Mouse direction vec", mouseDirection);
+
 			for (float i = 1.0f; i <= 100.0f; i += 0.01f) {
-				mousePosition *= i;
+				mouseDirection *= i;
 				/*if () {
 
 				}*/
 			}
 
-			translateCoord(pos);
 		}
 	}
 
 	glm::vec3 UI_Widget::translateCoord(glm::vec2 pos) {
 		pos.x = (-1) * (width * (psWindow->getSize()[0] / 2 - pos.x) / (psWindow->getSize()[0] / 2));
 		pos.y = height * (psWindow->getSize()[1] / 2 - pos.y) / (psWindow->getSize()[1] / 2);
-		pos = windowCenter + (pos.x * xWindow + pos.y * yWindow);
-		/*pos.x = windowCenter[0] + (pos.x * xWindow[0] + pos.y * yWindow[0]);
-		pos.y = windowCenter[1] + (pos.x * xWindow[1] + pos.y * yWindow[1]);*/
-		
-		float z = windowCenter[2] + (pos.x * xWindow[2] + pos.y * yWindow[2]);
-		/*float z = glm::dot(normal, windowCenter);
-		z = (-1) * (normal[0] * pos.x + normal[1] * pos.y + z) / normal[2]; */                         
-		glm::vec3 viewPortPos(pos, z);
-		printVector("center", windowCenter);
-		printVector("viewport position", viewPortPos);
+		                       
+		glm::vec3 viewPortPos(pos, windowCenter[2]);
+		viewPortPos = windowCenter + (pos.x * xWindow + pos.y * yWindow);
+		//printVector("viewport position", viewPortPos);
 		return viewPortPos;
 	}
 

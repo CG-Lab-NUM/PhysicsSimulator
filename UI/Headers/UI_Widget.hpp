@@ -3,6 +3,7 @@
 #include "UI_Generic.hpp"
 #include "PS_MouseHandler.hpp"
 #include "PS_ColorHandler.hpp"
+#include "PS_Pipeline.hpp"
 
 
 namespace ps {
