@@ -15,6 +15,7 @@ layout(set = 0, binding = 0) uniform UniformBufferObject {
 layout(push_constant) uniform Push {
     mat4 modelMatrix;
     mat4 normalMatrix;
+    mat4 lightMatrix;
 } push;
 
 layout(location = 0) in vec3 inPosition;

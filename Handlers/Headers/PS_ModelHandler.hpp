@@ -28,6 +28,7 @@ namespace ps {
 		void loadModel(PS_Light* object);
 		void createVertexBuffer();
 		void createIndexBuffer();
+		glm::vec3 rotate(glm::vec3 axis, glm::vec3 point, float angle);
 
 		bool isTexture = true;
 		glm::vec4 color;

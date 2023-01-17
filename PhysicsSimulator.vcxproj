@@ -194,6 +194,8 @@
   <ItemGroup>
     <None Include="Shaders\unlit_shader.frag" />
     <None Include="Shaders\unlit_shader.vert" />
+    <None Include="Shaders\wire_shader.frag" />
+    <None Include="Shaders\wire_shader.vert" />
     <None Include="Shader\shader.frag" />
     <None Include="Shader\shader.vert" />
   </ItemGroup>

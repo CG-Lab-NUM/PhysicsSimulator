@@ -46,13 +46,13 @@ namespace ps {
 				gameLight->setName(elem["name"]);
 				gameLight->setLightColor(get3DVector(elem, "color"));
 				gameLight->setIntensity(elem["intensity"]);
+				gameLight->setLocation(get3DVector(elem, "location"));
 				if (elem["light_type"] == "directional") {
-					gameLight->isDirectional = true;
+					gameLight->setDirectional(true);
 					gameLight->setRotation(get3DVector(elem, "rotation"));
 				}
 				else {
-					gameLight->isDirectional = false;
-					gameLight->setLocation(get3DVector(elem, "location"));
+					gameLight->setDirectional(false);
 				}
 				gameLights.push_back(gameLight);
 			}
