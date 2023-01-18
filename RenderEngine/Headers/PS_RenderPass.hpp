@@ -4,7 +4,7 @@
 namespace ps {
 	class PS_RenderPass {
 	public:
-		PS_RenderPass(PS_Device *device, PS_SwapChain *swapChain);
+		PS_RenderPass(PS_Device *device, PS_SwapChain *swapChain, bool clear);
 		VkRenderPass getRenderPass() {
 			return renderPass;
 		}

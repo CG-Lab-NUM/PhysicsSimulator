@@ -19,13 +19,25 @@ namespace ps {
 		}
 		setLayouts.push_back(setLayout);
 	}
+	void PS_DescriptorSet::createLayout(std::vector<VkDescriptorSetLayoutBinding> bindings) {
+		bindingCount = bindings.size();
+		VkDescriptorSetLayoutCreateInfo layoutInfo{};
+		layoutInfo.sType = VK_STRUCTURE_TYPE_DESCRIPTOR_SET_LAYOUT_CREATE_INFO;
+		layoutInfo.bindingCount = (uint32_t)bindingCount;
+		layoutInfo.pBindings = bindings.data();
+		VkDescriptorSetLayout setLayout;
+		if (vkCreateDescriptorSetLayout(psDevice->device, &layoutInfo, nullptr, &setLayout) != VK_SUCCESS) {
+			throw std::runtime_error("failed to create uniform descriptor set layout!");
+		}
+		setLayouts.push_back(setLayout);
+	}
 
 	void PS_DescriptorSet::createPool() {
 		std::array<VkDescriptorPoolSize, 2> poolSizes{};
 		poolSizes[0].type = VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER;
 		poolSizes[0].descriptorCount = maxFrames;
 		poolSizes[1].type = VK_DESCRIPTOR_TYPE_COMBINED_IMAGE_SAMPLER;
-		poolSizes[1].descriptorCount = gameObjectCount;
+		poolSizes[1].descriptorCount = gameObjectCount * 2;
 
 		VkDescriptorPoolCreateInfo poolInfo{};
 		poolInfo.sType = VK_STRUCTURE_TYPE_DESCRIPTOR_POOL_CREATE_INFO;
@@ -51,7 +63,7 @@ namespace ps {
 		if (vkAllocateDescriptorSets(psDevice->device, &allocInfo, descriptorSets.data()) != VK_SUCCESS) {
 			throw std::runtime_error("failed to allocate descriptor sets!");
 		}
-
+		
 		for (size_t i = 0; i < buffers->size(); i++) {
 			VkDescriptorBufferInfo bufferInfo{};
 			bufferInfo.buffer = buffers->at(i)->getBuffer();;

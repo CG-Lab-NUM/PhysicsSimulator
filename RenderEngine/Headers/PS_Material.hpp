@@ -31,6 +31,8 @@ namespace ps {
 		MaterialComponent getNormal();
 		MaterialComponent getAmbientOcclusion();
 
+		bool isEmissive;
+
 	private:
 		MaterialComponent baseColor;
 		MaterialComponent metallic;

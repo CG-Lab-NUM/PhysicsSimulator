@@ -4,10 +4,11 @@
 #include <stb_image.h>
 
 namespace ps {
-	PS_TextureHandler::PS_TextureHandler(PS_Device* psDevice, VkDescriptorPool* descriptorPool, VkDescriptorSetLayout* textureDescriptorSetLayout) : PS_Allocator(psDevice) {
+	PS_TextureHandler::PS_TextureHandler(PS_Device* psDevice, VkDescriptorPool* descriptorPool, VkDescriptorSetLayout* textureDescriptorSetLayout, int dstBinding) : PS_Allocator(psDevice) {
 		this->psDevice = psDevice;
 		this->descriptorPool = descriptorPool;
 		this->textureDescriptorSetLayout = textureDescriptorSetLayout;
+		this->dstBinding = dstBinding;
 	}
 
 	void PS_TextureHandler::createTextureImage() {
@@ -158,8 +159,7 @@ namespace ps {
 		}
 	}
 
-	void PS_TextureHandler::createTextureDescriptorSet()
-	{
+	void PS_TextureHandler::createTextureDescriptorSet() {
 		VkDescriptorSetAllocateInfo allocInfo{};
 		allocInfo.sType = VK_STRUCTURE_TYPE_DESCRIPTOR_SET_ALLOCATE_INFO;
 		allocInfo.descriptorPool = *descriptorPool;
@@ -178,7 +178,7 @@ namespace ps {
 		VkWriteDescriptorSet descriptorWrite{};
 		descriptorWrite.sType = VK_STRUCTURE_TYPE_WRITE_DESCRIPTOR_SET;
 		descriptorWrite.dstSet = descriptorSet;
-		descriptorWrite.dstBinding = 0;
+		descriptorWrite.dstBinding = dstBinding;
 		descriptorWrite.dstArrayElement = 0;
 		descriptorWrite.descriptorType = VK_DESCRIPTOR_TYPE_COMBINED_IMAGE_SAMPLER;
 		descriptorWrite.descriptorCount = 1;

@@ -19,9 +19,6 @@
       "material": {
         "baseColor": {
           "path": "Content/Textures/StingSword/Sting_BaseColor.png"
-        },
-        "emissive": {
-          "path": "Content/Textures/StingSword/Sting_Emissive.png"
         }
       }
     },
@@ -35,17 +32,31 @@
       "model_path": "Content/Meshes/Cube.obj",
       "material": {
         "baseColor": {
-          "color": [ 0.1, 0.1, 1 ]
+          "color": [ 0.5, 0.5, 0.5 ]
+        }
+      }
+    },
+    {
+      "type": "GameObject",
+      "name": "Skybox",
+      "location": [ 0, 0, 0 ],
+      "rotation": [ 0, 0, 0 ],
+      "scale": [ 25, 25, 25 ],
+      "alpha": 0.5,
+      "model_path": "Content/Meshes/Sphere.obj",
+      "material": {
+        "baseColor": {
+          "path": "Content/Textures/Skybox.png"
         }
       }
     },
     {
       "type": "DirectionalLight",
       "name": "FirstLight",
-      "location": [5, 5, 0],
-      "rotation": [ 90, 0, 0 ],
+      "location": [ 5, 5, 0 ],
+      "rotation": [ 0, 0, 0 ],
       "color": [ 1, 1, 1 ],
-      "intensity": 3
+      "intensity": 1
     },
     {
       "type": "PointLight",

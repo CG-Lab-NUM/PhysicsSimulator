@@ -12,6 +12,7 @@ namespace ps {
 
 	private:
 		void tick();
+		void drawFrame();
 
 		PS_Window psWindow{ 1024, 768, "CustomTitle" };
 		PS_Device psDevice{ &psWindow };

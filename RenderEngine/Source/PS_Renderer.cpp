@@ -4,20 +4,15 @@ namespace ps {
 	PS_Renderer::PS_Renderer(PS_GameLevel* level) {
 		gameLevel = level;
 		gameObjects = gameLevel->getGameObjects();
-		unlitPipeline = new PS_Pipeline(&psWindow, &psDevice, &psSwapChain, gameObjects, gameLevel->getLights(), gameLevel->getCamera(), "Shaders/unlit_vert.spv", "Shaders/unlit_frag.spv");
-		litPipeline = new PS_Pipeline(&psWindow, &psDevice, &psSwapChain, gameObjects, gameLevel->getLights(), gameLevel->getCamera(), "Shaders/lit_vert.spv", "Shaders/lit_frag.spv");
+		unlitPipeline = new PS_Pipeline(&psWindow, &psDevice, &psSwapChain, gameObjects, gameLevel->getLights(), gameLevel->getCamera(), "Shaders/unlit_vert.spv", "Shaders/unlit_frag.spv", false);
+		litPipeline = new PS_Pipeline(&psWindow, &psDevice, &psSwapChain, gameObjects, gameLevel->getLights(), gameLevel->getCamera(), "Shaders/lit_vert.spv", "Shaders/lit_frag.spv", false);
 	}
 
 	void PS_Renderer::mainLoop() {
 		while (!glfwWindowShouldClose(psWindow.getWindow())) {
 			tick();
 			glfwPollEvents();
-			if (gameLevel->getPipeline() == LIT_PIPELINE) {
-				litPipeline->drawFrame();
-			}
-			else {
-				unlitPipeline->drawFrame();
-			}
+			drawFrame();
 		}
 		vkDeviceWaitIdle(psDevice.device);
 	}
@@ -40,5 +35,14 @@ namespace ps {
 	void PS_Renderer::run() {
 		mainLoop();
 		cleanup();
+	}
+
+	void PS_Renderer::drawFrame() {
+		if (gameLevel->getPipeline() == LIT_PIPELINE) {
+			litPipeline->drawFrame();
+		}
+		else {
+			unlitPipeline->drawFrame();
+		}
 	}
 }

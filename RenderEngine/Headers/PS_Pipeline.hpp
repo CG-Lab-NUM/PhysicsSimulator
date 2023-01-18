@@ -14,7 +14,7 @@ namespace ps {
 	public:
 		PS_Pipeline(PS_Window *window, PS_Device *device, PS_SwapChain *chain, 
 			std::vector<PS_GameObject*> objects, std::vector<PS_Light*> lights, 
-			PS_GameCamera* camera, std::string vertexShader, std::string fragmentShader);
+			PS_GameCamera* camera, std::string vertexShader, std::string fragmentShader, bool clear);
 
 		void drawFrame();
 		void updateUniformBuffer(uint32_t currentImage);
@@ -38,7 +38,6 @@ namespace ps {
 		PS_Device* psDevice;
 		PS_SwapChain *psSwapChain;
 		PS_RenderPass *psRenderPass;
-		PS_RenderPass* uiRenderPass;
 		PS_DescriptorSet* psDescriptorSets;
 		PS_GameCamera *gameCamera;
 		PS_TextureHandler *noTexture;
@@ -53,7 +52,8 @@ namespace ps {
 		std::vector<PS_GameObject*> gameObjects;
 		std::vector<PS_ModelHandler*> objectModels;
 		std::vector<PS_ModelHandler*> lightModels;
-		std::vector<PS_TextureHandler*> textureImages;
+		std::vector<PS_TextureHandler*> baseColors;
+		PS_TextureHandler *emissiveColor;
 		std::vector<std::unique_ptr<PS_BufferHandler>> uniformBuffers;
 
 		std::vector<VkSemaphore> imageAvailableSemaphores;

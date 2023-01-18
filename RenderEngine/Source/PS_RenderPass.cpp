@@ -1,19 +1,29 @@
 #include "PS_RenderPass.hpp"
 
 namespace ps {
-	PS_RenderPass::PS_RenderPass(PS_Device* device, PS_SwapChain* swapChain) {
+	PS_RenderPass::PS_RenderPass(PS_Device* device, PS_SwapChain* swapChain, bool clear) {
 		psDevice = device;
 		psSwapChain = swapChain;
+		VkAttachmentLoadOp loadOp;
+		VkAttachmentStoreOp storeOp;
+		if (clear) {
+			loadOp = VK_ATTACHMENT_LOAD_OP_CLEAR;
+			storeOp = VK_ATTACHMENT_STORE_OP_STORE;
+		}
+		else {
+			loadOp = VK_ATTACHMENT_LOAD_OP_LOAD;
+			storeOp = VK_ATTACHMENT_STORE_OP_STORE;
+		}
 		VkAttachmentDescription colorAttachment{
 			0,
 			psSwapChain->swapChainImageFormat,
 			psDevice->msaaSamples,
-			VK_ATTACHMENT_LOAD_OP_CLEAR,
-			VK_ATTACHMENT_STORE_OP_STORE,
+			loadOp,
+			storeOp,
 			VK_ATTACHMENT_LOAD_OP_DONT_CARE,
 			VK_ATTACHMENT_STORE_OP_DONT_CARE,
 			VK_IMAGE_LAYOUT_UNDEFINED,
-			VK_IMAGE_LAYOUT_COLOR_ATTACHMENT_OPTIMAL
+			VK_IMAGE_LAYOUT_PRESENT_SRC_KHR
 		};
 		VkAttachmentDescription depthAttachment{
 			0,
@@ -30,10 +40,10 @@ namespace ps {
 			0,
 			psSwapChain->swapChainImageFormat,
 			VK_SAMPLE_COUNT_1_BIT,
-			VK_ATTACHMENT_LOAD_OP_DONT_CARE,
-			VK_ATTACHMENT_STORE_OP_STORE,
-			VK_ATTACHMENT_LOAD_OP_DONT_CARE,
-			VK_ATTACHMENT_STORE_OP_DONT_CARE,
+			loadOp,
+			storeOp,
+			loadOp,
+			storeOp,
 			VK_IMAGE_LAYOUT_UNDEFINED,
 			VK_IMAGE_LAYOUT_PRESENT_SRC_KHR
 		};

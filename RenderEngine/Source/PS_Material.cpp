@@ -12,6 +12,8 @@ namespace ps {
 		normal.isTexture = false;
 		ambientOcclusion.isTexture = false;
 
+		isEmissive = false;
+
 		baseColor.color = {1, 1, 1};
 		metallic.color = { 1, 1, 1 };
 		specular.color = { 1, 1, 1 };
@@ -38,6 +40,7 @@ namespace ps {
 	}
 	void PS_Material::setEmissive(MaterialComponent newColor) {
 		emissive = newColor;
+		isEmissive = true;
 	}
 	void PS_Material::setOpacity(MaterialComponent newColor) {
 		opacity = newColor;
