@@ -15,7 +15,6 @@ namespace ps {
 		PS_GameLevel(std::string path);
 		void tick();
 		void loadMap(std::string path);
-		glm::vec3 get3DVector(json data, std::string field);
 
 		void addGameObject(PS_GameObject* object) {
 			gameObjects.push_back(object);
@@ -46,6 +45,9 @@ namespace ps {
 		void readLights(json elem);
 		void readCameras(json elem);
 		void readObjects(json elem);
+		glm::vec3 read3DVector(json data, std::string field);
+		PS_Material readMaterial(json elem);
+		MaterialComponent readMaterialComponent(json elem);
 
 		std::vector<PS_GameObject*> gameObjects;
 		std::vector<PS_Light*> gameLights;

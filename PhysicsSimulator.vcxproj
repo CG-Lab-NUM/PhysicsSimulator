@@ -137,6 +137,7 @@
   <ItemGroup>
     <ClCompile Include="GameEngine\Source\PS_Light.cpp" />
     <ClCompile Include="GameEngine\Source\PS_GameCamera.cpp" />
+    <ClCompile Include="GameEngine\Source\PS_SkyBox.cpp" />
     <ClCompile Include="Handlers\Source\PS_BufferHandler.cpp" />
     <ClCompile Include="Handlers\Source\PS_FileHandler.cpp" />
     <ClCompile Include="Handlers\Source\PS_KeyboardHandler.cpp" />
@@ -164,6 +165,7 @@
   <ItemGroup>
     <ClInclude Include="GameEngine\Headers\PS_GameCamera.hpp" />
     <ClInclude Include="GameEngine\Headers\PS_Light.hpp" />
+    <ClInclude Include="GameEngine\Headers\PS_SkyBox.hpp" />
     <ClInclude Include="Handlers\Headers\PS_BufferHandler.hpp" />
     <ClInclude Include="Handlers\Headers\PS_FileHandler.hpp" />
     <ClInclude Include="Handlers\Headers\PS_KeyboardHandler.hpp" />

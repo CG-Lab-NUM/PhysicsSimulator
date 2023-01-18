@@ -9,9 +9,5 @@
 #include <string>
 
 namespace ps {
-	class PS_GameGeneric {
-	public:
-		//void createSphereCollision(glm::vec3 center, float radius);
-	private:
-	};
+
 }

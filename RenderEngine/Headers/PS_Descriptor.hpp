@@ -7,6 +7,7 @@ namespace ps {
 	public:
 		PS_DescriptorSet(PS_Device *device, uint32_t frames, uint32_t objectCount);
 		void createLayout(VkDescriptorSetLayoutBinding binding);
+		void createLayout(std::vector<VkDescriptorSetLayoutBinding> binding);
 		void createPool();
 		void createSets(std::vector<std::unique_ptr<PS_BufferHandler>> *buffers);
 
@@ -33,11 +34,11 @@ namespace ps {
 		}
 
 	private:
-
 		PS_Device* psDevice;
 		uint32_t maxFrames;
 		uint32_t gameObjectCount;
 		VkDescriptorPool descriptorPool;
+		int bindingCount;
 
 		std::vector<VkDescriptorSetLayout> setLayouts;
 		std::vector<VkDescriptorSet> descriptorSets;
