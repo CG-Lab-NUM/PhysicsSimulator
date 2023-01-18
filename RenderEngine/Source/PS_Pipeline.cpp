@@ -396,8 +396,6 @@ namespace ps {
 				Model->Load(gameObjects[i], baseColor.color);
 			}
 		}
-		noTexture = new PS_TextureHandler(psDevice, psDescriptorSets->getPoolReference(), psDescriptorSets->getSetLayoutReference(1));
-		noTexture->LoadNoTexture();
 	}
 	void PS_Pipeline::loadLights() {
 		for (int i = 0; i < pointLights.size(); i++) {

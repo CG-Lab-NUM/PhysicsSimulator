@@ -17,28 +17,33 @@
       "alpha": 1.0,
       "model_path": "Content/Meshes/StingSword.obj",
       "material": {
-        "isTexture": true,
-        "baseColor": "Content/Textures/StingSword/StingSword_Base_Color.png"
+        "baseColor": {
+          "path": "Content/Textures/StingSword/Sting_BaseColor.png"
+        },
+        "emissive": {
+          "path": "Content/Textures/StingSword/Sting_Emissive.png"
+        }
       }
     },
     {
       "type": "GameObject",
       "name": "Floor",
-      "location": [ 0, 0, 0 ],
+      "location": [ 0, 0, 10 ],
       "rotation": [ 0, 0, 0 ],
-      "scale": [ 1, 1, 1 ],
+      "scale": [ 10, 10, 1 ],
       "alpha": 0.5,
       "model_path": "Content/Meshes/Cube.obj",
       "material": {
-        "isTexture": false,
-        "baseColor": [ 0.1, 0.1, 1 ]
+        "baseColor": {
+          "color": [ 0.1, 0.1, 1 ]
+        }
       }
     },
     {
       "type": "DirectionalLight",
       "name": "FirstLight",
       "location": [5, 5, 0],
-      "rotation": [ 0, 90, 90 ],
+      "rotation": [ 90, 0, 0 ],
       "color": [ 1, 1, 1 ],
       "intensity": 3
     },

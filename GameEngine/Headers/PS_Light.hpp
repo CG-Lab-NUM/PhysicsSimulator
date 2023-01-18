@@ -9,15 +9,7 @@ namespace ps {
 
 		void setLightColor(glm::vec3 newColor);
 		void setIntensity(float newIntensity);
-		void setDirectional(bool isDirectional) {
-			if (isDirectional) {
-				setModel("Content/Meshes/Arrow.obj");
-			}
-			else {
-				setModel("Content/Meshes/Sphere.obj");
-			}
-			this->isDirectional = isDirectional;
-		}
+		void setDirectional(bool isDirectional);
 		bool getDirectional() {
 			return isDirectional;
 		}

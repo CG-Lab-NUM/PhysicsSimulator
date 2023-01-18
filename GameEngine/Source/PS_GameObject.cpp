@@ -55,6 +55,9 @@ namespace ps {
 	void PS_GameObject::setScale(glm::vec3 newScale) {
 		scale = newScale;
 	}
+	void PS_GameObject::setMeshRotation(glm::vec3 newRotation) {
+		meshRotation = newRotation;
+	}
 	void PS_GameObject::setModel(std::string newModelPath) {
 		modelPath = PS_FileHandler::makeAbsolute(newModelPath);
 	}
@@ -77,6 +80,9 @@ namespace ps {
 	}
 	glm::vec3 PS_GameObject::getRotation() {
 		return rotation;
+	}
+	glm::vec3 PS_GameObject::getMeshRotation() {
+		return meshRotation;
 	}
 	glm::vec3 PS_GameObject::getScale() {
 		return scale;

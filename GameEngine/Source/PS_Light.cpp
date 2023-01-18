@@ -13,6 +13,18 @@ namespace ps {
 		lightColor = newLightColor;
 		setModel("Content/Meshes/Sphere.obj");
 	}
+	void PS_Light::setDirectional(bool isDirectional) {
+		if (isDirectional) {
+			setModel("Content/Meshes/Arrow.obj");
+			//PS_GameObject::setMeshRotation({ 90, -90, -90 });
+			PS_GameObject::setMeshRotation({ 0, 0, 0 });
+		}
+		else {
+			setModel("Content/Meshes/Sphere.obj");
+			PS_GameObject::setMeshRotation({ 0, 0, 0 });
+		}
+		this->isDirectional = isDirectional;
+	}
 
 	void PS_Light::setLightColor(glm::vec3 newColor) {
 		lightColor = newColor;

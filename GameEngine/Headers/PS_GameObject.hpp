@@ -14,6 +14,7 @@ namespace ps {
 
 		void setLocation(glm::vec3 newLocation);
 		void setRotation(glm::vec3 newRotation);
+		void setMeshRotation(glm::vec3 newRotation);
 		void setScale(glm::vec3 newScale);
 		void setModel(std::string newModelPath);
 		void setMaterial(PS_Material newMaterial);
@@ -24,6 +25,7 @@ namespace ps {
 
 		glm::vec3 getLocation();
 		glm::vec3 getRotation();
+		glm::vec3 getMeshRotation();
 		glm::vec3 getScale();
 		glm::vec3 getForwardVector();
 		glm::vec3 getRightVector();
@@ -39,6 +41,7 @@ namespace ps {
 	private:
 		glm::vec3 location;
 		glm::vec3 rotation;
+		glm::vec3 meshRotation;
 		glm::vec3 scale;
 
 		glm::vec3 forwardVector;

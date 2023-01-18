@@ -7,7 +7,6 @@ namespace ps {
 	public:
 		PS_TextureHandler(PS_Device* psDevice, VkDescriptorPool* descriptorPool, VkDescriptorSetLayout* textureDescriptorSetLayout);
 		void Load(std::string texturePath);
-		void LoadNoTexture();
 		void Free();
 		void Destroy();
 

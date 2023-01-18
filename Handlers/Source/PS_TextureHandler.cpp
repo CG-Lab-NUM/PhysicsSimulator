@@ -203,15 +203,8 @@ namespace ps {
 
 	void PS_TextureHandler::Load(std::string texturePath)
 	{
+		std::cout << texturePath << std::endl;
 		this->texturePath = texturePath;
-		createTextureImage();
-		createTextureImageView();
-		createTextureSampler();
-		createTextureDescriptorSet();
-	}
-
-	void PS_TextureHandler::LoadNoTexture() {
-		texturePath = PS_FileHandler::makeAbsolute("Content/Textures/Basic/NoTexture.png");
 		createTextureImage();
 		createTextureImageView();
 		createTextureSampler();
