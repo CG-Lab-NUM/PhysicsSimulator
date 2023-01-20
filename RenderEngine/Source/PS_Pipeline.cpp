@@ -24,31 +24,14 @@ namespace ps {
 		pointLights = lights;
 		psRenderPass = new PS_RenderPass(psDevice, psSwapChain, clear);
 		psDescriptorSets = new PS_DescriptorSet(psDevice, MAX_FRAMES_IN_FLIGHT, static_cast<uint32_t>(gameObjects.size()));
-		psDescriptorSets->createLayout({
+		uniformLayoutIndex = psDescriptorSets->createLayout({
 			0,
 			VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER,
 			1,
 			VK_SHADER_STAGE_VERTEX_BIT,
 			nullptr
 		});
-		std::vector<VkDescriptorSetLayoutBinding> bindings;
-		VkDescriptorSetLayoutBinding baseColorBinding{
-			0,
-			VK_DESCRIPTOR_TYPE_COMBINED_IMAGE_SAMPLER,
-			1,
-			VK_SHADER_STAGE_FRAGMENT_BIT,
-			nullptr
-		};
-		VkDescriptorSetLayoutBinding emissiveColorBinding{
-			1,
-			VK_DESCRIPTOR_TYPE_COMBINED_IMAGE_SAMPLER,
-			1,
-			VK_SHADER_STAGE_FRAGMENT_BIT,
-			nullptr
-		};
-		bindings.push_back(baseColorBinding);
-		bindings.push_back(emissiveColorBinding);
-		psDescriptorSets->createLayout(bindings);
+
 		createGraphicsPipeline();
 		psDevice->createCommandPool();
 		psSwapChain->createColorResources();
@@ -146,12 +129,15 @@ namespace ps {
 		//fragmentPushConstantRange.offset = sizeof(PushConstant);
 		//fragmentPushConstantRange.size = sizeof(FragmentPushConstant);
 		//fragmentPushConstantRange.stageFlags = VK_SHADER_STAGE_FRAGMENT_BIT;
+		
+		PS_TextureHandler tempTexture{psDevice, psDescriptorSets->getPoolReference() };
+		tempTexture.createLayouts();
 
 		VkDescriptorSetLayout setLayouts[] = {
-			psDescriptorSets->getSetLayout(0), 
-			psDescriptorSets->getSetLayout(1)
+			psDescriptorSets->getSetLayout(0),
+			tempTexture.textureDescriptorSetLayout
 		};
-
+		
 		VkPushConstantRange pushConstantRange[] = { vertexPushConstantRange };
 
 		VkPipelineLayoutCreateInfo pipelineLayoutInfo{};
@@ -249,7 +235,6 @@ namespace ps {
 		uniformBuffer.writeToBuffer((void*)&ubo);
 		copyBuffer(uniformBuffer.getBuffer(), uniformBuffers[currentImage]->getBuffer(), sizeof(UniformBufferObject));
 	}
-
 	void PS_Pipeline::drawFrame() {
 		uint32_t imageIndex;
 		VkResult result;
@@ -387,12 +372,13 @@ namespace ps {
 		vkCmdSetViewport(commandBuffer, 0, 1, &viewport);
 		vkCmdSetScissor(commandBuffer, 0, 1, &scissor);
 	}
+
 	void PS_Pipeline::loadGameObjects() {
 		for (int i = 0; i < gameObjects.size(); i++) {
 			PS_Material material = gameObjects[i]->getMaterial();
 			MaterialComponent baseColor = material.getColor();
 			if (baseColor.isTexture) {
-				PS_TextureHandler* Texture = new PS_TextureHandler(psDevice, psDescriptorSets->getPoolReference(), psDescriptorSets->getSetLayoutReference(1), 0);
+				PS_TextureHandler* Texture = new PS_TextureHandler(psDevice, psDescriptorSets->getPoolReference());
 				baseColors.push_back(Texture);
 				baseColors[baseColors.size() - 1]->Load(baseColor.texturePath);
 
@@ -409,7 +395,7 @@ namespace ps {
 			if (material.isEmissive) {
 				MaterialComponent emissive = material.getEmissive();
 				if (emissive.isTexture) {
-					emissiveColor = new PS_TextureHandler(psDevice, psDescriptorSets->getPoolReference(), psDescriptorSets->getSetLayoutReference(1), 1);
+					emissiveColor = new PS_TextureHandler(psDevice, psDescriptorSets->getPoolReference());
 					emissiveColor->Load(emissive.texturePath);
 					std::cout << "Emissive Done\n";
 				}
@@ -429,7 +415,6 @@ namespace ps {
 		for (int i = 0; i < gameObjects.size(); i++) {
 			vkCmdPushConstants(commandBuffer, pipelineLayout, VK_SHADER_STAGE_VERTEX_BIT, 0, sizeof(vertexPushConstant), &vertexPushConstant);
 			PS_Material material = gameObjects[i]->getMaterial();
-			//std::vector<VkDescriptorSet*> sets = {  };
 			if (material.getColor().isTexture) {
 				vkCmdBindDescriptorSets(commandBuffer, VK_PIPELINE_BIND_POINT_GRAPHICS, pipelineLayout, 1, 1, &baseColors[count]->descriptorSet, 0, nullptr);
 				count++;

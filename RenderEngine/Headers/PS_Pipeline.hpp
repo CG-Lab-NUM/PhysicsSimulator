@@ -34,6 +34,9 @@ namespace ps {
 		void loadLights();
 		void renderGameObjects(VkCommandBuffer commandBuffer);
 
+		int uniformLayoutIndex;
+		int textureLayoutIndex;
+
 		PS_Window* psWindow;
 		PS_Device* psDevice;
 		PS_SwapChain *psSwapChain;

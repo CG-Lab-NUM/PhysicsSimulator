@@ -13,6 +13,6 @@ void main() {
     if(fragTexCoord.x < 0) {
         outColor = fragColor;
     } else {
-        outColor = fragColor * texture(baseColorSampler, fragTexCoord);
+        outColor = fragColor * texture(emissiveSampler, fragTexCoord);
     }
 }

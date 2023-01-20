@@ -5,17 +5,18 @@
 namespace ps {
 	class PS_TextureHandler : PS_Allocator {
 	public:
-		PS_TextureHandler(PS_Device* psDevice, VkDescriptorPool* descriptorPool, VkDescriptorSetLayout* textureDescriptorSetLayout, int dstBinding);
+		PS_TextureHandler(PS_Device* psDevice, VkDescriptorPool* descriptorPool);
 		void Load(std::string texturePath);
 		void Free();
+		void createLayouts();
 		void Destroy();
-
 
 		void setDevice(PS_Device* device) {
 			this->psDevice = device;
 		}
 
 		VkDescriptorSet descriptorSet;
+		VkDescriptorSetLayout textureDescriptorSetLayout;
 
 		VkImage getTextureImage() {
 			return textureImage;
@@ -32,17 +33,22 @@ namespace ps {
 	private:
 		PS_Device* psDevice;
 		uint32_t mipLevels;
+
 		VkImage textureImage;
 		VkDeviceMemory textureImageMemory;
 		VkImageView textureImageView;
 		VkSampler textureSampler;
 
+		VkImage emissiveImage;
+		VkDeviceMemory emissiveImageMemory;
+		VkImageView emissiveImageView;
+		VkSampler emissiveSampler;
+
 		VkDescriptorPool* descriptorPool;
-		VkDescriptorSetLayout* textureDescriptorSetLayout;
 
 		std::string texturePath;
 		
-		int dstBinding;
+		bool isEmissive;
 
 		void createTextureImage();
 		void generateMipmaps(VkImage image, VkFormat imageFormat, int32_t texWidth, int32_t texHeight, uint32_t mipLevels);

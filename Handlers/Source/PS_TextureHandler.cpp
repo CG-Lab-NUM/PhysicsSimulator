@@ -4,11 +4,9 @@
 #include <stb_image.h>
 
 namespace ps {
-	PS_TextureHandler::PS_TextureHandler(PS_Device* psDevice, VkDescriptorPool* descriptorPool, VkDescriptorSetLayout* textureDescriptorSetLayout, int dstBinding) : PS_Allocator(psDevice) {
+	PS_TextureHandler::PS_TextureHandler(PS_Device* psDevice, VkDescriptorPool* descriptorPool) : PS_Allocator(psDevice) {
 		this->psDevice = psDevice;
 		this->descriptorPool = descriptorPool;
-		this->textureDescriptorSetLayout = textureDescriptorSetLayout;
-		this->dstBinding = dstBinding;
 	}
 
 	void PS_TextureHandler::createTextureImage() {
@@ -164,7 +162,7 @@ namespace ps {
 		allocInfo.sType = VK_STRUCTURE_TYPE_DESCRIPTOR_SET_ALLOCATE_INFO;
 		allocInfo.descriptorPool = *descriptorPool;
 		allocInfo.descriptorSetCount = 1;
-		allocInfo.pSetLayouts = textureDescriptorSetLayout;
+		allocInfo.pSetLayouts = &textureDescriptorSetLayout;
 
 		if (vkAllocateDescriptorSets(psDevice->device, &allocInfo, &descriptorSet) != VK_SUCCESS) {
 			throw std::runtime_error("failed to allocate descriptor sets!");
@@ -178,7 +176,23 @@ namespace ps {
 		VkWriteDescriptorSet descriptorWrite{};
 		descriptorWrite.sType = VK_STRUCTURE_TYPE_WRITE_DESCRIPTOR_SET;
 		descriptorWrite.dstSet = descriptorSet;
-		descriptorWrite.dstBinding = dstBinding;
+		descriptorWrite.dstBinding = 0;
+		descriptorWrite.dstArrayElement = 0;
+		descriptorWrite.descriptorType = VK_DESCRIPTOR_TYPE_COMBINED_IMAGE_SAMPLER;
+		descriptorWrite.descriptorCount = 1;
+		descriptorWrite.pImageInfo = &imageInfo;
+
+		vkUpdateDescriptorSets(psDevice->device, 1, &descriptorWrite, 0, nullptr);
+
+		//
+
+		imageInfo.imageLayout = VK_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL;
+		imageInfo.imageView = textureImageView;
+		imageInfo.sampler = textureSampler;
+
+		descriptorWrite.sType = VK_STRUCTURE_TYPE_WRITE_DESCRIPTOR_SET;
+		descriptorWrite.dstSet = descriptorSet;
+		descriptorWrite.dstBinding = 1;
 		descriptorWrite.dstArrayElement = 0;
 		descriptorWrite.descriptorType = VK_DESCRIPTOR_TYPE_COMBINED_IMAGE_SAMPLER;
 		descriptorWrite.descriptorCount = 1;
@@ -191,7 +205,6 @@ namespace ps {
 	{
 		vkDestroySampler(psDevice->device, textureSampler, nullptr);
 		vkDestroyImageView(psDevice->device, textureImageView, nullptr);
-
 		vkDestroyImage(psDevice->device, textureImage, nullptr);
 		vkFreeMemory(psDevice->device, textureImageMemory, nullptr);
 	}
@@ -203,11 +216,38 @@ namespace ps {
 
 	void PS_TextureHandler::Load(std::string texturePath)
 	{
-		std::cout << texturePath << std::endl;
 		this->texturePath = texturePath;
+		createLayouts();
 		createTextureImage();
 		createTextureImageView();
 		createTextureSampler();
 		createTextureDescriptorSet();
+	}
+
+	void PS_TextureHandler::createLayouts() {
+		VkDescriptorSetLayoutBinding baseColorBinding{
+			0,
+			VK_DESCRIPTOR_TYPE_COMBINED_IMAGE_SAMPLER,
+			1,
+			VK_SHADER_STAGE_FRAGMENT_BIT,
+			nullptr
+		};
+		VkDescriptorSetLayoutBinding emissiveColorBinding{
+			1,
+			VK_DESCRIPTOR_TYPE_COMBINED_IMAGE_SAMPLER,
+			1,
+			VK_SHADER_STAGE_FRAGMENT_BIT,
+			nullptr
+		};
+		std::vector<VkDescriptorSetLayoutBinding> bindings = { baseColorBinding, emissiveColorBinding };
+
+		int bindingCount = bindings.size();
+		VkDescriptorSetLayoutCreateInfo layoutInfo{};
+		layoutInfo.sType = VK_STRUCTURE_TYPE_DESCRIPTOR_SET_LAYOUT_CREATE_INFO;
+		layoutInfo.bindingCount = (uint32_t)bindingCount;
+		layoutInfo.pBindings = bindings.data();
+		if (vkCreateDescriptorSetLayout(psDevice->device, &layoutInfo, nullptr, &textureDescriptorSetLayout) != VK_SUCCESS) {
+			throw std::runtime_error("failed to create uniform descriptor set layout!");
+		}
 	}
 }
