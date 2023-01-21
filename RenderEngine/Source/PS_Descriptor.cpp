@@ -7,7 +7,7 @@ namespace ps {
 		gameObjectCount = objectCount;
 	}
 
-	void PS_DescriptorSet::createLayout(VkDescriptorSetLayoutBinding binding) {
+	int PS_DescriptorSet::createLayout(VkDescriptorSetLayoutBinding binding) {
 		VkDescriptorSetLayoutCreateInfo layoutInfo{};
 		layoutInfo.sType = VK_STRUCTURE_TYPE_DESCRIPTOR_SET_LAYOUT_CREATE_INFO;
 		layoutInfo.bindingCount = 1;
@@ -18,8 +18,10 @@ namespace ps {
 			throw std::runtime_error("failed to create uniform descriptor set layout!");
 		}
 		setLayouts.push_back(setLayout);
+		return setLayouts.size() - 1;
 	}
-	void PS_DescriptorSet::createLayout(std::vector<VkDescriptorSetLayoutBinding> bindings) {
+
+	int PS_DescriptorSet::createLayout(std::vector<VkDescriptorSetLayoutBinding> bindings) {
 		bindingCount = bindings.size();
 		VkDescriptorSetLayoutCreateInfo layoutInfo{};
 		layoutInfo.sType = VK_STRUCTURE_TYPE_DESCRIPTOR_SET_LAYOUT_CREATE_INFO;
@@ -30,6 +32,7 @@ namespace ps {
 			throw std::runtime_error("failed to create uniform descriptor set layout!");
 		}
 		setLayouts.push_back(setLayout);
+		return setLayouts.size() - 1;
 	}
 
 	void PS_DescriptorSet::createPool() {
@@ -38,6 +41,9 @@ namespace ps {
 		poolSizes[0].descriptorCount = maxFrames;
 		poolSizes[1].type = VK_DESCRIPTOR_TYPE_COMBINED_IMAGE_SAMPLER;
 		poolSizes[1].descriptorCount = gameObjectCount * 2;
+
+		descriptorTypes.push_back(VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER);
+		descriptorTypes.push_back(VK_DESCRIPTOR_TYPE_COMBINED_IMAGE_SAMPLER);
 
 		VkDescriptorPoolCreateInfo poolInfo{};
 		poolInfo.sType = VK_STRUCTURE_TYPE_DESCRIPTOR_POOL_CREATE_INFO;
@@ -63,7 +69,7 @@ namespace ps {
 		if (vkAllocateDescriptorSets(psDevice->device, &allocInfo, descriptorSets.data()) != VK_SUCCESS) {
 			throw std::runtime_error("failed to allocate descriptor sets!");
 		}
-		
+
 		for (size_t i = 0; i < buffers->size(); i++) {
 			VkDescriptorBufferInfo bufferInfo{};
 			bufferInfo.buffer = buffers->at(i)->getBuffer();;
@@ -80,6 +86,7 @@ namespace ps {
 			descriptorWrite.pBufferInfo = &bufferInfo;
 
 			vkUpdateDescriptorSets(psDevice->device, 1, &descriptorWrite, 0, nullptr);
+			std::cout << "Updated Uniform Buffer: " << i << std::endl;
 		}
 	}
 }

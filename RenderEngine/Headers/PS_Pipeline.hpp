@@ -34,6 +34,9 @@ namespace ps {
 		void loadLights();
 		void renderGameObjects(VkCommandBuffer commandBuffer);
 
+		int uniformLayoutIndex;
+		int textureLayoutIndex;
+
 		PS_Window* psWindow;
 		PS_Device* psDevice;
 		PS_SwapChain *psSwapChain;
@@ -52,7 +55,7 @@ namespace ps {
 		std::vector<PS_GameObject*> gameObjects;
 		std::vector<PS_ModelHandler*> objectModels;
 		std::vector<PS_ModelHandler*> lightModels;
-		std::vector<PS_TextureHandler*> baseColors;
+		std::vector<PS_TextureHandler*> textures;
 		PS_TextureHandler *emissiveColor;
 		std::vector<std::unique_ptr<PS_BufferHandler>> uniformBuffers;
 
