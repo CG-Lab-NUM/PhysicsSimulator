@@ -19,6 +19,9 @@
       "material": {
         "baseColor": {
           "path": "Content/Textures/StingSword/Sting_BaseColor.png"
+        },
+        "emissive": {
+          "path": "Content/Textures/StingSword/Sting_Emissive.png"
         }
       }
     },
@@ -33,20 +36,6 @@
       "material": {
         "baseColor": {
           "color": [ 0.5, 0.5, 0.5 ]
-        }
-      }
-    },
-    {
-      "type": "GameObject",
-      "name": "Skybox",
-      "location": [ 0, 0, 0 ],
-      "rotation": [ 0, 0, 0 ],
-      "scale": [ 25, 25, 25 ],
-      "alpha": 0.5,
-      "model_path": "Content/Meshes/Sphere.obj",
-      "material": {
-        "baseColor": {
-          "path": "Content/Textures/Skybox.png"
         }
       }
     },

@@ -32,12 +32,12 @@ namespace ps {
 		std::vector<VkDescriptorSetLayout> getSetLayouts() {
 			return setLayouts;
 		}
+		VkDescriptorPool descriptorPool;
 
 	private:
 		PS_Device* psDevice;
 		uint32_t maxFrames;
 		uint32_t gameObjectCount;
-		VkDescriptorPool descriptorPool;
 		int bindingCount;
 
 		std::vector<VkDescriptorSetLayout> setLayouts;

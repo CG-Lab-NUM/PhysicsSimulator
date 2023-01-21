@@ -130,7 +130,7 @@ namespace ps {
 		//fragmentPushConstantRange.size = sizeof(FragmentPushConstant);
 		//fragmentPushConstantRange.stageFlags = VK_SHADER_STAGE_FRAGMENT_BIT;
 		
-		PS_TextureHandler tempTexture{psDevice, psDescriptorSets->getPoolReference() };
+		PS_TextureHandler tempTexture{psDevice, psDescriptorSets };
 		tempTexture.createLayouts();
 
 		VkDescriptorSetLayout setLayouts[] = {
@@ -314,8 +314,8 @@ namespace ps {
 		vkCmdBindPipeline(commandBuffer, VK_PIPELINE_BIND_POINT_GRAPHICS, graphicsPipeline);
 		createViewport(commandBuffer);
 		vkCmdBindDescriptorSets(commandBuffer, VK_PIPELINE_BIND_POINT_GRAPHICS, pipelineLayout, 0, 1, psDescriptorSets->getSetReference(currentFrame), 0, nullptr);
-		
 		renderGameObjects(commandBuffer);
+
 		//widget->renderWidget(commandBuffer);
 
 		vkCmdEndRenderPass(commandBuffer);
@@ -375,31 +375,14 @@ namespace ps {
 
 	void PS_Pipeline::loadGameObjects() {
 		for (int i = 0; i < gameObjects.size(); i++) {
-			PS_Material material = gameObjects[i]->getMaterial();
-			MaterialComponent baseColor = material.getColor();
-			if (baseColor.isTexture) {
-				PS_TextureHandler* Texture = new PS_TextureHandler(psDevice, psDescriptorSets->getPoolReference());
-				baseColors.push_back(Texture);
-				baseColors[baseColors.size() - 1]->Load(baseColor.texturePath);
+			PS_ModelHandler* Model = new PS_ModelHandler(psDevice);
+			objectModels.push_back(Model);
+			Model->Load(gameObjects[i]);
 
-				PS_ModelHandler* Model = new PS_ModelHandler(psDevice);
-				objectModels.push_back(Model);
-				Model->Load(gameObjects[i]);
-				//std::cout << "Color : " << baseColor.color.x << " " << baseColor.color.y << " " << baseColor.color.z << "\n";
-			}
-			else {
-				PS_ModelHandler* Model = new PS_ModelHandler(psDevice);
-				objectModels.push_back(Model);
-				Model->Load(gameObjects[i], baseColor.color);
-			}
-			if (material.isEmissive) {
-				MaterialComponent emissive = material.getEmissive();
-				if (emissive.isTexture) {
-					emissiveColor = new PS_TextureHandler(psDevice, psDescriptorSets->getPoolReference());
-					emissiveColor->Load(emissive.texturePath);
-					std::cout << "Emissive Done\n";
-				}
-			}
+			PS_TextureHandler* Texture = new PS_TextureHandler(psDevice, psDescriptorSets);
+			Texture->Load(gameObjects[i]->getMaterial());
+			textures.push_back(Texture);
+			//textures[textures.size() - 1]->Load();
 		}
 	}
 	void PS_Pipeline::loadLights() {
@@ -412,18 +395,25 @@ namespace ps {
 	void PS_Pipeline::renderGameObjects(VkCommandBuffer commandBuffer) {
 		PushConstant vertexPushConstant;
 		int count = 0;
+		uint32_t uniformDescriptorSize = sizeof(VkDescriptorBufferInfo);
 		for (int i = 0; i < gameObjects.size(); i++) {
-			vkCmdPushConstants(commandBuffer, pipelineLayout, VK_SHADER_STAGE_VERTEX_BIT, 0, sizeof(vertexPushConstant), &vertexPushConstant);
 			PS_Material material = gameObjects[i]->getMaterial();
 			if (material.getColor().isTexture) {
-				vkCmdBindDescriptorSets(commandBuffer, VK_PIPELINE_BIND_POINT_GRAPHICS, pipelineLayout, 1, 1, &baseColors[count]->descriptorSet, 0, nullptr);
+				vkCmdBindDescriptorSets(commandBuffer, VK_PIPELINE_BIND_POINT_GRAPHICS, pipelineLayout, 1, 1, &textures[count]->descriptorSet, 0, nullptr);
 				count++;
 			}
+			vkCmdPushConstants(commandBuffer, pipelineLayout, VK_SHADER_STAGE_VERTEX_BIT, 0, sizeof(vertexPushConstant), &vertexPushConstant);
 			objectModels[i]->Render(commandBuffer);
 		}
 		for (int i = 0; i < pointLights.size(); i++) {
-			vkCmdPushConstants(commandBuffer, pipelineLayout, VK_SHADER_STAGE_VERTEX_BIT, 0, sizeof(vertexPushConstant), &vertexPushConstant);
+			//vkCmdPushConstants(commandBuffer, pipelineLayout, VK_SHADER_STAGE_VERTEX_BIT, 0, sizeof(vertexPushConstant), &vertexPushConstant);
 			lightModels[i]->Render(commandBuffer);
 		}
 	}
 }
+
+/*
+
+validation layer: Validation Error: [ VUID-vkCmdDrawIndexed-None-02699 ] Object 0: handle = 0x2d15fe00000000bf, type = VK_OBJECT_TYPE_DESCRIPTOR_SET; | MessageID = 0xa44449d4 | Descriptor set VkDescriptorSet 0x2d15fe00000000bf[] encountered the following validation error at vkCmdDrawIndexed time: Descriptor in binding #1 index 0 is being used in draw but has never been updated via vkUpdateDescriptorSets() or a similar call. The Vulkan spec states: Descriptors in each bound descriptor set, specified via vkCmdBindDescriptorSets, must be valid if they are statically used by the VkPipeline bound to the pipeline bind point used by this command (https://vulkan.lunarg.com/doc/view/1.3.231.1/windows/1.3-extensions/vkspec.html#VUID-vkCmdDrawIndexed-None-02699)
+validation layer: Validation Error: [ VUID-vkCmdDrawIndexed-None-02699 ] Object 0: handle = 0xee24d0000000059, type = VK_OBJECT_TYPE_DESCRIPTOR_SET; | MessageID = 0xa44449d4 | Descriptor set VkDescriptorSet 0xee24d0000000059[] encountered the following validation error at vkCmdDrawIndexed time: Descriptor in binding #1 index 0 is being used in draw but has never been updated via vkUpdateDescriptorSets() or a similar call. The Vulkan spec states: Descriptors in each bound descriptor set, specified via vkCmdBindDescriptorSets, must be valid if they are statically used by the VkPipeline bound to the pipeline bind point used by this command (https://vulkan.lunarg.com/doc/view/1.3.231.1/windows/1.3-extensions/vkspec.html#VUID-vkCmdDrawIndexed-None-02699)
+*/

@@ -55,7 +55,7 @@ namespace ps {
 		std::vector<PS_GameObject*> gameObjects;
 		std::vector<PS_ModelHandler*> objectModels;
 		std::vector<PS_ModelHandler*> lightModels;
-		std::vector<PS_TextureHandler*> baseColors;
+		std::vector<PS_TextureHandler*> textures;
 		PS_TextureHandler *emissiveColor;
 		std::vector<std::unique_ptr<PS_BufferHandler>> uniformBuffers;
 

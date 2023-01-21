@@ -69,7 +69,6 @@ namespace ps {
 		if (vkAllocateDescriptorSets(psDevice->device, &allocInfo, descriptorSets.data()) != VK_SUCCESS) {
 			throw std::runtime_error("failed to allocate descriptor sets!");
 		}
-		
 
 		for (size_t i = 0; i < buffers->size(); i++) {
 			VkDescriptorBufferInfo bufferInfo{};
@@ -87,6 +86,7 @@ namespace ps {
 			descriptorWrite.pBufferInfo = &bufferInfo;
 
 			vkUpdateDescriptorSets(psDevice->device, 1, &descriptorWrite, 0, nullptr);
+			std::cout << "Updated Uniform Buffer: " << i << std::endl;
 		}
 	}
 }
