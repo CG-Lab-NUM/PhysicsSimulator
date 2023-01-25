@@ -14,15 +14,15 @@ namespace ps {
 
 		isEmissive = false;
 
-		baseColor.color = {1, 1, 1};
-		metallic.color = { 1, 1, 1 };
-		specular.color = { 1, 1, 1 };
-		roughness.color = { 1, 1, 1 };
-		emissive.color = { 1, 1, 1 };
-		opacity.color = { 1, 1, 1 };
-		opacityMask.color = { 1, 1, 1 };
-		normal.color = { 1, 1, 1 };
-		ambientOcclusion.color = { 1, 1, 1 };
+		baseColor.color = glm::vec4(1);
+		metallic.color = glm::vec4(1);
+		specular.color = glm::vec4(1);
+		roughness.color = glm::vec4(1);
+		emissive.color = glm::vec4(1);
+		opacity.color = glm::vec4(1);
+		opacityMask.color = glm::vec4(1);
+		normal.color = glm::vec4(1);
+		ambientOcclusion.color = glm::vec4(1);
 	}
 
 

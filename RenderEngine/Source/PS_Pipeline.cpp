@@ -381,20 +381,21 @@ namespace ps {
 
 	void PS_Pipeline::loadGameObjects() {
 		for (int i = 0; i < gameObjects.size(); i++) {
-			PS_ModelHandler* Model = new PS_ModelHandler(psDevice);
-			objectModels.push_back(Model);
-			Model->Load(gameObjects[i]);
+			PS_ModelHandler* model = new PS_ModelHandler(psDevice);
+			objectModels.push_back(model);
+			model->Load(gameObjects[i]);
 
-			PS_MaterialHandler* Texture = new PS_MaterialHandler(psDevice, psDescriptorSets);
-			Texture->Load(gameObjects[i]->getMaterial());
-			materials.push_back(Texture);
+			PS_MaterialHandler* material = new PS_MaterialHandler(psDevice, psDescriptorSets);
+			material->Load(gameObjects[i]->getMaterial());
+			materials.push_back(material);
+
 		}
 	}
 	void PS_Pipeline::loadLights() {
 		for (int i = 0; i < pointLights.size(); i++) {
-			PS_ModelHandler* Model = new PS_ModelHandler(psDevice);
-			lightModels.push_back(Model);
-			Model->Load(pointLights[i], pointLights[i]->getLightColor());
+			PS_ModelHandler* model = new PS_ModelHandler(psDevice);
+			lightModels.push_back(model);
+			model->Load(pointLights[i]);
 		}
 	}
 	void PS_Pipeline::renderGameObjects(VkCommandBuffer commandBuffer) {

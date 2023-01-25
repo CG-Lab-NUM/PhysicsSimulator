@@ -8,6 +8,10 @@ namespace ps {
 	}
 
 	void PS_ModelHandler::loadModel(PS_GameObject* object) {
+		PS_Material material = object->getMaterial();
+		glm::vec4 color = material.getColor().color;
+		bool isTexture = material.getColor().isTexture;
+
 		std::unordered_map<Vertex, uint32_t> uniqueVertices{};
 		tinyobj::attrib_t attrib;
 		std::vector<tinyobj::shape_t> shapes;
@@ -68,12 +72,13 @@ namespace ps {
 		}
 	}
 
-	void PS_ModelHandler::loadModel(PS_Light* object) {
+	void PS_ModelHandler::loadLight(PS_Light* object) {
 		std::unordered_map<Vertex, uint32_t> uniqueVertices{};
 		tinyobj::attrib_t attrib;
 		std::vector<tinyobj::shape_t> shapes;
 		std::vector<tinyobj::material_t> materials;
 		std::string warn, err;
+		glm::vec3 color = object->getLightColor();
 
 		if (!tinyobj::LoadObj(&attrib, &shapes, &materials, &warn, &err, object->getModel().c_str())) {
 			throw std::runtime_error(warn + err);
@@ -176,23 +181,12 @@ namespace ps {
 	}
 
 	void PS_ModelHandler::Load(PS_GameObject* object) {
-		isTexture = true;
 		loadModel(object);
 		createVertexBuffer();
 		createIndexBuffer();
 	}
-
-	void PS_ModelHandler::Load(PS_GameObject* object, glm::vec3 color) {
-		isTexture = false;
-		this->color = glm::vec4(color, 1);
-		loadModel(object);
-		createVertexBuffer();
-		createIndexBuffer();
-	}
-	void PS_ModelHandler::Load(PS_Light* object, glm::vec3 color) {
-		isTexture = false;
-		this->color = glm::vec4(color, 1);
-		loadModel(object);
+	void PS_ModelHandler::Load(PS_Light* object) {
+		loadLight(object);
 		createVertexBuffer();
 		createIndexBuffer();
 	}

@@ -3,7 +3,7 @@
 
 namespace ps {
 	struct MaterialComponent {
-		glm::vec3 color;
+		glm::vec4 color;
 		std::string texturePath;
 		bool isTexture;
 	};

@@ -46,6 +46,7 @@ namespace ps {
 		void readCameras(json elem);
 		void readObjects(json elem);
 		glm::vec3 read3DVector(json data, std::string field);
+		glm::vec4 read4DVector(json data, std::string field);
 		PS_Material readMaterial(json elem);
 		MaterialComponent readMaterialComponent(json elem);
 
