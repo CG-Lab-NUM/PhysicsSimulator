@@ -33,6 +33,7 @@ namespace ps {
 						(attrib.vertices[3 * index.vertex_index + 1] + object->getLocation()[1])* object->getScale()[1],
 						(attrib.vertices[3 * index.vertex_index + 2] + object->getLocation()[2])* object->getScale()[2],
 					};
+
 					if (isTexture) {
 						vertex.color = {
 							attrib.colors[3 * index.vertex_index + 0],
@@ -94,9 +95,6 @@ namespace ps {
 						(attrib.vertices[3 * index.vertex_index + 1] + object->getLocation().y) * object->getScale().y,
 						(attrib.vertices[3 * index.vertex_index + 2] + object->getLocation().z) * object->getScale().z,
 					};
-					vertex.pos = rotate(object->getForwardVector(), vertex.pos, object->getRotation().x + object->getMeshRotation().x);
-					vertex.pos = rotate(object->getRightVector(), vertex.pos, object->getRotation().y + object->getMeshRotation().y);
-					vertex.pos = rotate(-object->getUpVector(), vertex.pos, object->getRotation().z + object->getMeshRotation().z);
 
 					vertex.color = { color.x, color.y, color.z, -1 };
 					if (index.texcoord_index >= 0) {

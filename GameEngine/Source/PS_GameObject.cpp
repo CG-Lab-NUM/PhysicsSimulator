@@ -45,7 +45,7 @@ namespace ps {
 			glm::cos(rotation.x) * glm::cos(rotation.y),
 			-glm::sin(rotation.x)
 		);
-		rightVector = glm::vec3(
+		rightVector = -glm::vec3(
 			glm::cos(rotation.y),
 			-glm::sin(rotation.y),
 			0

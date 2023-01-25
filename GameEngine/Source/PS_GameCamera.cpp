@@ -24,6 +24,7 @@ namespace ps {
 	void PS_GameCamera::tick() {
 		keyboardMovement();
 		mouseRotation();
+		//std::cout << getLocation().x << " " << getLocation().y << " " << getLocation().z << std::endl;
 	}
 
 	void PS_GameCamera::keyboardMovement() {
