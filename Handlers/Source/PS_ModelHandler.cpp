@@ -83,7 +83,6 @@ namespace ps {
 		if (!tinyobj::LoadObj(&attrib, &shapes, &materials, &warn, &err, object->getModel().c_str())) {
 			throw std::runtime_error(warn + err);
 		}
-		std::cout << "Light Loaded Model:" << object->getModel() << std::endl;
 
 		for (const auto& shape : shapes) {
 			for (const auto& index : shape.mesh.indices) {

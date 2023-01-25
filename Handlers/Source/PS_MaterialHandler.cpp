@@ -206,8 +206,6 @@ namespace ps {
 			descriptorWrite.pImageInfo = &imageInfo;
 
 			vkUpdateDescriptorSets(psDevice->device, 1, &descriptorWrite, 0, nullptr);
-
-			std::cout << "Texture Binding Loaded: " << i << std::endl;
 		}
 	}
 
