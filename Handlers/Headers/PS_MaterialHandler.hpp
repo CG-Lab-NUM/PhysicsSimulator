@@ -5,9 +5,9 @@
 #include "PS_Descriptor.hpp"
 
 namespace ps {
-	class PS_TextureHandler : PS_Allocator {
+	class PS_MaterialHandler : PS_Allocator {
 	public:
-		PS_TextureHandler(PS_Device* device, PS_DescriptorSet* descriptorSet);
+		PS_MaterialHandler(PS_Device* device, PS_DescriptorSet* descriptorSet);
 		void Load(PS_Material material);
 		void Free();
 		void createLayouts();

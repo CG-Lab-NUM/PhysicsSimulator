@@ -1,7 +1,7 @@
 #include "PS_GameCamera.hpp"
 
 #define ROTATION_SENSITIVITY 0.01f
-#define MOVEMENT_SPEED 0.01f
+#define MOVEMENT_SPEED 0.05f
 
 namespace ps {
 	PS_GameCamera::PS_GameCamera() {

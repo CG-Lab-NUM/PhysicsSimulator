@@ -1,7 +1,7 @@
 #pragma once
 #include "PS_Allocator.hpp"
 #include "PS_ModelHandler.hpp"
-#include "PS_TextureHandler.hpp"
+#include "PS_MaterialHandler.hpp"
 #include "PS_RenderPass.hpp"
 #include "PS_Shader.hpp"
 #include "PS_Descriptor.hpp"
@@ -43,7 +43,7 @@ namespace ps {
 		PS_RenderPass *psRenderPass;
 		PS_DescriptorSet* psDescriptorSets;
 		PS_GameCamera *gameCamera;
-		PS_TextureHandler *noTexture;
+		PS_MaterialHandler *basicMaterial;
 		UI_Widget* widget;
 
 		std::vector<PS_Light*> pointLights;
@@ -55,8 +55,7 @@ namespace ps {
 		std::vector<PS_GameObject*> gameObjects;
 		std::vector<PS_ModelHandler*> objectModels;
 		std::vector<PS_ModelHandler*> lightModels;
-		std::vector<PS_TextureHandler*> textures;
-		PS_TextureHandler *emissiveColor;
+		std::vector<PS_MaterialHandler*> materials;
 		std::vector<std::unique_ptr<PS_BufferHandler>> uniformBuffers;
 
 		std::vector<VkSemaphore> imageAvailableSemaphores;

@@ -94,7 +94,6 @@ namespace ps {
 		if (elem.contains("baseColor")) {
 			MaterialComponent baseColor = readMaterialComponent(elem["baseColor"]);
 			material.setColor(baseColor);
-			std::cout << "here\n";
 		}
 		if (elem.contains("emissive")) {
 			MaterialComponent emissive = readMaterialComponent(elem["emissive"]);
