@@ -13,13 +13,14 @@ namespace ps {
 	private:
 		void tick();
 		void drawFrame();
+		void changePipeline();
 
 		PS_Window psWindow{ 1024, 768, "CustomTitle" };
 		PS_Device psDevice{ &psWindow };
 		PS_SwapChain psSwapChain{ &psDevice, &psWindow };
-		PS_Pipeline *litPipeline;
-		PS_Pipeline *unlitPipeline;
+		PS_Pipeline *pipeline;
 		PS_GameLevel *gameLevel;
 		std::vector<PS_GameObject*> gameObjects;
+		int currentPipeline;
 	};
 }

@@ -48,7 +48,7 @@
     <ClCompile Include="GameEngine\Source\PS_GameMesh.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="Handlers\Source\PS_TextureHandler.cpp">
+    <ClCompile Include="Handlers\Source\PS_MaterialHandler.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="Handlers\Source\PS_ModelHandler.cpp">
@@ -137,7 +137,7 @@
     <ClInclude Include="GameEngine\Headers\PS_GameMesh.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="Handlers\Headers\PS_TextureHandler.hpp">
+    <ClInclude Include="Handlers\Headers\PS_MaterialHandler.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="Handlers\Headers\PS_ModelHandler.hpp">

@@ -146,7 +146,7 @@
     <ClCompile Include="RenderEngine\Source\PS_Descriptor.cpp" />
     <ClCompile Include="RenderEngine\Source\PS_Material.cpp" />
     <ClCompile Include="RenderEngine\Source\PS_RenderGeneric.cpp" />
-    <ClCompile Include="Handlers\Source\PS_TextureHandler.cpp" />
+    <ClCompile Include="Handlers\Source\PS_MaterialHandler.cpp" />
     <ClCompile Include="RenderEngine\Source\PS_Renderer.cpp" />
     <ClCompile Include="RenderEngine\Source\PS_Device.cpp" />
     <ClCompile Include="RenderEngine\Source\PS_Allocator.cpp" />
@@ -182,7 +182,7 @@
     <ClInclude Include="RenderEngine\Headers\PS_RenderPass.hpp" />
     <ClInclude Include="RenderEngine\Headers\PS_Shader.hpp" />
     <ClInclude Include="RenderEngine\Headers\PS_SwapChain.hpp" />
-    <ClInclude Include="Handlers\Headers\PS_TextureHandler.hpp" />
+    <ClInclude Include="Handlers\Headers\PS_MaterialHandler.hpp" />
     <ClInclude Include="RenderEngine\Headers\PS_Window.hpp" />
     <ClInclude Include="GameEngine\Headers\PS_GameGeneric.hpp" />
     <ClInclude Include="GameEngine\Headers\PS_GameInstance.hpp" />

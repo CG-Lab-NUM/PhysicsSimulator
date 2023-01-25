@@ -1,7 +1,7 @@
 #include "PS_GameCamera.hpp"
 
 #define ROTATION_SENSITIVITY 0.01f
-#define MOVEMENT_SPEED 0.01f
+#define MOVEMENT_SPEED 0.05f
 
 namespace ps {
 	PS_GameCamera::PS_GameCamera() {
@@ -24,6 +24,7 @@ namespace ps {
 	void PS_GameCamera::tick() {
 		keyboardMovement();
 		mouseRotation();
+		//print3DVector(getLocation(), "location:");
 	}
 
 	void PS_GameCamera::keyboardMovement() {
@@ -50,10 +51,10 @@ namespace ps {
 				glm::vec3 tempRotation = getRotation();
 
 				if (currentCursorPosition.x > previousCursorPosition.x) {
-					tempRotation.y += ROTATION_SENSITIVITY;
+					tempRotation.y -= ROTATION_SENSITIVITY;
 				}
 				else if (currentCursorPosition.x < previousCursorPosition.x) {
-					tempRotation.y -= ROTATION_SENSITIVITY;
+					tempRotation.y += ROTATION_SENSITIVITY;
 				}
 
 				if (currentCursorPosition.y > previousCursorPosition.y) {

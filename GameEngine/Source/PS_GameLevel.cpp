@@ -26,6 +26,15 @@ namespace ps {
 		return vector;
 	}
 
+	glm::vec4 PS_GameLevel::read4DVector(json data, std::string field) {
+		glm::vec4 vector;
+		vector.x = data[field][0];
+		vector.y = data[field][1];
+		vector.z = data[field][2];
+		vector.a = data[field][3];
+		return vector;
+	}
+
 	void PS_GameLevel::tick() {
 		switchPipeline();
 	}
@@ -94,7 +103,6 @@ namespace ps {
 		if (elem.contains("baseColor")) {
 			MaterialComponent baseColor = readMaterialComponent(elem["baseColor"]);
 			material.setColor(baseColor);
-			std::cout << "here\n";
 		}
 		if (elem.contains("emissive")) {
 			MaterialComponent emissive = readMaterialComponent(elem["emissive"]);
@@ -111,7 +119,7 @@ namespace ps {
 			return component;
 		}
 		component.isTexture = false;
-		component.color = read3DVector(elem, "color");
+		component.color = read4DVector(elem, "color");
 		return component;
 	}
 }

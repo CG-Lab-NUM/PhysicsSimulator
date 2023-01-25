@@ -9,8 +9,7 @@ namespace ps {
 	public:
 		PS_ModelHandler(PS_Device* device);
 		void Load(PS_GameObject* object);
-		void Load(PS_GameObject* object, glm::vec3 color);
-		void Load(PS_Light* object, glm::vec3 color);
+		void Load(PS_Light* object);
 		void Destroy();
 		void Render(VkCommandBuffer commandBuffer);
 		void setDevice(PS_Device* device) {
@@ -26,12 +25,9 @@ namespace ps {
 
 	private:
 		void loadModel(PS_GameObject* object);
-		void loadModel(PS_Light* object);
+		void loadLight(PS_Light* object);
 		void createVertexBuffer();
 		void createIndexBuffer();
 		glm::vec3 rotate(glm::vec3 axis, glm::vec3 point, float angle);
-
-		bool isTexture = true;
-		glm::vec4 color;
 	};
 }

@@ -8,6 +8,10 @@ namespace ps {
 	}
 
 	void PS_ModelHandler::loadModel(PS_GameObject* object) {
+		PS_Material material = object->getMaterial();
+		glm::vec4 color = material.getColor().color;
+		bool isTexture = material.getColor().isTexture;
+
 		std::unordered_map<Vertex, uint32_t> uniqueVertices{};
 		tinyobj::attrib_t attrib;
 		std::vector<tinyobj::shape_t> shapes;
@@ -29,6 +33,7 @@ namespace ps {
 						(attrib.vertices[3 * index.vertex_index + 1] + object->getLocation()[1])* object->getScale()[1],
 						(attrib.vertices[3 * index.vertex_index + 2] + object->getLocation()[2])* object->getScale()[2],
 					};
+
 					if (isTexture) {
 						vertex.color = {
 							attrib.colors[3 * index.vertex_index + 0],
@@ -68,17 +73,17 @@ namespace ps {
 		}
 	}
 
-	void PS_ModelHandler::loadModel(PS_Light* object) {
+	void PS_ModelHandler::loadLight(PS_Light* object) {
 		std::unordered_map<Vertex, uint32_t> uniqueVertices{};
 		tinyobj::attrib_t attrib;
 		std::vector<tinyobj::shape_t> shapes;
 		std::vector<tinyobj::material_t> materials;
 		std::string warn, err;
+		glm::vec3 color = object->getLightColor();
 
 		if (!tinyobj::LoadObj(&attrib, &shapes, &materials, &warn, &err, object->getModel().c_str())) {
 			throw std::runtime_error(warn + err);
 		}
-		std::cout << "Light Loaded Model:" << object->getModel() << std::endl;
 
 		for (const auto& shape : shapes) {
 			for (const auto& index : shape.mesh.indices) {
@@ -90,9 +95,6 @@ namespace ps {
 						(attrib.vertices[3 * index.vertex_index + 1] + object->getLocation().y) * object->getScale().y,
 						(attrib.vertices[3 * index.vertex_index + 2] + object->getLocation().z) * object->getScale().z,
 					};
-					vertex.pos = rotate(object->getForwardVector(), vertex.pos, object->getRotation().x + object->getMeshRotation().x);
-					vertex.pos = rotate(object->getRightVector(), vertex.pos, object->getRotation().y + object->getMeshRotation().y);
-					vertex.pos = rotate(-object->getUpVector(), vertex.pos, object->getRotation().z + object->getMeshRotation().z);
 
 					vertex.color = { color.x, color.y, color.z, -1 };
 					if (index.texcoord_index >= 0) {
@@ -176,23 +178,12 @@ namespace ps {
 	}
 
 	void PS_ModelHandler::Load(PS_GameObject* object) {
-		isTexture = true;
 		loadModel(object);
 		createVertexBuffer();
 		createIndexBuffer();
 	}
-
-	void PS_ModelHandler::Load(PS_GameObject* object, glm::vec3 color) {
-		isTexture = false;
-		this->color = glm::vec4(color, 1);
-		loadModel(object);
-		createVertexBuffer();
-		createIndexBuffer();
-	}
-	void PS_ModelHandler::Load(PS_Light* object, glm::vec3 color) {
-		isTexture = false;
-		this->color = glm::vec4(color, 1);
-		loadModel(object);
+	void PS_ModelHandler::Load(PS_Light* object) {
+		loadLight(object);
 		createVertexBuffer();
 		createIndexBuffer();
 	}

@@ -1,4 +1,4 @@
-#include "PS_TextureHandler.hpp"
+#include "PS_MaterialHandler.hpp"
 
 #define STB_IMAGE_IMPLEMENTATION
 #include <stb_image.h>
@@ -7,12 +7,12 @@
 #define EMISSIVE 1
 
 namespace ps {
-	PS_TextureHandler::PS_TextureHandler(PS_Device* device, PS_DescriptorSet *descriptorSet) : PS_Allocator(device) {
+	PS_MaterialHandler::PS_MaterialHandler(PS_Device* device, PS_DescriptorSet *descriptorSet) : PS_Allocator(device) {
 		psDevice = device;
 		psDescriptor = descriptorSet;
 	}
 
-	void PS_TextureHandler::createTextureImage() {
+	void PS_MaterialHandler::createTextureImage() {
 		int texWidth, texHeight, texChannels;
 		for (int i = 0; i < 2; i++) {
 			if (texturePaths[i].empty() or !validTexture[i]) {
@@ -48,7 +48,7 @@ namespace ps {
 		}
 	}
 
-	void PS_TextureHandler::createMipmaps(VkImage image, VkFormat imageFormat, int32_t texWidth, int32_t texHeight, uint32_t mipLevels) {
+	void PS_MaterialHandler::createMipmaps(VkImage image, VkFormat imageFormat, int32_t texWidth, int32_t texHeight, uint32_t mipLevels) {
 		// Check if image format supports linear blitting
 		VkFormatProperties formatProperties;
 		vkGetPhysicalDeviceFormatProperties(psDevice->physicalDevice, imageFormat, &formatProperties);
@@ -135,7 +135,7 @@ namespace ps {
 		endSingleTimeCommands(commandBuffer);
 	}
 
-	void PS_TextureHandler::createTextureImageView() {
+	void PS_MaterialHandler::createTextureImageView() {
 		for (int i = 0; i < 2; i++) {
 			if (!validTexture[i]) {
 				continue;
@@ -144,7 +144,7 @@ namespace ps {
 		}
 	}
 
-	void PS_TextureHandler::createTextureSampler() {
+	void PS_MaterialHandler::createTextureSampler() {
 		VkPhysicalDeviceProperties properties{};
 		vkGetPhysicalDeviceProperties(psDevice->physicalDevice, &properties);
 
@@ -176,7 +176,7 @@ namespace ps {
 		}
 	}
 
-	void PS_TextureHandler::createTextureDescriptorSet() {
+	void PS_MaterialHandler::createTextureDescriptorSet() {
 		VkDescriptorSetAllocateInfo allocInfo{};
 		allocInfo.sType = VK_STRUCTURE_TYPE_DESCRIPTOR_SET_ALLOCATE_INFO;
 		allocInfo.descriptorPool = psDescriptor->descriptorPool;
@@ -206,36 +206,10 @@ namespace ps {
 			descriptorWrite.pImageInfo = &imageInfo;
 
 			vkUpdateDescriptorSets(psDevice->device, 1, &descriptorWrite, 0, nullptr);
-
-			std::cout << "Texture Binding Loaded: " << i << std::endl;
 		}
 	}
 
-	/*
-	VkDescriptorBufferInfo bufferInfo1 = {buffer1, 0, sizeof(buffer1)};
-	VkDescriptorBufferInfo bufferInfo2 = {buffer2, 0, sizeof(buffer2)};
-
-	VkWriteDescriptorSet descriptorWrites[2] = {};
-	descriptorWrites[0].sType = VK_STRUCTURE_TYPE_WRITE_DESCRIPTOR_SET;
-	descriptorWrites[0].dstSet = descriptorSet;
-	descriptorWrites[0].dstBinding = 0;
-	descriptorWrites[0].dstArrayElement = 0;
-	descriptorWrites[0].descriptorType = VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER;
-	descriptorWrites[0].descriptorCount = 1;
-	descriptorWrites[0].pBufferInfo = &bufferInfo1;
-
-	descriptorWrites[1].sType = VK_STRUCTURE_TYPE_WRITE_DESCRIPTOR_SET;
-	descriptorWrites[1].dstSet = descriptorSet;
-	descriptorWrites[1].dstBinding = 1;
-	descriptorWrites[1].dstArrayElement = 0;
-	descriptorWrites[1].descriptorType = VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER;
-	descriptorWrites[1].descriptorCount = 1;
-	descriptorWrites[1].pBufferInfo = &bufferInfo2;
-
-	vkUpdateDescriptorSets(device, 2, descriptorWrites, 0, nullptr);
-	*/
-
-	void PS_TextureHandler::Destroy() {
+	void PS_MaterialHandler::Destroy() {
 		for (int i = 0; i < 2; i++) {
 			vkDestroySampler(psDevice->device, textureSampler[i], nullptr);
 			vkDestroyImageView(psDevice->device, textureImageView[i], nullptr);
@@ -244,12 +218,12 @@ namespace ps {
 		}
 	}
 
-	void PS_TextureHandler::Free()
+	void PS_MaterialHandler::Free()
 	{
 		vkFreeDescriptorSets(psDevice->device, psDescriptor->descriptorPool, 1, &descriptorSet);
 	}
 
-	void PS_TextureHandler::Load(PS_Material material) {
+	void PS_MaterialHandler::Load(PS_Material material) {
 		createTextures(material);
 		createLayouts();
 		createTextureImage();
@@ -258,7 +232,7 @@ namespace ps {
 		createTextureDescriptorSet();
 	}
 
-	void PS_TextureHandler::createLayouts() {
+	void PS_MaterialHandler::createLayouts() {
 		VkDescriptorSetLayoutBinding baseColorBinding{
 			0,
 			VK_DESCRIPTOR_TYPE_COMBINED_IMAGE_SAMPLER,
@@ -285,7 +259,7 @@ namespace ps {
 		}
 	}
 
-	void PS_TextureHandler::createTextures(PS_Material material) {
+	void PS_MaterialHandler::createTextures(PS_Material material) {
 		MaterialComponent component = material.getColor();
 		if (component.isTexture) {
 			texturePaths[BASE_COLOR] = component.texturePath;

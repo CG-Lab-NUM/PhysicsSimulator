@@ -2,10 +2,10 @@
 
 namespace ps {
 	PS_Renderer::PS_Renderer(PS_GameLevel* level) {
+		currentPipeline = 0;
 		gameLevel = level;
 		gameObjects = gameLevel->getGameObjects();
-		unlitPipeline = new PS_Pipeline(&psWindow, &psDevice, &psSwapChain, gameObjects, gameLevel->getLights(), gameLevel->getCamera(), "Shaders/unlit_vert.spv", "Shaders/unlit_frag.spv", false);
-		litPipeline = new PS_Pipeline(&psWindow, &psDevice, &psSwapChain, gameObjects, gameLevel->getLights(), gameLevel->getCamera(), "Shaders/lit_vert.spv", "Shaders/lit_frag.spv", false);
+		pipeline = new PS_Pipeline(&psWindow, &psDevice, &psSwapChain, gameObjects, gameLevel->getLights(), gameLevel->getCamera(), "Shaders/unlit_vert.spv", "Shaders/unlit_frag.spv", false);
 	}
 
 	void PS_Renderer::mainLoop() {
@@ -27,7 +27,7 @@ namespace ps {
 
 	void PS_Renderer::cleanup() {
 		psSwapChain.cleanup();
-        //psPipeline->cleanup();
+		//psPipeline->cleanup();
 		psDevice.cleanup();
 		psWindow.cleanup();
 	}
@@ -38,11 +38,19 @@ namespace ps {
 	}
 
 	void PS_Renderer::drawFrame() {
-		if (gameLevel->getPipeline() == LIT_PIPELINE) {
-			litPipeline->drawFrame();
+		if (currentPipeline != gameLevel->getPipeline()) {
+			currentPipeline = gameLevel->getPipeline();
+			changePipeline();
+		}
+		pipeline->drawFrame();
+	}
+
+	void PS_Renderer::changePipeline() {
+		if (currentPipeline == LIT_PIPELINE) {
+			pipeline = new PS_Pipeline(&psWindow, &psDevice, &psSwapChain, gameObjects, gameLevel->getLights(), gameLevel->getCamera(), "Shaders/lit_vert.spv", "Shaders/lit_frag.spv", false);
 		}
 		else {
-			unlitPipeline->drawFrame();
+			pipeline = new PS_Pipeline(&psWindow, &psDevice, &psSwapChain, gameObjects, gameLevel->getLights(), gameLevel->getCamera(), "Shaders/unlit_vert.spv", "Shaders/unlit_frag.spv", false);
 		}
 	}
 }
