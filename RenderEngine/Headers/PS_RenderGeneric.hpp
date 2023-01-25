@@ -77,6 +77,10 @@ namespace ps {
 		std::vector<Vertex> vertices;
 		std::vector<uint32_t> indices;
 	};
+
+	//void print3DVector(glm::vec3 vector, std::string preword) {
+	//	std::cout << preword << " " << vector.x << " " << vector.y << " " << vector.z << std::endl;
+	//}
 }
 
 namespace std {

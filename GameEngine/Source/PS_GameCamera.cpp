@@ -24,7 +24,7 @@ namespace ps {
 	void PS_GameCamera::tick() {
 		keyboardMovement();
 		mouseRotation();
-		//std::cout << getLocation().x << " " << getLocation().y << " " << getLocation().z << std::endl;
+		//print3DVector(getLocation(), "location:");
 	}
 
 	void PS_GameCamera::keyboardMovement() {
@@ -51,10 +51,10 @@ namespace ps {
 				glm::vec3 tempRotation = getRotation();
 
 				if (currentCursorPosition.x > previousCursorPosition.x) {
-					tempRotation.y += ROTATION_SENSITIVITY;
+					tempRotation.y -= ROTATION_SENSITIVITY;
 				}
 				else if (currentCursorPosition.x < previousCursorPosition.x) {
-					tempRotation.y -= ROTATION_SENSITIVITY;
+					tempRotation.y += ROTATION_SENSITIVITY;
 				}
 
 				if (currentCursorPosition.y > previousCursorPosition.y) {
