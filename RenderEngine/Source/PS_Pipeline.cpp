@@ -382,7 +382,6 @@ namespace ps {
 			PS_TextureHandler* Texture = new PS_TextureHandler(psDevice, psDescriptorSets);
 			Texture->Load(gameObjects[i]->getMaterial());
 			textures.push_back(Texture);
-			//textures[textures.size() - 1]->Load();
 		}
 	}
 	void PS_Pipeline::loadLights() {
@@ -406,7 +405,7 @@ namespace ps {
 			objectModels[i]->Render(commandBuffer);
 		}
 		for (int i = 0; i < pointLights.size(); i++) {
-			//vkCmdPushConstants(commandBuffer, pipelineLayout, VK_SHADER_STAGE_VERTEX_BIT, 0, sizeof(vertexPushConstant), &vertexPushConstant);
+			vkCmdPushConstants(commandBuffer, pipelineLayout, VK_SHADER_STAGE_VERTEX_BIT, 0, sizeof(vertexPushConstant), &vertexPushConstant);
 			lightModels[i]->Render(commandBuffer);
 		}
 	}
