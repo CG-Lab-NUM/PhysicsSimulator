@@ -1,16 +1,58 @@
 {
-  "GameObjects": [
+  "name": "TestLevel",
+  "game_objects": [
     {
-      "name": "Test",
-      "model_path": "",
-      "texture_path": "",
-      "location": [ 0, 0, 0 ]
+      "type": "EditorCamera",
+      "name": "MainCamera",
+      "location": [ 0, 25, 30 ],
+      "rotation": [ 8, -0.02, 0 ],
+      "scale": [ 1, 1, 1 ]
     },
     {
-      "name": "Test",
-      "model_path": "",
-      "texture_path": "",
-      "location": [ 0, 0, 0 ]
+      "type": "GameObject",
+      "name": "Sword",
+      "location": [ 0, 0, 0 ],
+      "rotation": [ 0, 0, 0 ],
+      "scale": [ 1, 1, 1 ],
+      "alpha": 1.0,
+      "model_path": "Content/Meshes/StingSword.obj",
+      "material": {
+        "baseColor": {
+          "path": "Content/Textures/StingSword/Sting_BaseColor.png"
+        },
+        "emissive": {
+          "path": "Content/Textures/StingSword/Sting_Emissive.png"
+        }
+      }
+    },
+    {
+      "type": "GameObject",
+      "name": "Floor",
+      "location": [ 0, 0, 10 ],
+      "rotation": [ 0, 0, 0 ],
+      "scale": [ 10, 10, 1 ],
+      "alpha": 0.5,
+      "model_path": "Content/Meshes/Cube.obj",
+      "material": {
+        "baseColor": {
+          "color": [ 0.5, 0.5, 0.5, 1 ]
+        }
+      }
+    },
+    {
+      "type": "DirectionalLight",
+      "name": "FirstLight",
+      "location": [ 5, 5, 0 ],
+      "rotation": [ 0, 0, 0 ],
+      "color": [ 1, 1, 1, 1 ],
+      "intensity": 1
+    },
+    {
+      "type": "PointLight",
+      "name": "SecondLight",
+      "location": [ -5, -8, 0 ],
+      "color": [ 0, 0.5, 1, 1 ],
+      "intensity": 1
     }
   ]
 }

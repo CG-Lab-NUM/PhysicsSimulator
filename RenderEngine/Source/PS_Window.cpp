@@ -6,9 +6,14 @@ namespace ps {
 		glfwInit();
 		glfwWindowHint(GLFW_CLIENT_API, GLFW_NO_API);
 
+		PS_KeyboardHandler::setLetterEnabled(true);
+
 		window = glfwCreateWindow(WIDTH, HEIGHT, "Vulkan", nullptr, nullptr);
 		glfwSetWindowUserPointer(window, this);
+
+		// Callbacks
 		glfwSetFramebufferSizeCallback(window, framebufferResizeCallback);
+		glfwSetKeyCallback(window, PS_KeyboardHandler::keyCallback);
 	}
 
 	PS_Window::PS_Window(uint32_t w, uint32_t h, std::string windowTitle) {
@@ -19,10 +24,16 @@ namespace ps {
 
 		window = glfwCreateWindow(WIDTH, HEIGHT, windowTitle.c_str(), nullptr, nullptr);
 		glfwSetWindowUserPointer(window, this);
+
+		// Callbacks
 		glfwSetFramebufferSizeCallback(window, framebufferResizeCallback);
+		glfwSetKeyCallback(window, PS_KeyboardHandler::keyCallback);
+		glfwSetCursorPosCallback(window, PS_MouseHandler::positionCallback);
+		glfwSetCursorEnterCallback(window, PS_MouseHandler::enterCallback);
+		glfwSetMouseButtonCallback(window, PS_MouseHandler::buttonCallback);
 	}
 
-	PS_Window::~PS_Window() {
+	void PS_Window::cleanup() {
 		glfwDestroyWindow(window);
 		glfwTerminate();
 	}
@@ -31,10 +42,16 @@ namespace ps {
 		auto app = reinterpret_cast<PS_Window*>(glfwGetWindowUserPointer(window));
 		app->framebufferResized = true;
 	}
-
 	void PS_Window::createSurface(VkInstance instance) {
 		if (glfwCreateWindowSurface(instance, window, nullptr, &surface) != VK_SUCCESS) {
 			throw std::runtime_error("failed to create window surface!");
 		}
+	}
+	glm::vec2 PS_Window::getSize() {
+		glfwGetWindowSize(window, &WIDTH, &HEIGHT);
+		glm::vec2 size;
+		size.x = WIDTH;
+		size.y = HEIGHT;
+		return size;
 	}
 }

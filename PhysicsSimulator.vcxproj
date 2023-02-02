@@ -104,13 +104,13 @@
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
-      <AdditionalIncludeDirectories>D:\VulkanProjects\PhysicsSimulator\Libraries\imgui;D:\VulkanProjects\PhysicsSimulator\GameEngine\Headers;D:\VulkanProjects\PhysicsSimulator\Libraries\tinyobjloader-release;D:\VulkanProjects\PhysicsSimulator\Libraries\stb-master;C:\VulkanSDK\1.3.231.1\Include;D:\VulkanProjects\PhysicsSimulator\Libraries\glfw-3.3.8\include;D:\VulkanProjects\PhysicsSimulator\Libraries\glm-master;D:\VulkanProjects\PhysicsSimulator\RenderEngine\Headers;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>D:\VulkanProjects\PhysicsSimulator\GameEngine\Lights\Headers;D:\VulkanProjects\PhysicsSimulator\UI\Headers;D:\VulkanProjects\PhysicsSimulator\Content\Classes\Headers;D:\VulkanProjects\PhysicsSimulator\Handlers\Headers;D:\VulkanProjects\PhysicsSimulator\Libraries\stb;D:\VulkanProjects\PhysicsSimulator\Libraries\tinyobjloader;D:\VulkanProjects\PhysicsSimulator\Libraries\json\include;D:\VulkanProjects\PhysicsSimulator\Libraries\glm;D:\VulkanProjects\PhysicsSimulator\Libraries\glfw\include;D:\VulkanProjects\PhysicsSimulator\Libraries;D:\VulkanProjects\PhysicsSimulator\GameEngine\Headers;C:\VulkanSDK\1.3.231.1\Include;D:\VulkanProjects\PhysicsSimulator\RenderEngine\Headers;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <LanguageStandard>stdcpp17</LanguageStandard>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalLibraryDirectories>C:\VulkanSDK\1.3.231.1\Lib;D:\VulkanProjects\PhysicsSimulator\Libraries\glfw-3.3.8\lib-vc2022;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalLibraryDirectories>C:\VulkanSDK\1.3.231.1\Lib;D:\VulkanProjects\PhysicsSimulator\Libraries\glfw\lib-vc2022;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
       <AdditionalDependencies>vulkan-1.lib;glfw3.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
@@ -122,7 +122,7 @@
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>NDEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
-      <AdditionalIncludeDirectories>D:\VulkanProjects\PhysicsSimulator\Libraries\imgui;D:\VulkanProjects\PhysicsSimulator\GameEngine\Headers;D:\VulkanProjects\PhysicsSimulator\Libraries\tinyobjloader-release;D:\VulkanProjects\PhysicsSimulator\Libraries\stb-master;C:\VulkanSDK\1.3.231.1\Include;D:\VulkanProjects\PhysicsSimulator\Libraries\glfw-3.3.8\include;D:\VulkanProjects\PhysicsSimulator\Libraries\glm-master;D:\VulkanProjects\PhysicsSimulator\RenderEngine\Headers;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>D:\VulkanProjects\PhysicsSimulator\GameEngine\Lights\Headers;D:\VulkanProjects\PhysicsSimulator\UI\Headers;D:\VulkanProjects\PhysicsSimulator\Content\Classes\Headers;D:\VulkanProjects\PhysicsSimulator\Handlers\Headers;D:\VulkanProjects\PhysicsSimulator\Libraries\stb;D:\VulkanProjects\PhysicsSimulator\Libraries\tinyobjloader;D:\VulkanProjects\PhysicsSimulator\Libraries\json\include;D:\VulkanProjects\PhysicsSimulator\Libraries\glm;D:\VulkanProjects\PhysicsSimulator\Libraries\glfw\include;D:\VulkanProjects\PhysicsSimulator\Libraries;D:\VulkanProjects\PhysicsSimulator\GameEngine\Headers;C:\VulkanSDK\1.3.231.1\Include;D:\VulkanProjects\PhysicsSimulator\RenderEngine\Headers;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <LanguageStandard>stdcpp17</LanguageStandard>
     </ClCompile>
     <Link>
@@ -130,17 +130,29 @@
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <OptimizeReferences>true</OptimizeReferences>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalLibraryDirectories>C:\VulkanSDK\1.3.231.1\Lib;D:\VulkanProjects\PhysicsSimulator\Libraries\glfw-3.3.8\lib-vc2022;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalLibraryDirectories>C:\VulkanSDK\1.3.231.1\Lib;D:\VulkanProjects\PhysicsSimulator\Libraries\glfw\lib-vc2022;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
       <AdditionalDependencies>vulkan-1.lib;glfw3.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClCompile Include="RenderEngine\Source\PS_ModelLoader.cpp" />
-    <ClCompile Include="RenderEngine\Source\PS_TextureImage.cpp" />
-    <ClCompile Include="RenderEngine\Source\PS_App.cpp" />
+    <ClCompile Include="GameEngine\Source\PS_Light.cpp" />
+    <ClCompile Include="GameEngine\Source\PS_GameCamera.cpp" />
+    <ClCompile Include="GameEngine\Source\PS_SkyBox.cpp" />
+    <ClCompile Include="Handlers\Source\PS_BufferHandler.cpp" />
+    <ClCompile Include="Handlers\Source\PS_FileHandler.cpp" />
+    <ClCompile Include="Handlers\Source\PS_KeyboardHandler.cpp" />
+    <ClCompile Include="Handlers\Source\PS_MouseHandler.cpp" />
+    <ClCompile Include="Handlers\Source\PS_ModelHandler.cpp" />
+    <ClCompile Include="RenderEngine\Source\PS_Descriptor.cpp" />
+    <ClCompile Include="RenderEngine\Source\PS_Material.cpp" />
+    <ClCompile Include="RenderEngine\Source\PS_RenderGeneric.cpp" />
+    <ClCompile Include="Handlers\Source\PS_MaterialHandler.cpp" />
+    <ClCompile Include="RenderEngine\Source\PS_Renderer.cpp" />
     <ClCompile Include="RenderEngine\Source\PS_Device.cpp" />
-    <ClCompile Include="RenderEngine\Source\PS_Helper.cpp" />
+    <ClCompile Include="RenderEngine\Source\PS_Allocator.cpp" />
     <ClCompile Include="RenderEngine\Source\PS_Pipeline.cpp" />
+    <ClCompile Include="RenderEngine\Source\PS_RenderPass.cpp" />
+    <ClCompile Include="RenderEngine\Source\PS_Shader.cpp" />
     <ClCompile Include="RenderEngine\Source\PS_SwapChain.cpp" />
     <ClCompile Include="RenderEngine\Source\PS_Window.cpp" />
     <ClCompile Include="GameEngine\Source\PS_GameInstance.cpp" />
@@ -148,26 +160,44 @@
     <ClCompile Include="GameEngine\Source\PS_GameMesh.cpp" />
     <ClCompile Include="GameEngine\Source\PS_GameObject.cpp" />
     <ClCompile Include="main.cpp" />
+    <ClCompile Include="UI\Source\UI_Widget.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="RenderEngine\Headers\PS_App.hpp" />
-    <ClInclude Include="RenderEngine\Headers\PS_Colors.hpp" />
+    <ClInclude Include="GameEngine\Headers\PS_GameCamera.hpp" />
+    <ClInclude Include="GameEngine\Headers\PS_Light.hpp" />
+    <ClInclude Include="GameEngine\Headers\PS_SkyBox.hpp" />
+    <ClInclude Include="Handlers\Headers\PS_BufferHandler.hpp" />
+    <ClInclude Include="Handlers\Headers\PS_FileHandler.hpp" />
+    <ClInclude Include="Handlers\Headers\PS_KeyboardHandler.hpp" />
+    <ClInclude Include="Handlers\Headers\PS_MouseHandler.hpp" />
+    <ClInclude Include="RenderEngine\Headers\PS_Descriptor.hpp" />
+    <ClInclude Include="RenderEngine\Headers\PS_Material.hpp" />
+    <ClInclude Include="RenderEngine\Headers\PS_Renderer.hpp" />
+    <ClInclude Include="Handlers\Headers\PS_ColorHandler.hpp" />
     <ClInclude Include="RenderEngine\Headers\PS_Device.hpp" />
     <ClInclude Include="RenderEngine\Headers\PS_EngineGeneric.hpp" />
-    <ClInclude Include="RenderEngine\Headers\PS_Helper.hpp" />
-    <ClInclude Include="RenderEngine\Headers\PS_ModelLoader.hpp" />
+    <ClInclude Include="RenderEngine\Headers\PS_Allocator.hpp" />
+    <ClInclude Include="Handlers\Headers\PS_ModelHandler.hpp" />
     <ClInclude Include="RenderEngine\Headers\PS_Pipeline.hpp" />
+    <ClInclude Include="RenderEngine\Headers\PS_RenderPass.hpp" />
+    <ClInclude Include="RenderEngine\Headers\PS_Shader.hpp" />
     <ClInclude Include="RenderEngine\Headers\PS_SwapChain.hpp" />
-    <ClInclude Include="RenderEngine\Headers\PS_TextureImage.hpp" />
+    <ClInclude Include="Handlers\Headers\PS_MaterialHandler.hpp" />
     <ClInclude Include="RenderEngine\Headers\PS_Window.hpp" />
     <ClInclude Include="GameEngine\Headers\PS_GameGeneric.hpp" />
     <ClInclude Include="GameEngine\Headers\PS_GameInstance.hpp" />
     <ClInclude Include="GameEngine\Headers\PS_GameLevel.hpp" />
     <ClInclude Include="GameEngine\Headers\PS_GameMesh.hpp" />
     <ClInclude Include="GameEngine\Headers\PS_GameObject.hpp" />
-    <ClInclude Include="Libraries\imgui\backends\imgui_impl_vulkan_but_better.h" />
+    <ClInclude Include="Libraries\imgui\backends\imgui_impl_vulkan_but_betters.h" />
+    <ClInclude Include="UI\Headers\UI_Generic.hpp" />
+    <ClInclude Include="UI\Headers\UI_Widget.hpp" />
   </ItemGroup>
   <ItemGroup>
+    <None Include="Shaders\unlit_shader.frag" />
+    <None Include="Shaders\unlit_shader.vert" />
+    <None Include="Shaders\wire_shader.frag" />
+    <None Include="Shaders\wire_shader.vert" />
     <None Include="Shader\shader.frag" />
     <None Include="Shader\shader.vert" />
   </ItemGroup>
