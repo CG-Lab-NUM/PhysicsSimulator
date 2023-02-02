@@ -18,6 +18,7 @@ namespace ps {
 		gameLevel.addGameObject(&gameObject3);
 		gameLevel.addGameObject(&gameObject4);
 		gameLevel.addGameObject(&gameObject5);
+		
 
 		ps::PS_App app{ &gameLevel };
 		try {
@@ -29,4 +30,5 @@ namespace ps {
 		}
 		return EXIT_SUCCESS;
 	}
+
 }

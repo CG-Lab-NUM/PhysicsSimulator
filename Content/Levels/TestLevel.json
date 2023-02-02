@@ -1,0 +1,16 @@
+{
+  "GameObjects": [
+    {
+      "name": "Test",
+      "model_path": "",
+      "texture_path": "",
+      "location": [ 0, 0, 0 ]
+    },
+    {
+      "name": "Test",
+      "model_path": "",
+      "texture_path": "",
+      "location": [ 0, 0, 0 ]
+    }
+  ]
+}
