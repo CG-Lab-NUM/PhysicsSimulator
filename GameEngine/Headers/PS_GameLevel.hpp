@@ -17,7 +17,9 @@ namespace ps {
 		void loadMap(std::string path);
 
 		void addGameObject(PS_GameObject* object) {
+
 			gameObjects.push_back(object);
+
 		}
 
 		void setCamera(PS_GameCamera *camera) {
@@ -57,4 +59,5 @@ namespace ps {
 		std::string levelName;
 		int currentPipeline;
 	};
+
 }
